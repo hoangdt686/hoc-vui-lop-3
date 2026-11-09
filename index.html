@@ -4013,7 +4013,13 @@ TL.diaryParent = function (b) {
     '<li>Khi con kể bị đánh, bị bắt nạt hoặc bị người khác đụng chạm làm con sợ: giữ bình tĩnh, tin con, cảm ơn con đã kể, liên hệ cô giáo chủ nhiệm. Trường hợp nghiêm trọng, gọi Tổng đài quốc gia bảo vệ trẻ em 111 (miễn phí).</li></ul></div>' +
     '<div class="card"><h2>Riêng tư</h2><p class="small">Nhật ký lưu trong trình duyệt và trên máy chủ Apps Script của bố mẹ, không đưa lên trang GitHub. ' + (S().settings.diaryAI !== false ? 'Đang bật AI: lời con kể được gửi tới Gemini để Cú Uyên Bác trả lời và tóm tắt (không kèm họ tên đầy đủ, trường lớp). Gói Gemini miễn phí cho phép Google dùng nội dung để cải thiện sản phẩm; muốn chặt chẽ hơn, bật thanh toán cho dự án Gemini hoặc tắt AI khi tâm sự ở mục Dữ liệu và cài đặt.' : 'Đang tắt AI khi tâm sự: Cú Uyên Bác trả lời bằng câu soạn sẵn, nội dung không gửi ra ngoài.') + ' Sau 60 ngày nguyên văn tự xoá, chỉ giữ tóm tắt.</p>' +
     '<p class="small" style="margin-top:8px">Cú Uyên Bác không hứa giữ bí mật với con. Khi con xin giữ bí mật, Cú Uyên Bác khuyên con kể cho bố mẹ.</p></div></div>';
-  $$('[data-deld]', b).forEach(x => x.onclick = () => { if (!confirm('Xoá buổi trò chuyện ngày ' + TL.viDate(x.dataset.deld) + '? Nếu là hôm nay, con sẽ được Cú Uyên Bác hỏi lại từ đầu.')) return; S().diary = S().diary.filter(q => q.d !== x.dataset.deld); TL.save(); TL.toast('Đã xoá buổi trò chuyện.'); TL.diaryParent(b); });
+  $$('[data-deld]', b).forEach(x => x.onclick = () => { if (!confirm('Xoá buổi trò chuyện ngày ' + TL.viDate(x.dataset.deld) + '? Nếu là hôm nay, con sẽ được Cú Uyên Bác hỏi lại từ đầu.')) return;
+    const d = x.dataset.deld, ent = S().diary.find(q => q.d === d);
+    S().diary = S().diary.filter(q => q.d !== d);
+    if (ent && ent.done && !ent.noXP) S().xp = Math.max(0, (S().xp || 0) - 5); // trả lại 5 XP của buổi bố mẹ nói thử
+    if (d === TL.today()) { const p = TL.ensurePlan(); if (!p.allDone && (p.used || 0) < 120) { S().plan = null; TL.ensurePlan(); } } // chưa học gì thì đưa lịch hôm nay về đầu
+    TL.forcePush = true; TL.save(); if (TL.syncNow) TL.syncNow(); TL.refreshTop && TL.refreshTop();
+    TL.toast('Đã xoá buổi trò chuyện. Lần mở tới, Cú Uyên Bác sẽ hỏi con từ đầu.'); TL.diaryParent(b); });
   $$('[data-seen]', b).forEach(x => x.onchange = () => { const e = S().diary.find(q => q.d === x.dataset.seen); if (e) { e.seen = x.checked; TL.save(); } });
   $$('[data-sum]', b).forEach(x => x.onclick = async () => { const e = S().diary.find(q => q.d === x.dataset.sum); x.disabled = true; x.textContent = 'Đang tóm tắt...'; await summarize(e); TL.diaryParent(b); });
 };
@@ -4221,6 +4227,11 @@ function push() {
   }).catch(e => { lastErr = e.message || 'lỗi mạng'; })
     .then(() => { pushing = false; if (again) { again = false; push(); } });
 }
+/* nhiều thẻ của ứng dụng cùng mở trên một trình duyệt: thẻ này lưu thì thẻ kia lấy bản mới, tránh thẻ cũ ghi đè */
+addEventListener('storage', ev => {
+  if (ev.key !== TL.KEY || !ev.newValue) return;
+  try { const n = JSON.parse(ev.newValue); if ((n.updatedAt || 0) <= (TL.S.updatedAt || 0)) return; TL.S = n; TL.normalize && TL.normalize(); const sc = TL.screen(); if (['home', 'kingdom', 'checkin'].includes(sc.name)) TL.go(sc.name, sc.arg ? { arg: sc.arg } : undefined); else TL.refreshTop && TL.refreshTop(); } catch (e) { }
+});
 TL.onSave = function () { clearTimeout(timer); timer = setTimeout(push, 4000); };
 TL.syncNow = function () { clearTimeout(timer); push(); };
 TL.syncInfo = function () { return lastOk ? 'Lần đồng bộ gần nhất: ' + new Date(lastOk).toLocaleTimeString('vi-VN') + '.' : lastErr ? 'Chưa đồng bộ được: ' + lastErr + '.' : 'Đang chờ đồng bộ lần đầu.'; };

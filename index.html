@@ -629,6 +629,8 @@ function load(given) {
     if (segs.map(x => x.id).join() === OLD_PLAN_IDS) { s.settings.planSegs = DEFAULT_PLAN; if (s.plan && !s.plan.running) s.plan = null; }
     s.settings.planVer = 2;
   }
+  const ren = x => { if (x && x.name) x.name = x.name.replace('Cú Bon', 'Cú Uyên Bác'); };
+  (s.settings.planSegs || []).forEach(ren); if (s.plan && s.plan.segs) s.plan.segs.forEach(ren);
   s.counters = Object.assign(d.counters, s.counters || {});
   for (const k of Object.keys(d)) if (s[k] === undefined) s[k] = d[k];
   return s;
@@ -3000,13 +3002,15 @@ setInterval(() => {
 function advance() {
   const p = TL.ensurePlan(); const seg = p.segs[p.idx]; seg.done = true; seg.left = 0;
   if (breakOpen) { breakOpen.remove(); breakOpen = null; }
-  if (p.idx >= p.segs.length - 1) { finishPlan(); return; }
-  p.idx++; const nx = p.segs[p.idx]; TL.sfx.done(); TL.save();
+  // sang phần kế tiếp chưa xong (có phần đã làm lại riêng thì bỏ qua phần đã xong)
+  let ni = p.segs.findIndex((x, j) => j > p.idx && !x.done); if (ni < 0) ni = p.segs.findIndex(x => !x.done);
+  if (ni < 0) { finishPlan(); return; }
+  p.idx = ni; const nx = p.segs[p.idx]; TL.sfx.done(); TL.save();
   if (nx.kind === 'break') showBreak();
   else TL.toast('Bắt đầu phần: ' + nx.name + ' (' + nx.min + ' phút)');
 }
 function finishPlan() {
-  const p = TL.ensurePlan(); if (p.allDone) return; p.allDone = true; p.running = false; S().counters.planDone++; TL.addXP(30); TL.addStars(5); TL.checkBadges(); TL.save();
+  const p = TL.ensurePlan(); if (p.allDone) return; p.allDone = true; p.running = false; if (!p.rewarded) { p.rewarded = true; S().counters.planDone++; TL.addXP(30); TL.addStars(5); TL.checkBadges(); } TL.save(); // làm lại trong ngày không nhận thưởng lần nữa
   TL.celebrate(); TL.go('summary');
 }
 TL.planAdvance = advance;
@@ -3338,8 +3342,26 @@ SCREENS.plan = function (m) {
       '<div class="card" style="margin-top:14px;text-align:center">' + (p.allDone ? '<h2>Con đã học xong lịch hôm nay!</h2>' : '<span class="eyebrow">Đang làm</span><h2 style="margin-top:4px">' + esc(seg.name) + '</h2><p style="font-family:var(--f-display);font-size:4rem;line-height:1.1;font-variant-numeric:tabular-nums" class="big-clock">' + mmss(seg.left) + '</p><p class="muted">' + (p.running ? (p.paused ? 'Đang tạm dừng' : 'Đồng hồ đang chạy') : 'Chưa bắt đầu') + '</p>') +
       '<div class="seg">' + p.segs.map((s, i) => '<i class="' + (s.done ? 'done' : i === p.idx ? 'now' : '') + '" title="' + esc(s.name) + '"></i>').join('') + '</div>' +
       (p.allDone ? '' : '<div class="row" style="justify-content:center;margin-top:14px">' + (!p.running ? '<button class="btn big" data-a="start">Bắt đầu buổi học</button>' : p.paused ? '<button class="btn big" data-a="resume">Học tiếp</button>' : '<button class="btn big ghost" data-a="pause">Tạm dừng</button><button class="btn big ghost" data-a="tired">Con mệt rồi</button>') + (p.running ? '<button class="btn ghost" data-a="skip">Xong phần này</button>' : '') + '<button class="btn" data-a="goto">Đi tới phần đang học</button></div>') + '</div>' +
-      '<div class="card" style="margin-top:14px"><div class="tablewrap"><table><tr><th>Phần</th><th>Thời lượng</th><th>Trạng thái</th></tr>' + p.segs.map((s, i) => '<tr><td>' + esc(s.name) + '</td><td>' + s.min + ' phút</td><td>' + (s.done ? 'Xong' : i === p.idx ? 'Đang làm, còn ' + mmss(s.left) : 'Chưa tới') + '</td></tr>').join('') + '</table></div><p class="small muted" style="margin-top:8px">Phụ huynh thay đổi thời lượng trong Khu phụ huynh, mục Lịch học.</p></div>';
+      '<div class="card" style="margin-top:14px"><div class="tablewrap"><table><tr><th>Phần</th><th>Thời lượng</th><th>Trạng thái</th><th></th></tr>' + p.segs.map((s, i) => '<tr><td>' + esc(s.name) + '</td><td>' + s.min + ' phút</td><td>' + (s.done ? 'Xong' : i === p.idx ? 'Đang làm, còn ' + mmss(s.left) : 'Chưa tới') + '</td><td>' + (s.done || (i === p.idx && s.left < s.min * 60) ? '<button class="btn small ghost" data-redo="' + i + '">Huỷ, làm lại phần này</button>' : '') + '</td></tr>').join('') + '</table></div>' +
+      '<div class="row" style="margin-top:10px"><button class="btn small" data-redoall>Làm lại lịch hôm nay từ đầu</button></div><p class="small muted" style="margin-top:8px">Phụ huynh thay đổi thời lượng trong Khu phụ huynh, mục Lịch học.</p></div>';
     $$('[data-a]', m).forEach(b => b.onclick = () => act(b.dataset.a));
+    $$('[data-redo]', m).forEach(b => b.onclick = () => redo(+b.dataset.redo));
+    $('[data-redoall]', m).onclick = () => { const i = p.segs.findIndex(x => x.kind !== 'talk'); if (!confirm('Làm lại lịch học hôm nay từ đầu? Cuộc trò chuyện với Cú Uyên Bác vẫn giữ; muốn làm lại cả phần trò chuyện thì bấm Làm lại ở dòng đó.')) return; redo(Math.max(0, i), true, true); };
+  };
+  /* làm lại từ phần thứ i: các phần từ i trở đi đặt lại đủ thời gian. Phần trò chuyện cần mã PIN của bố mẹ vì sẽ xoá buổi trò chuyện hôm nay */
+  const redo = (i, quiet, all) => {
+    const go = () => {
+      p.segs.forEach((x, j) => { if (all ? j >= i : j === i) { x.done = false; x.left = x.min * 60; } }); // mỗi phần làm lại riêng, phần khác giữ nguyên
+      p.idx = i; p.allDone = false; p.running = true; p.paused = true; lastAct = Date.now();
+      if (p.segs[i].kind === 'talk') {
+        const ent = TL.diaryToday && TL.diaryToday();
+        if (ent) { S().diary = S().diary.filter(q => q.d !== TL.today()); if (ent.done) S().xp = Math.max(0, (S().xp || 0) - 5); }
+        TL.forcePush = true; TL.save(); if (TL.syncNow) TL.syncNow(); return TL.go('checkin');
+      }
+      TL.save(); if (!quiet) TL.toast('Làm lại phần: ' + p.segs[i].name); draw();
+    };
+    if (p.segs[i].kind === 'talk') { if (!confirm('Làm lại cuộc trò chuyện hôm nay? Buổi trò chuyện đã có sẽ bị xoá, con sẽ được Cú Uyên Bác hỏi lại từ đầu.')) return; TL.askPin(go); }
+    else go();
   };
   const act = a => {
     if (a === 'start') { p.running = true; p.paused = false; lastAct = Date.now(); const s0 = p.segs[p.idx]; if (s0 && s0.kind === 'talk') { const dt = TL.diaryToday && TL.diaryToday(); if (dt && dt.done) advance(); else { TL.save(); return TL.go('checkin'); } } }

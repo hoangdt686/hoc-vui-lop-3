@@ -519,6 +519,9 @@ html[data-theme="dark"] .howto { color: #93C5FD; } html[data-theme="dark"] .howt
 .ck-chat .msgs { max-height: 260px; }
 .in-ck #cubon-btn, .in-ck #cubon-panel { display: none !important; }
 .hello { position: relative; z-index: 30; } .hello .owlstage .owlsay { z-index: 40; }
+/* lời của Cú nằm bên trái Cú khi bên trái còn chỗ trống (owl3d.js gắn lớp say-left), không che nút và ô môn học */
+.owlstage.say-left .owlsay { left: auto; right: calc(100% + 10px); top: 8%; width: 170px; max-width: 170px; font-size: .88rem; }
+.owlstage.say-left .owlsay::after { left: auto; right: -14px; top: 22px; bottom: auto; border-color: transparent; border-left-color: #A78BFA; }
 </style>
 <header class="top" id="top"></header>
 <main class="wrap" id="main" aria-live="polite"></main>
@@ -2055,7 +2058,7 @@ TL.sfx = { ok: () => tone([660, 880], .12), oops: () => tone([300, 240], .14, 't
 
 /* ---------- giọng đọc tiếng Việt ---------- */
 TL.viVoice = null; TL.enVoice = null;
-function loadVoices() { try { const vs = speechSynthesis.getVoices(); TL.viVoice = vs.find(v => /^vi/i.test(v.lang)) || null; TL.enVoice = vs.find(v => /^en[-_]US/i.test(v.lang)) || vs.find(v => /^en/i.test(v.lang)) || null; } catch (e) { } }
+function loadVoices() { try { const vs = speechSynthesis.getVoices(); const vi = vs.filter(v => /^vi/i.test(v.lang)); TL.viVoice = vi.find(v => /HoaiMy/i.test(v.name)) || vi.find(v => /Natural|Online/i.test(v.name)) || vi[0] || null; TL.voicesLoaded = vs.length > 0; TL.enVoice = vs.find(v => /^en[-_]US/i.test(v.lang)) || vs.find(v => /^en/i.test(v.lang)) || null; } catch (e) { } }
 if ('speechSynthesis' in window) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
 
 /* Đọc số và kí hiệu toán thành chữ để giọng đọc tiếng Việt không đọc sai (817 -> tám trăm mười bảy, + -> cộng) */
@@ -2643,14 +2646,25 @@ function decode(b64, mime) {
   for (let i = 0; i < n; i++) { let v = bin.charCodeAt(2 * i) | (bin.charCodeAt(2 * i + 1) << 8); if (v >= 32768) v -= 65536; ch[i] = v / 32768; }
   return buf;
 }
+let warned = false, dbp = null;
+function db() { if (dbp) return dbp; dbp = new Promise(res => { try { const q = indexedDB.open('tulinh-tts', 1); q.onupgradeneeded = () => q.result.createObjectStore('a'); q.onsuccess = () => res(q.result); q.onerror = () => res(null); } catch (e) { res(null); } }); return dbp; }
+async function idbGet(k) { const d = await db(); if (!d) return null; return new Promise(res => { try { const q = d.transaction('a').objectStore('a').get(k); q.onsuccess = () => res(q.result || null); q.onerror = () => res(null); } catch (e) { res(null); } }); }
+async function idbPut(k, v) { const d = await db(); if (!d) return; try { d.transaction('a', 'readwrite').objectStore('a').put(v, k); } catch (e) { } }
 TL.cloudStop = function () { seq++; if (cur) { try { cur.onended = null; cur.stop(); } catch (e) { } cur = null; } };
 TL.cloudVoiceOK = () => !!TL.gas && TL.cloudVoiceOff !== true;
 TL.cloudSpeak = async function (text, opt) {
   opt = opt || {}; TL.cloudStop(); const my = seq;
   let buf = cache.get(text);
   if (!buf) {
-    const r = await TL.gasCall('tts', { text });
-    if (!r || r.error || !r.b64) { if (r && r.error === 'rate_limited') TL.cloudBusyUntil = Date.now() + 60000; throw r || { error: 'tts_failed' }; }
+    let r = await idbGet(text);
+    if (!r) {
+      r = await TL.gasCall('tts', { text });
+      if (!r || r.error || !r.b64) {
+        if (r && r.error === 'rate_limited') { TL.cloudBusyUntil = Date.now() + 30000; if (!warned) { warned = true; TL.toast('Giọng đọc qua mạng đang tạm hết lượt. Mở ứng dụng bằng Microsoft Edge để Cú Uyên Bác nói không giới hạn.', 6000); } }
+        throw r || { error: 'tts_failed' };
+      }
+      if (text.length <= 160) idbPut(text, { b64: r.b64, mime: r.mime }); // câu ngắn hay lặp lại: giữ trên máy, lần sau không tốn lượt
+    }
     buf = decode(r.b64, r.mime); if (!buf) throw { error: 'no_audio' };
     cache.set(text, buf); if (cache.size > 60) cache.delete(cache.keys().next().value);
   }
@@ -2792,6 +2806,7 @@ function lines() {
 let lastSay = 0;
 TL.owlSay = function (stage, text, speak) {
   const b = stage && stage.querySelector('.owlsay'); if (!b) return;
+  stage.classList.toggle('say-left', stage.getBoundingClientRect().left > 195);
   b.textContent = text; b.hidden = false; b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
   clearTimeout(b._t); b._t = setTimeout(() => { b.hidden = true; }, Math.max(2600, text.length * 90));
   if (speak) TL.speak(text, 'vi', { quiet: true });
@@ -2842,7 +2857,7 @@ function bind(stage) {
   stage.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tap(stage); } if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { o.tween = { from: o.yaw, to: o.yaw + (e.key === 'ArrowLeft' ? -45 : 45), t0: performance.now(), dur: 300 }; } });
   stage.addEventListener('pointerenter', e => {
     if (e.pointerType !== 'mouse') return; act(stage, 'hop');
-    if (Date.now() - lastSay > 20000) { lastSay = Date.now(); TL.owlSay(stage, 'Chào ' + TL.kid() + '! Bấm vào Cú Uyên Bác đi, hoặc kéo Cú Uyên Bác xoay vòng nhé.', false); }
+    if (Date.now() - lastSay > 20000) { lastSay = Date.now(); TL.owlSay(stage, 'Chào ' + TL.kid() + '! Bấm vào tớ, hoặc kéo tớ xoay vòng nhé.', false); }
   });
   render(stage); requestAnimationFrame(() => loop(stage));
 }
@@ -3615,7 +3630,7 @@ P.content = function (b) {
     '<tr><td>Tiếng Anh 3 Global Success, tập một</td><td>Đủ sách: Starter, Unit 1-10, có bài học trong ứng dụng</td><td>Tập hai</td></tr><tr><td>Tin học 3</td><td>Bản mẫu 40 trang: Bài 1-7 có bài học</td><td>Bài 8-16 (từ trang 38)</td></tr>' +
     '<tr><td>Sách bài tập Qbooks (4 cuốn)</td><td>Chỉ có ảnh bìa</td><td>Các trang bài tập: chụp ảnh tuần đang học gửi cho Claude</td></tr></table></div></div>' +
     '<div class="card" style="margin-top:12px"><div class="row"><h2>Danh mục bài trong ứng dụng</h2><div class="spacer"></div><label class="row"><input type="checkbox" id="unl"' + (s.settings.unlockAll ? ' checked' : '') + '> Mở khoá tất cả vùng đất</label></div><div class="tablewrap" style="margin-top:8px"><table><tr><th>Môn</th><th>Bài</th><th>Trang</th><th>Mức</th><th>Trạng thái</th></tr>' + TL.lessons.map(l => '<tr><td>' + TL.SUBJ[l.subject].name + '</td><td>' + l.no + '. ' + esc(l.title) + '</td><td class="num">' + l.page + '</td><td>' + lvName(l) + '</td><td>' + ({ done: 'Đã xong', doing: 'Đang học' }[(s.lessons[l.id] || {}).status] || 'Chưa học') + '</td></tr>').join('') + '</table></div></div>' +
-    '<div class="card" style="margin-top:12px"><h2>Bài đọc để nghe đọc mẫu</h2><p class="muted small" style="margin:6px 0">Ứng dụng không chép sẵn bài đọc của sách (có bản quyền). Bố mẹ có thể gõ lại bài đọc từ sách giấy; văn bản chỉ lưu trên máy này và chỉ dùng để Cú Uyên Bác đọc mẫu.</p><div class="row"><select id="rd-sel">' + fullTV.map(l => '<option value="' + l.id + '">Bài ' + l.no + '. ' + esc(l.title) + ' (trang ' + l.page + ')</option>').join('') + '</select></div><textarea id="rd-text" rows="6" class="write" style="margin-top:8px"></textarea><div class="row" style="margin-top:8px"><button class="btn small" data-rds>Lưu bài đọc</button><button class="btn small ghost" data-rdt>Nghe thử</button></div></div>' +
+    '<div class="card" style="margin-top:12px"><h2>Bài đọc để nghe đọc mẫu</h2><p class="muted small" style="margin:6px 0">Bố mẹ gõ hoặc dán bài đọc từ sách để Cú Uyên Bác đọc mẫu cho con. Cách nhanh: dùng ứng dụng Google Lens trên điện thoại chụp trang sách, chọn Văn bản, Sao chép rồi dán vào ô bên dưới. Bài đọc lưu cùng tiến độ học, dùng được trên mọi máy của con.</p><div class="row"><select id="rd-sel">' + fullTV.map(l => '<option value="' + l.id + '">Bài ' + l.no + '. ' + esc(l.title) + ' (trang ' + l.page + ')</option>').join('') + '</select></div><textarea id="rd-text" rows="6" class="write" style="margin-top:8px"></textarea><div class="row" style="margin-top:8px"><button class="btn small" data-rds>Lưu bài đọc</button><button class="btn small ghost" data-rdt>Nghe thử</button></div></div>' +
     '<div class="card" style="margin-top:12px"><h2>Nhập thêm bài học (gói JSON)</h2><p class="muted small" style="margin:6px 0">Dùng cho phiếu bài tập cô giao hoặc bài từ sách bài tập. Định dạng theo tài liệu "contracts/lesson-pack.schema.md". Có thể nhờ Claude soạn gói từ ảnh chụp trang sách.</p><input type="file" id="pk-file" accept=".json,application/json"><textarea id="pk-text" rows="5" class="write" style="margin-top:8px;font-size:.9rem" placeholder="Hoặc dán nội dung JSON vào đây"></textarea><div class="row" style="margin-top:8px"><button class="btn small" data-pk>Nhập gói bài học</button></div><div id="pk-msg"></div>' +
     (s.packs.length ? '<h3 style="margin-top:12px">Gói đã nhập</h3><ul>' + s.packs.map((p, i) => '<li>' + esc(p.pack) + ' (' + p.lessons.length + ' bài) <button class="btn small ghost" data-pkdel="' + i + '">Gỡ</button></li>').join('') + '</ul>' : '') + '</div>';
   $('#unl', b).onchange = e => { s.settings.unlockAll = e.target.checked; TL.save(); };
@@ -3847,6 +3862,7 @@ TL.SCREENS.checkin = function (m) {
     '<section class="ck-hero ck-voice"><div class="ck-owl">' + TL.owlStage(190) + '</div><div class="col" style="gap:12px;flex:1;min-width:260px">' +
     '<span class="eyebrow">Trò chuyện với Cú Uyên Bác' + (e.done ? '' : ' trước khi học') + '</span>' +
     '<div class="ck-caption" id="ck-cap" aria-live="polite">' + esc(e.done ? 'Hôm nay con đã kể cho Cú Uyên Bác nghe rồi. Cảm ơn con!' : 'Chào ' + TL.kid() + '! Cú Uyên Bác nhớ con quá. Con chạm vào nút bên dưới để mình nói chuyện nhé.') + '</div>' +
+    (!TL.viVoice && TL.gas && /Chrome/.test(navigator.userAgent) && !/Edg\//.test(navigator.userAgent) && !/Android|iPhone|iPad/.test(navigator.userAgent) ? '<p class="howto"><b>Gợi ý cho bố mẹ:</b> Chrome trên máy này không có giọng đọc tiếng Việt nên Cú Uyên Bác phải nói qua mạng, có lúc chậm hoặc im lặng. Mở ứng dụng bằng Microsoft Edge để Cú nói ngay, không giới hạn.</p>' : '') +
     (late ? '<div class="note">Đã muộn rồi. Mình nói chuyện ngắn thôi rồi con học nhanh và đi ngủ sớm nhé.</div>' : '') +
     '<div class="row ck-ctl">' +
     (e.done ? '<button class="btn big ok" id="ck-go">Vào học thôi</button>' :

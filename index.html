@@ -3256,7 +3256,12 @@ function push() {
   if (!ready) return; // chưa đọc xong bản trên máy chủ thì không được đẩy lên, tránh ghi đè tiến độ bằng dữ liệu trống
   if (pushing) { again = true; return; }
   pushing = true;
-  TL.gasCall('saveState', JSON.stringify(TL.S)).then(r => { lastOk = Date.now(); lastErr = r && r.error ? r.error : ''; if (!lastErr) markSynced(); }).catch(e => { lastErr = e.message || 'lỗi mạng'; })
+  const force = !!TL.forcePush;
+  TL.gasCall('saveState', { json: JSON.stringify(TL.S), force }).then(r => {
+    lastOk = Date.now(); lastErr = r && r.error ? r.error : '';
+    if (!lastErr) { if (force) TL.forcePush = false; markSynced(r && r.upd); }
+    else if (r.error === 'conflict' || r.error === 'stale') reloadRemote(); // máy khác vừa lưu bản mới hơn: lấy bản đó về
+  }).catch(e => { lastErr = e.message || 'lỗi mạng'; })
     .then(() => { pushing = false; if (again) { again = false; push(); } });
 }
 TL.onSave = function () { clearTimeout(timer); timer = setTimeout(push, 4000); };
@@ -3264,7 +3269,7 @@ TL.syncNow = function () { clearTimeout(timer); push(); };
 TL.syncInfo = function () { return lastOk ? 'Lần đồng bộ gần nhất: ' + new Date(lastOk).toLocaleTimeString('vi-VN') + '.' : lastErr ? 'Chưa đồng bộ được: ' + lastErr + '.' : 'Đang chờ đồng bộ lần đầu.'; };
 addEventListener('pagehide', () => TL.syncNow());
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') TL.syncNow(); });
-function markSynced() { TL.S.syncedAt = TL.S.updatedAt || Date.now(); try { localStorage.setItem(TL.KEY, JSON.stringify(TL.S)); } catch (e) { } }
+function markSynced(upd) { TL.S.syncedAt = upd || TL.S.updatedAt || Date.now(); try { localStorage.setItem(TL.KEY, JSON.stringify(TL.S)); } catch (e) { } }
 function adopt(remote) {
   TL.S = remote; TL.normalize && TL.normalize();
   TL.S.syncedAt = TL.S.updatedAt;
@@ -3278,11 +3283,12 @@ function adopt(remote) {
    - Máy chưa từng đồng bộ (mới mở lần đầu, hoặc trình duyệt bị xoá dữ liệu): luôn lấy bản trên máy chủ.
    - Máy đã từng đồng bộ: bản máy chủ được cập nhật sau lần đồng bộ cuối của máy này thì lấy bản máy chủ;
      ngược lại, máy này có thay đổi mới thì đẩy lên. */
+function reloadRemote() { TL.gasCall('loadState').then(raw => { try { const r = JSON.parse(raw); if (r) adopt(r); } catch (e) { } }).catch(() => { }); }
 TL.syncReady = TL.gasCall('loadState').then(raw => {
   let remote = null; if (raw) { try { remote = JSON.parse(raw); } catch (e) { remote = null; } }
   ready = true;
   if (!remote) { push(); return; }
-  if (TL.forcePush) { TL.forcePush = false; push(); return; } // bố mẹ vừa quay lại điểm cũ: bản trên máy này là bản đúng
+  if (TL.forcePush) { push(); return; } // bố mẹ vừa quay lại điểm cũ: bản trên máy này là bản đúng
   const synced = TL.S.syncedAt || 0;
   if (!synced || (remote.updatedAt || 0) > synced) adopt(remote);
   else if ((TL.S.updatedAt || 0) > synced) push();

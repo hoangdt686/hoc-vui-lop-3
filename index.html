@@ -2023,9 +2023,9 @@ AI.explain = async function (item, given, onText) {
   try { const r = await sampleFn(prompt, { modelTier: 'quick', onText: onText ? ({ text }) => onText(text) : undefined }); return r.text; }
   catch (e) { throw { code: e && e.code, message: errMsg(e) }; }
 };
-AI.chat = async function (turns, onText, signal) {
+AI.chat = async function (turns, onText, signal, tier) {
   if (!(await AI.ready)) throw { code: 'off', message: AI.reason };
-  try { const r = await sampleFn(turns, { modelTier: 'quick', cache: false, signal, onText: onText ? ({ text }) => onText(text) : undefined }); return r.text; }
+  try { const r = await sampleFn(turns, { modelTier: tier || 'quick', cache: false, signal, onText: onText ? ({ text }) => onText(text) : undefined }); return r.text; }
   catch (e) { throw { code: e && e.code, message: errMsg(e) }; }
 };
 AI.ask = async function (prompt, tier) {
@@ -3986,7 +3986,8 @@ TL.SCREENS.checkin = function (m) {
       const hist = e.turns.slice(-14).map(t => ({ role: t.r === 'u' ? 'user' : 'assistant', content: t.t }));
       while (hist.length && hist[0].role !== 'user') hist.shift();
       const md = MOODS.find(x => x.id === e.mood);
-      if (hist.length) hist[0] = { role: 'user', content: rules() + '\n\n[Cảm xúc bé chọn: ' + (md ? md.name : 'chưa rõ') + '. Bé đã kể ' + nU + ' lượt' + (wantsEnd ? '; bé muốn dừng: hãy cảm ơn, động viên và mời bé vào học, không hỏi thêm' : '') + '. Bé đang nói bằng giọng nói nên câu có thể thiếu dấu hoặc sai chính tả.]\n' + hist[0].content };
+      const mem = TL.diaryMemory ? TL.diaryMemory(5) : '', learn = TL.learnContext ? TL.learnContext() : '';
+      if (hist.length) hist[0] = { role: 'user', content: rules() + (mem ? '\n\n[Trí nhớ của Cú Uyên Bác về những buổi trò chuyện trước (chỉ để Cú quan tâm đúng chỗ; có thể hỏi thăm tiếp chuyện cũ một cách tự nhiên, nhất là chuyện buồn hay lo; không đọc lại nguyên văn, không nhắc chuyện riêng tư trước mặt người khác):\n' + mem + ']' : '') + (learn ? '\n\n[Việc học của bé (dùng khi khen và khi mời bé vào học: khen một tiến bộ cụ thể, nói tối nay mình học bài gì; không giảng bài trong lúc trò chuyện): ' + learn + ']' : '') + '\n\n[Cảm xúc bé chọn: ' + (md ? md.name : 'chưa rõ') + '. Bé đã kể ' + nU + ' lượt' + (wantsEnd ? '; bé muốn dừng: hãy cảm ơn, động viên và mời bé vào học, không hỏi thêm' : '') + '. Bé đang nói bằng giọng nói nên câu có thể thiếu dấu hoặc sai chính tả.]\n' + hist[0].content };
       const merged = []; hist.forEach(t => { const p = merged[merged.length - 1]; if (p && p.role === t.role) p.content += '\n' + t.content; else merged.push(Object.assign({}, t)); });
       try { reply = (await TL.AI.chat(merged, t => draw(t))).trim(); } catch (err) { reply = ''; }
     }
@@ -4079,6 +4080,107 @@ TL.diaryParent = function (b) {
     TL.toast('Đã xoá buổi trò chuyện. Lần mở tới, Cú Uyên Bác sẽ hỏi con từ đầu.'); TL.diaryParent(b); });
   $$('[data-seen]', b).forEach(x => x.onchange = () => { const e = S().diary.find(q => q.d === x.dataset.seen); if (e) { e.seen = x.checked; TL.save(); } });
   $$('[data-sum]', b).forEach(x => x.onclick = async () => { const e = S().diary.find(q => q.d === x.dataset.sum); x.disabled = true; x.textContent = 'Đang tóm tắt...'; await summarize(e); TL.diaryParent(b); });
+};
+})();
+
+/* ---- src/engine/brain.js ---- */
+/* ===== Trí nhớ và hiểu việc học của Cú Uyên Bác =====
+   1. Nhớ chuyện những hôm trước: tóm tắt 5 buổi trò chuyện gần nhất (trước hôm nay) để Cú hỏi tiếp chuyện cũ.
+   2. Biết con học đến đâu: bài vừa học, bài nên học tối nay, kiến thức còn yếu, số câu cần ôn.
+   3. Câu đố: con nói "Cú ơi đố con đi", Cú lấy câu hỏi từ ngân hàng câu hỏi của ứng dụng (đáp án đã kiểm tra),
+      nghe con trả lời, chấm, gợi ý khi sai lần đầu, giảng cách làm khi sai lần hai. */
+(function () {
+'use strict';
+const S = () => TL.S;
+const MOOD = { ratvui: 'rất vui', vui: 'vui', binhthuong: 'bình thường', met: 'mệt', buon: 'buồn', lo: 'lo lắng', buc: 'bực mình' };
+const plainVi = t => String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/[^a-z0-9]+/g, ' ').trim();
+TL.plainVi = plainVi;
+
+TL.diaryMemory = function (n) {
+  const d0 = TL.today();
+  const list = (S().diary || []).filter(e => e.d < d0 && (e.turns && e.turns.length || e.ai)).sort((a, b) => a.d < b.d ? 1 : -1).slice(0, n || 5);
+  if (!list.length) return '';
+  return list.map(e => {
+    const said = (e.turns || []).filter(t => t.r === 'u').map(t => t.t).join(' / ').slice(0, 260);
+    return TL.viDate(e.d) + ': tâm trạng ' + (MOOD[e.mood] || 'chưa rõ') + '. ' + (e.ai && e.ai.tom_tat ? e.ai.tom_tat : 'Bé kể: ' + said) + (e.ai && e.ai.dieu_lo ? ' Điều bé lo: ' + e.ai.dieu_lo + '.' : '');
+  }).join('\n');
+};
+
+TL.learnContext = function () {
+  const s = S(), parts = [], d0 = TL.today(), d7 = TL.addDays(d0, -7);
+  const done = TL.uniq((s.sessions || []).filter(x => x.kind === 'lesson-done' && x.d >= d7).map(x => x.lesson)).map(id => TL.lessons.find(l => l.id === id)).filter(Boolean).slice(-4);
+  if (done.length) parts.push('Bài đã học xong 7 ngày qua: ' + done.map(l => TL.SUBJ[l.subject].name + ' "' + l.title + '"').join('; ') + '.');
+  else parts.push('Mấy hôm nay bé chưa học xong bài mới nào.');
+  if (TL.recommend) { const nx = ['tv', 'toan'].map(k => TL.recommend(k)).filter(Boolean); if (nx.length) parts.push('Bài nên học tối nay: ' + nx.map(l => TL.SUBJ[l.subject].name + ' Bài ' + l.no + ' "' + l.title + '"').join('; ') + '.'); }
+  const weak = Object.keys(s.skills || {}).filter(k => TL.skills[k] && [0, 4].includes(TL.skillLevel(k))).map(k => TL.skills[k].name).slice(0, 3);
+  if (weak.length) parts.push('Kiến thức còn yếu: ' + weak.join('; ') + '.');
+  const strong = Object.keys(s.skills || {}).filter(k => TL.skills[k] && s.skills[k].last >= d7 && s.skills[k].ok >= 3 && s.skills[k].ok > 2 * s.skills[k].bad).map(k => TL.skills[k].name).slice(0, 3);
+  if (strong.length) parts.push('Tiến bộ gần đây: ' + strong.join('; ') + '.');
+  const due = TL.dueSkills ? TL.dueSkills().length : 0; if (due) parts.push('Có ' + due + ' kiến thức đến hạn ôn.');
+  parts.push('Bé có ' + (s.xp || 0) + ' XP, ' + (s.stars || 0) + ' sao.');
+  return parts.join(' ');
+};
+
+/* ---------- câu đố trong khung Hỏi Cú ---------- */
+let quiz = null;
+const WANT = /\b(do con|do minh|do vui|ra de|cho con cau hoi|cho con bai tap|kiem tra con|hoi con cau|thu thach|choi do|cau do|do di|do nua|cau nua|cau khac|them cau)\b/;
+const YES = /^(co|co a|vang|u|uh|ok|duoc|nua|tiep|cau nua|them|choi tiep|do tiep)\b/;
+const STOP = /\b(thoi|khong choi|dung lai|het|khong muon|met roi)\b/;
+TL.quizWants = text => { const t = plainVi(text); return WANT.test(t) || (TL._quizOffer && YES.test(t)); };
+TL.quizActive = () => !!quiz;
+function pickItem() {
+  const sc = TL.screen(); let pool = [];
+  if (sc.name === 'lesson') { const l = TL.lessons.find(x => x.id === sc.arg); if (l) pool = l.skills || []; }
+  if (!pool.length) pool = Object.keys(S().skills || {}).filter(k => TL.skills[k] && [0, 4].includes(TL.skillLevel(k)));
+  if (!pool.length) pool = Object.keys(S().skills || {}).filter(k => TL.skills[k] && S().skills[k].seen);
+  if (!pool.length && TL.recommend) { const l = TL.recommend('toan'); if (l) pool = l.skills || []; }
+  pool = pool.filter(k => TL.skills[k]);
+  for (let i = 0; i < 40 && pool.length; i++) {
+    const k = TL.pick(pool); let it; try { it = TL.genItem(k, Math.min(3, Math.max(1, TL.skillLevel(k) || 1))); } catch (e) { continue; }
+    if (it && (it.type === 'mcq' || it.type === 'num') && it.q && !/hình|tranh|đồng hồ chỉ/i.test(it.q)) return it;
+  }
+  return null;
+}
+const LET = 'ABCDEF';
+function ask(it) {
+  quiz = { it, tries: 0 }; TL._quizOffer = false;
+  let t = 'Câu đố nè: ' + it.q.replace(/\?\s*$/, '?');
+  if (it.type === 'mcq') t += ' ' + it.choices.map((c, i) => LET[i] + '. ' + c).join('; ') + '.';
+  t += it.type === 'num' ? ' Con trả lời bằng một số nhé.' : ' Con chọn A, B, C hay D?';
+  return t;
+}
+function parseAns(it, text) {
+  const raw = String(text).trim(), p = plainVi(raw);
+  if (it.type === 'num') { const m = raw.replace(/(\d)[ .](?=\d{3}\b)/g, '$1').match(/-?\d+(?:[.,]\d+)?/); return m ? m[0].replace(',', '.') : null; }
+  const lm = p.match(/(?:^|\b(?:dap an|cau|chon|o|la)\s+)([a-f])\b/) || p.match(/^([a-f])$/);
+  if (lm) { const i = LET.toLowerCase().indexOf(lm[1]); if (i >= 0 && i < it.choices.length) return it.choices[i]; }
+  const hit = it.choices.filter(c => plainVi(c) && (' ' + p + ' ').includes(' ' + plainVi(c) + ' ')).sort((a, b) => plainVi(b).length - plainVi(a).length)[0];
+  return hit != null ? hit : null;
+}
+/* trả về câu Cú nói, hoặc null nếu tin nhắn không thuộc câu đố */
+TL.quizTurn = function (text) {
+  const p = plainVi(text);
+  if (quiz && STOP.test(p)) { quiz = null; return 'Được rồi, mình nghỉ đố nhé. Khi nào con muốn, cứ nói "Cú ơi đố con đi".'; }
+  if (quiz) {
+    const it = quiz.it, g = parseAns(it, text);
+    if (g == null) return it.type === 'num' ? 'Cú chưa nghe ra số nào. Con nói lại đáp án bằng một số nhé.' : 'Con chọn A, B, C hay D nhỉ? Hoặc con đọc đáp án con chọn nhé.';
+    quiz.tries++;
+    if (TL.check(it, g)) {
+      const first = quiz.tries === 1; quiz = null; TL._quizOffer = true;
+      TL.addXP(first ? 3 : 1); try { TL.recordAnswer(it, first, 1, 20); } catch (e) { } TL.save();
+      return (first ? TL.pick(['Đúng rồi! Con giỏi quá!', 'Chính xác! Cú Uyên Bác vỗ cánh khen con nè!', 'Tuyệt vời, đúng ngay lần đầu!']) : 'Đúng rồi! Con sửa lại rất giỏi.') + ' Con muốn Cú đố câu nữa không?';
+    }
+    if (quiz.tries === 1) return 'Chưa đúng rồi, con thử lại nhé. Gợi ý: ' + (it.hint || 'con đọc lại đề thật chậm') + (it.type === 'mcq' ? ' Con chọn lại A, B, C hay D?' : '');
+    const ans = Array.isArray(it.answer) ? it.answer.join(', ') : it.answer; quiz = null; TL._quizOffer = true;
+    try { TL.recordAnswer(it, false, 2, 30); TL.logMistake && TL.logMistake(it, g); } catch (e) { } TL.save();
+    return 'Cú Uyên Bác chỉ con cách làm nhé. ' + (it.solution || []).join(' ') + ' Đáp án là ' + ans + '. Không sao đâu, sai là để mình học thêm. Con muốn thử câu khác không?';
+  }
+  if (WANT.test(p) || (TL._quizOffer && YES.test(p))) {
+    const it = pickItem(); if (!it) return 'Con học thêm vài bài nữa rồi Cú Uyên Bác đố con nhé!';
+    return ask(it);
+  }
+  TL._quizOffer = false;
+  return null;
 };
 })();
 
@@ -4196,7 +4298,7 @@ function context() {
     else parts.push('Bé mới thử ' + tried + ' lần, CHƯA được nói đáp án. Đáp án (bí mật, chỉ để bạn kiểm tra gợi ý cho đúng, tuyệt đối không nói ra): ' + (Array.isArray(it.answer) ? it.answer.join(', ') : it.answer) + '.');
   }
   const weak = Object.keys(S().skills).filter(k => TL.skills[k] && [0, 4].includes(TL.skillLevel(k))).map(k => TL.skills[k].name).slice(0, 4);
-  if (weak.length) parts.push('Kiến thức bé còn yếu: ' + weak.join('; ') + '.');
+  if (TL.learnContext) parts.push('Việc học của bé: ' + TL.learnContext());
   return parts.join(' ');
 }
 function todayCount() { const d = TL.today(); return S().chat.filter(m => m.d === d && m.r === 'u').length; }
@@ -4223,7 +4325,7 @@ function toggle() {
   tk.onchange = () => { talkMode = tk.checked; if (talkMode) { if (!SR) { tk.checked = talkMode = false; TL.toast('Trình duyệt này chưa nghe được giọng nói. Con dùng Chrome hoặc Edge nhé.'); return; } listen(); } else { try { rec && rec.stop(); } catch (e) { } try { speechSynthesis.cancel(); } catch (e) { } setMic(false); } };
   if (!SR) { $('#cubon-mic', p).title = 'Trình duyệt này chưa hỗ trợ nghe giọng nói'; }
   const q = $('.quick', p);
-  ['Con chưa hiểu bài này', 'Gợi ý cho con câu này', 'Giảng lại bằng ví dụ khác', 'Con nên ôn gì hôm nay?'].forEach(t => { const b = el('<button class="tok small"></button>'); b.textContent = t; b.onclick = () => send(t); q.appendChild(b); });
+  ['Cú ơi, đố con đi', 'Con chưa hiểu bài này', 'Gợi ý cho con câu này', 'Giảng lại bằng ví dụ khác', 'Con nên ôn gì hôm nay?'].forEach(t => { const b = el('<button class="tok small"></button>'); b.textContent = t; b.onclick = () => send(t); q.appendChild(b); });
   $('form', p).onsubmit = e => { e.preventDefault(); const i = $('#cubon-in', p); const v = i.value.trim(); if (v) { i.value = ''; send(v); } };
   draw();
   TL.AI.ready.then(ok => { if (!ok) $('.note-ai', p).textContent = 'Cú Uyên Bác chưa trò chuyện được: ' + TL.AI.reason + ' Con nhờ bố mẹ giúp nhé.'; });
@@ -4239,6 +4341,9 @@ function draw(streaming) {
 }
 async function send(text, byVoice) {
   if (busy) return;
+  // câu đố: ứng dụng tự ra đề và chấm, không cần chờ AI
+  const qz = TL.quizTurn && TL.quizTurn(text);
+  if (qz) { S().chat.push({ d: TL.today(), r: 'u', t: text, v: byVoice ? 1 : 0 }); S().chat.push({ d: TL.today(), r: 'b', t: qz }); TL.save(); draw(); if (byVoice || talkMode || S().settings.chatVoice) sayReply(qz); if (/^(Đúng rồi|Chính xác|Tuyệt vời)/.test(qz)) TL.owlReact && TL.owlReact('dance'); return; }
   if (!(await TL.AI.ready)) { TL.toast('Cú Uyên Bác chưa trò chuyện được. ' + TL.AI.reason); return; }
   if (todayCount() >= MAXDAY()) { S().chat.push({ d: TL.today(), r: 'b', t: 'Hôm nay con đã hỏi nhiều rồi. Con thử tự nghĩ, hoặc hỏi bố mẹ nhé. Mai mình nói chuyện tiếp.' }); TL.save(); draw(); return; }
   busy = true; const ctx = context();
@@ -4254,7 +4359,7 @@ async function send(text, byVoice) {
   const merged = []; turns.forEach(t => { const p = merged[merged.length - 1]; if (p && p.role === t.role) p.content += '\n' + t.content; else merged.push(Object.assign({}, t)); });
   ctl = new AbortController();
   try {
-    const r = await TL.AI.chat(merged, t => draw(t), ctl.signal);
+    const r = await TL.AI.chat(merged, t => draw(t), ctl.signal, 'default'); // khung Hỏi Cú dùng mẫu mạnh hơn để giảng bài kỹ
     S().chat.push({ d: TL.today(), r: 'b', t: r.trim() });
     if (byVoice || talkMode || S().settings.chatVoice) sayReply(r.trim());
   } catch (e) { if (e && e.code !== 'cancelled') S().chat.push({ d: TL.today(), r: 'b', t: e.message || 'Cú Uyên Bác chưa trả lời được. Con thử lại sau nhé.' }); }

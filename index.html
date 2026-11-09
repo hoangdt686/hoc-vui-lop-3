@@ -229,7 +229,7 @@ td.num { font-variant-numeric: tabular-nums; text-align: right; }
 .memcard.flip .in { transform: rotateY(180deg); }
 .memcard .f, .memcard .b { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 16px; padding: 14px; display: flex; align-items: center; font-weight: 800; border: 2px solid var(--line); }
 .memcard .f { background: var(--xp-soft); } .memcard .b { background: var(--ok-soft); transform: rotateY(180deg); font-weight: 700; }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+html.calm *, html.calm *::before, html.calm *::after { animation: none !important; transition: none !important; }
 
 /* Hỏi Cú Bon */
 .chatfab { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 15; display: flex; align-items: center; gap: 6px; padding: 4px 16px 4px 6px; border-radius: 999px; border: 2px solid var(--xp); background: var(--surface); font-weight: 900; box-shadow: var(--shadow); min-height: 56px; }
@@ -255,7 +255,7 @@ main.wrap { padding-bottom: 110px; }
 .chatpanel .voiceopts { gap: 14px; }
 .chatpanel .voiceopts label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
 #cubon-status:empty { display: none; }
-@media (prefers-reduced-motion: reduce) { .micbtn.on { animation: none; } }
+html.calm .micbtn.on { animation: none; }
 
 /* ===== Lớp giao diện mới (tháng 11/2026): nền bầu trời, thẻ bo tròn, nút nổi, thanh bước dạng hành trình ===== */
 :root { --sky1: #E3F1FF; --sky2: #FFF6E5; --r: 22px; --shadow: 0 1px 0 rgba(29, 41, 57, .05), 0 10px 30px -8px rgba(60, 72, 140, .18); }
@@ -299,7 +299,8 @@ body::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-event
 .fb { border-radius: 16px; }
 .chatfab { box-shadow: 0 4px 0 color-mix(in srgb, var(--xp) 45%, transparent), 0 12px 24px -10px rgba(0, 0, 0, .35); }
 .chatpanel { border-radius: 24px; }
-@media (prefers-reduced-motion: reduce) { .door, .node, .btn { transition: none; } .door:hover, .node:hover { transform: none; } }
+html.calm .door, html.calm .node, html.calm .btn { transition: none; }
+html.calm .door:hover, html.calm .node:hover { transform: none; }
 #trialbar { position: sticky; top: 0; z-index: 30; display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; padding: 8px 16px; background: #FDE68A; color: #3B2A00; font-weight: 800; }
 
 /* ===== Giao diện 3D (lớp đất sét): khối nổi, bóng đổ dày, biểu tượng khối, cảnh trời mây ===== */
@@ -345,7 +346,8 @@ body::after { display: none; }
 @keyframes owlbob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 .bubble { box-shadow: var(--clay-hi), 0 5px 0 var(--line); }
 @media (max-width: 760px) { .door { padding-right: 112px; } .door .icon3d { width: 100px; height: 86px; } }
-@media (prefers-reduced-motion: reduce) { .sky3d .cloud, .door .icon3d, .hello svg { animation: none; } .door, .node { transform: none !important; } }
+html.calm .sky3d .cloud, html.calm .door .icon3d, html.calm .hello svg { animation: none; }
+html.calm .door, html.calm .node { transform: none !important; }
 
 /* ===== Giao diện sáng tươi vui (mặc định cho trẻ): trời xanh, mặt trời, cầu vồng, đồi cỏ ===== */
 :root[data-theme="light"] { --bg: #FFF9EC; --sky1: #9FDCFF; --sky2: #FFE9A8; --hill1: #8EDB9F; --hill2: #63C97F; --cloud: #FFFFFF;
@@ -370,7 +372,7 @@ body::after { display: none; }
 :root[data-theme="light"] .node { background: #fff; }
 :root[data-theme="light"] .node.done { background: linear-gradient(180deg, #E9FFF1, #C8F5D8); }
 :root[data-theme="light"] .step.past { background: #E9E2FF; }
-@media (prefers-reduced-motion: reduce) { .sky3d .sun { animation: none; } }
+html.calm .sky3d .sun { animation: none; }
 
 /* ===== Cú Bon 3D chuyển động ===== */
 .owl3d { overflow: visible; }
@@ -403,13 +405,98 @@ body::after { display: none; }
 @keyframes owlShake { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-8deg); } 40% { transform: rotate(8deg); } 60% { transform: rotate(-5deg); } 80% { transform: rotate(5deg); } }
 .hello svg.owl3d { filter: drop-shadow(0 12px 10px rgba(80, 60, 160, .35)); animation: none; }
 .tutor-side .owl3d { width: 84px; height: 84px; }
-@media (prefers-reduced-motion: reduce) { .owl3d *, .owl3d { animation: none !important; } }
+html.calm .owl3d *, html.calm .owl3d { animation: none !important; }
 /* hình minh hoạ tự động */
 .vis{display:flex;justify-content:center;margin:10px 0 4px}
 .vis .vis3d{background:linear-gradient(180deg,#fff,#F0F7FF);border-radius:18px;padding:6px;box-shadow:0 6px 0 #D6E4F5,0 10px 24px rgba(30,60,120,.12);animation:visPop .45s cubic-bezier(.3,1.6,.5,1)}
 .vis .row .vis3d{max-width:44%}
 @keyframes visPop{from{transform:scale(.85) translateY(8px);opacity:0}to{transform:none;opacity:1}}
-@media (prefers-reduced-motion:reduce){.vis .vis3d{animation:none}}
+html.calm .vis .vis3d {animation:none}
+/* ===== Cú Bon 3D tương tác (owl3d.js) ===== */
+.owlstage { position: relative; width: var(--s); height: var(--s); perspective: calc(var(--s) * 5); cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; outline: none; flex: 0 0 auto; }
+.owlstage:active { cursor: grabbing; }
+.owlstage:focus-visible { box-shadow: 0 0 0 4px #A78BFA; border-radius: 50%; }
+.owlstage .owlbob { position: absolute; inset: 0; transform-style: preserve-3d; animation: osBob 3.2s ease-in-out infinite; }
+.owlstage .owlrig { position: absolute; inset: 0; transform-style: preserve-3d; animation: osSway 7s ease-in-out infinite; }
+.owlstage .ol, .owlstage .ow { position: absolute; inset: 0; pointer-events: none; }
+.owlstage .ol svg, .owlstage .ow svg { display: block; overflow: visible; }
+.owlstage .o-pupil { transform: translate(var(--px, 0), var(--py, 0)); transition: transform .12s; }
+.owlstage .o-blink { transform-box: view-box; transform-origin: 60px 47px; animation: owlBlink 4.5s infinite; }
+.owlstage .owL svg { transform-origin: 22% 50%; animation: osWingL 3.2s ease-in-out infinite; }
+.owlstage .owR svg { transform-origin: 78% 50%; animation: osWingR 3.2s ease-in-out infinite; }
+.owlstage .owlshadow { position: absolute; left: 22%; right: 22%; bottom: 1%; height: 7%; border-radius: 50%; background: radial-gradient(closest-side, rgba(40,20,110,.35), transparent); animation: osShadow 3.2s ease-in-out infinite; }
+.owlstage .owlsay { position: absolute; left: 70%; bottom: 92%; width: max-content; max-width: 230px; background: #fff; color: #1F2A44; font-weight: 700; font-size: .95rem; line-height: 1.35; padding: 10px 14px; border-radius: 16px; border: 3px solid #A78BFA; box-shadow: 0 6px 0 #DDD6FE; z-index: 5; pointer-events: none; }
+.owlstage .owlsay::after { content: ''; position: absolute; left: 14px; bottom: -12px; border: 8px solid transparent; border-top-color: #A78BFA; }
+.owlstage .owlsay.pop { animation: osPop .35s cubic-bezier(.3,1.6,.5,1); }
+@keyframes osPop { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes osBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5%); } }
+@keyframes osSway { 0%, 100% { transform: rotateY(-14deg) rotateX(4deg); } 50% { transform: rotateY(14deg) rotateX(-2deg); } }
+@keyframes osShadow { 0%, 100% { transform: scaleX(1); opacity: 1; } 50% { transform: scaleX(.85); opacity: .7; } }
+@keyframes osWingL { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(10deg); } }
+@keyframes osWingR { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-10deg); } }
+@keyframes osFlapL { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(38deg); } }
+@keyframes osFlapR { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-38deg); } }
+/* khi đang kéo xoay thì tắt lắc tự động để Cú Bon theo tay */
+.owlstage .owlrig[style*="rotate"] { animation: none; }
+.owlstage.dance .owlbob { animation: osDance .95s ease-in-out 2; }
+.owlstage.dance .owL svg, .owlstage.cheer .owL svg, .owlstage.wave .owL svg { animation: osFlapL .2s ease-in-out infinite; }
+.owlstage.dance .owR svg, .owlstage.cheer .owR svg { animation: osFlapR .2s ease-in-out infinite; }
+.owlstage.wave .owR svg { animation: osFlapR .25s ease-in-out infinite; }
+.owlstage.wave .owlbob { animation: osWave 1.8s ease-in-out 1; }
+.owlstage.spin .owlbob, .owlstage.cheer .owlbob { animation: osSpin 1.6s cubic-bezier(.4,0,.2,1) 1; }
+.owlstage.flip .owlbob { animation: osFlip 1.4s cubic-bezier(.4,0,.2,1) 1; }
+.owlstage.hop .owlbob { animation: osHop .6s ease-out 1; }
+.owlstage.oops .owlbob { animation: owlShake .6s ease-in-out 1; }
+.owlstage.dance .owlshadow, .owlstage.spin .owlshadow, .owlstage.flip .owlshadow, .owlstage.hop .owlshadow { animation: osShadowJump .6s ease-in-out 3; }
+@keyframes osDance { 0% { transform: translateY(0) rotateZ(0) rotateY(0); } 20% { transform: translateY(-16%) rotateZ(-12deg) rotateY(-30deg); } 40% { transform: translateY(0) scale(1.08, .92); } 60% { transform: translateY(-16%) rotateZ(12deg) rotateY(30deg); } 80% { transform: translateY(0) scale(1.06, .94); } 100% { transform: translateY(0) rotateZ(0) rotateY(0); } }
+@keyframes osSpin { 0% { transform: translateY(0) rotateY(0); } 30% { transform: translateY(-20%) rotateY(180deg); } 70% { transform: translateY(-20%) rotateY(540deg); } 100% { transform: translateY(0) rotateY(720deg); } }
+@keyframes osFlip { 0% { transform: translateY(0) rotateX(0); } 40% { transform: translateY(-28%) rotateX(-180deg); } 80% { transform: translateY(-6%) rotateX(-360deg); } 100% { transform: translateY(0) rotateX(-360deg); } }
+@keyframes osWave { 0%, 100% { transform: rotateZ(0); } 25% { transform: rotateZ(-8deg); } 50% { transform: rotateZ(6deg); } 75% { transform: rotateZ(-4deg); } }
+@keyframes osHop { 0% { transform: translateY(0) scale(1); } 30% { transform: translateY(0) scale(1.08, .9); } 60% { transform: translateY(-12%) scale(.96, 1.05); } 100% { transform: translateY(0) scale(1); } }
+@keyframes osShadowJump { 0%, 100% { transform: scaleX(1); opacity: 1; } 50% { transform: scaleX(.6); opacity: .45; } }
+.owl3d.hop .o-all { animation: osHop .6s ease-out 1; }
+svg.owl3d { cursor: pointer; }
+html.calm .owlstage *, html.calm .owlstage { animation: none !important; }
+@media (max-width: 640px) { .owlstage .owlsay { left: 40%; max-width: 180px; font-size: .85rem; } }
+/* ===== Trò chuyện buổi tối và Nhật ký tâm sự (checkin.js) ===== */
+.ck-hero { display: flex; gap: 22px; align-items: center; flex-wrap: wrap; background: linear-gradient(135deg, #FFF7D6, #EDE7FF); border-radius: 26px; padding: 22px; box-shadow: 0 8px 0 #DDD6FE, 0 14px 30px rgba(90, 60, 200, .15); }
+.ck-hero h1 { font-size: clamp(1.5rem, 3.4vw, 2.1rem); }
+.ck-owl { padding-top: 46px; }
+.ck-moods { display: flex; flex-wrap: wrap; gap: 10px; }
+.ck-mood { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 8px 8px; width: 92px; border-radius: 18px; border: 3px solid transparent; background: #fff; font-weight: 800; color: var(--ink); cursor: pointer; box-shadow: 0 5px 0 #E2E8F0; transition: transform .15s; }
+.ck-mood:hover { transform: translateY(-4px) rotate(-2deg); }
+.ck-mood.on { border-color: #8B5CF6; box-shadow: 0 5px 0 #C4B5FD; transform: translateY(-3px) scale(1.06); }
+.ck-mood span { font-size: .9rem; }
+.ck-chat .msgs { display: flex; flex-direction: column; gap: 8px; max-height: 360px; overflow-y: auto; padding: 4px; }
+.ck-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.ck-chips .chip { cursor: pointer; background: #fff; border: 2px solid #DDD6FE; }
+.ck-chips .chip:hover { background: #F5F3FF; }
+.ck-input input { flex: 1; min-width: 160px; padding: 12px 14px; border-radius: 14px; border: 2px solid var(--line); font-size: 1.05rem; background: var(--surface); color: var(--ink); }
+.btn.pulse { animation: ckPulse 1.2s ease-in-out infinite; }
+@keyframes ckPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+.note.danger { background: #FEE2E2; border: 2px solid #EF4444; }
+.mood-strip { display: grid; grid-template-columns: repeat(15, 1fr); gap: 6px; margin-top: 10px; }
+.ms-day { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 0; border-radius: 10px; border: 2px solid transparent; background: var(--surface2); }
+.ms-day small { font-size: .7rem; color: var(--muted); }
+.ms-day.ms-chu { border-color: #F59E0B; } .ms-day.ms-cao { border-color: #EF4444; background: #FEF2F2; }
+.ms-empty { width: 26px; height: 26px; border-radius: 50%; border: 2px dashed var(--line); display: block; }
+.dy { border: 2px solid var(--line); border-radius: 16px; padding: 12px 14px; margin-top: 10px; background: var(--surface); }
+.dy.lv-chu { border-color: #F59E0B; } .dy.lv-cao { border-color: #EF4444; background: #FFF5F5; }
+.dy details { margin-top: 6px; } .dy details .msgs { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+.lvtag { font-size: .8rem; font-weight: 800; padding: 4px 10px; border-radius: 999px; background: #DCFCE7; color: #166534; }
+.lvtag.lv-chu { background: #FEF3C7; color: #92400E; } .lvtag.lv-cao { background: #FEE2E2; color: #991B1B; }
+@media (max-width: 640px) { .mood-strip { grid-template-columns: repeat(10, 1fr); } .ck-mood { width: 78px; } }
+.hello .owlstage { margin-top: 40px; }
+.hello .owlstage .owlsay { left: 30%; }
+.ck-hero .owlsay { display: none; }
+/* ghi chú: chữ nhỏ, nghiêng, có màu để tách khỏi nội dung chính */
+.src { font-size: .8rem !important; font-style: italic; color: #C2410C !important; font-weight: 600; }
+p.small.muted, p.muted.small, .card > p.muted, .card p.muted.small { font-style: italic; color: #1D4ED8 !important; }
+html[data-theme="dark"] .src { color: #FDBA74 !important; }
+html[data-theme="dark"] p.small.muted, html[data-theme="dark"] p.muted.small, html[data-theme="dark"] .card > p.muted { color: #93C5FD !important; }
+.howto { margin-top: 8px; font-size: .85rem; font-style: italic; color: #1D4ED8; }
+.howto b { color: #C2410C; font-style: normal; }
+html[data-theme="dark"] .howto { color: #93C5FD; } html[data-theme="dark"] .howto b { color: #FDBA74; }
 </style>
 <header class="top" id="top"></header>
 <main class="wrap" id="main" aria-live="polite"></main>
@@ -479,24 +566,25 @@ const CATS = {
 /* ---------- lưu trữ ---------- */
 const KEY = 'tulinh.slw.v1';
 TL.storageOK = true;
+/* Lịch mẫu 45 phút, học khoảng 21:30 sau giờ học ở trường */
 const DEFAULT_PLAN = [
-  { id: 'warm', name: 'Khởi động', min: 5, kind: 'warm' },
-  { id: 'tv', name: 'Tiếng Việt', min: 20, kind: 'tv' },
-  { id: 'b1', name: 'Nghỉ giải lao', min: 5, kind: 'break' },
-  { id: 'toan', name: 'Toán', min: 20, kind: 'toan' },
-  { id: 'b2', name: 'Nghỉ giải lao', min: 5, kind: 'break' },
-  { id: 'game', name: 'Trò chơi củng cố', min: 15, kind: 'game' },
-  { id: 'sum', name: 'Tổng kết', min: 5, kind: 'sum' }];
+  { id: 'talk', name: 'Trò chuyện với Cú Bon', min: 4, kind: 'talk' },
+  { id: 'tv', name: 'Tiếng Việt', min: 15, kind: 'tv' },
+  { id: 'b1', name: 'Nghỉ giải lao', min: 2, kind: 'break' },
+  { id: 'toan', name: 'Toán', min: 15, kind: 'toan' },
+  { id: 'game', name: 'Trò chơi củng cố', min: 6, kind: 'game' },
+  { id: 'sum', name: 'Tổng kết', min: 3, kind: 'sum' }];
+const OLD_PLAN_IDS = 'warm,tv,b1,toan,b2,game,sum';
 function defaultState() {
   return {
     v: 1, created: today(), placementDone: false, placement: null,
     xp: 0, stars: 0, starsSpent: 0, memoryStars: 0,
     lessons: {}, skills: {}, mistakes: [], sessions: [], time: {}, badges: {}, items: [],
     counters: { mathDone: 0, tvDone: 0, otherDone: 0, reviewOk: 0, reviewN: 0, spellOk: 0, fixed: 0, planDone: 0, gamesDone: 0, writes: 0, tries: 0 },
-    daily: null, weekly: null, plan: null, reviews: [], goals: [], redeemed: [], readings: {}, packs: [], unlocked: {}, owl: { wear: [] }, writings: [], chat: [],
+    daily: null, weekly: null, plan: null, reviews: [], goals: [], redeemed: [], readings: {}, packs: [], unlocked: {}, owl: { wear: [] }, writings: [], chat: [], diary: [],
     settings: {
       pin: null, sound: true, voice: true, rate: 0.85, unlockAll: false,
-      planSegs: DEFAULT_PLAN, studyDays: [1, 2, 3, 4, 5, 6],
+      planSegs: DEFAULT_PLAN, planVer: 2, studyTime: '21:30', calm: false, diaryAI: true, studyDays: [1, 2, 3, 4, 5, 6],
       remind: { on: true, day: 0, time: '19:00' }, dailyGoalReview: 5, chatOn: true, chatLimit: 40,
       rewards: [{ id: 'r1', name: 'Đọc thêm một truyện trước khi ngủ', cost: 30 }, { id: 'r2', name: 'Chọn món tráng miệng cuối tuần', cost: 60 }, { id: 'r3', name: 'Đi công viên cùng bố mẹ', cost: 150 }]
     }
@@ -507,7 +595,13 @@ function load(given) {
   if (!s) try { const raw = localStorage.getItem(KEY); if (raw) s = JSON.parse(raw); } catch (e) { TL.storageOK = false; }
   const d = defaultState();
   if (!s || s.v !== 1) return d;
+  const hadVer = s.settings && s.settings.planVer;
   s.settings = Object.assign(d.settings, s.settings || {});
+  if (!hadVer) { // bản cũ: lịch mẫu 75 phút; bố mẹ chưa sửa thì đổi sang lịch 45 phút có phần trò chuyện với Cú Bon
+    const segs = s.settings.planSegs || [];
+    if (segs.map(x => x.id).join() === OLD_PLAN_IDS) { s.settings.planSegs = DEFAULT_PLAN; if (s.plan && !s.plan.running) s.plan = null; }
+    s.settings.planVer = 2;
+  }
   s.counters = Object.assign(d.counters, s.counters || {});
   for (const k of Object.keys(d)) if (s[k] === undefined) s[k] = d[k];
   return s;
@@ -516,6 +610,7 @@ TL.S = load();
 TL.normalize = function () { TL.S = load(TL.S); };
 TL.save = function () { TL.S.updatedAt = Date.now(); try { localStorage.setItem(KEY, JSON.stringify(TL.S)); TL.storageOK = true; } catch (e) { TL.storageOK = false; } if (TL.onSave) TL.onSave(); };
 TL.KEY = KEY;
+TL.calm = () => !!(TL.S && TL.S.settings && TL.S.settings.calm); // bố mẹ chọn giảm chuyển động (không theo cài đặt của Windows, vì nhiều máy tắt hiệu ứng sẵn)
 TL.kid = () => (TL.S && TL.S.settings && TL.S.settings.kidName) || window.TL_KID || 'con';
 try { localStorage.setItem('tulinh.probe', '1'); localStorage.removeItem('tulinh.probe'); } catch (e) { TL.storageOK = false; }
 
@@ -2030,6 +2125,7 @@ TL.owl = function (size = 96, mood = 'happy') {
 };
 /* Cú Bon phản ứng: nhảy múa khi con làm đúng, lắc đầu nhẹ khi sai */
 TL.owlReact = function (kind) {
+  document.querySelectorAll('.owlstage').forEach(st => TL.owlStageAct && TL.owlStageAct(st, kind));
   document.querySelectorAll('.owl3d').forEach(o => { o.classList.remove('dance', 'oops', 'cheer'); void o.getBoundingClientRect(); o.classList.add(kind); setTimeout(() => o.classList.remove(kind), kind === 'oops' ? 700 : 1900); });
 };
 
@@ -2167,11 +2263,11 @@ function renderItem(host, it, idx, total, opts, done) {
     const sel = new Set(); const g = el('<div class="choices"></div>');
     it.choices.forEach(c => { const b = el('<button class="choice">' + esc(c) + '</button>'); b.onclick = () => { if (b.disabled) return; sel.has(c) ? sel.delete(c) : sel.add(c); b.classList.toggle('sel'); }; g.appendChild(b); });
     const go = el('<button class="btn" style="margin-top:12px">Kiểm tra</button>'); go.onclick = () => { if (!sel.size) { TL.toast('Con chọn ít nhất một ý nhé.'); return; } submit([...sel]); };
-    ans.append(el('<p class="muted small" style="margin-top:8px">Có thể chọn nhiều ý.</p>'), g, go);
+    ans.append(el('<p class="howto"><b>Hướng dẫn làm bài:</b> Có thể chọn nhiều ý.</p>'), g, go);
     markAns = (ok) => { $$('.choice', g).forEach(b => { const c = b.textContent; if (ok || attempts >= 2) { b.disabled = true; if (it.answer.includes(c)) b.classList.add('right'); } else if (sel.has(c) && !it.answer.includes(c)) b.classList.add('wrong'); }); if (ok || attempts >= 2) go.disabled = true; };
     unlockAns = () => { $$('.choice', g).forEach(b => b.classList.remove('wrong')); };
   } else if (it.type === 'order') {
-    const picked = []; const w = el('<div><p class="muted small" style="margin-top:8px">Bấm lần lượt theo thứ tự. Bấm vào ô đã xếp để bỏ ra.</p><div class="slots"></div><div class="pool"></div><button class="btn" style="margin-top:12px">Kiểm tra</button></div>');
+    const picked = []; const w = el('<div><p class="howto"><b>Hướng dẫn làm bài:</b> Bấm lần lượt theo thứ tự. Bấm vào ô đã xếp để bỏ ra.</p><div class="slots"></div><div class="pool"></div><button class="btn" style="margin-top:12px">Kiểm tra</button></div>');
     const slots = $('.slots', w), pool = $('.pool', w), go = $('.btn', w);
     const items = it.items || shuffle(it.answer);
     const draw = () => { slots.innerHTML = ''; items.forEach((_, k) => { const s = el('<div class="slot"><b>' + (k + 1) + '</b><span>' + esc(picked[k] || '') + '</span></div>'); s.onclick = () => { if (picked[k] && !go.disabled) { picked.splice(k, 1); draw(); } }; slots.appendChild(s); }); $$('.tok', pool).forEach(t => t.classList.toggle('used', picked.includes(t.dataset.v))); };
@@ -2182,7 +2278,7 @@ function renderItem(host, it, idx, total, opts, done) {
     unlockAns = () => { picked.length = 0; draw(); };
   } else if (it.type === 'sort') {
     const place = new Array(it.items.length).fill(-1); let cur = -1;
-    const w = el('<div><p class="muted small" style="margin-top:8px">Bấm một từ, rồi bấm vào giỏ phù hợp.</p><div class="pool"></div><div class="baskets"></div><button class="btn" style="margin-top:12px">Kiểm tra</button></div>');
+    const w = el('<div><p class="howto"><b>Hướng dẫn làm bài:</b> Bấm một từ, rồi bấm vào giỏ phù hợp.</p><div class="pool"></div><div class="baskets"></div><button class="btn" style="margin-top:12px">Kiểm tra</button></div>');
     const pool = $('.pool', w), bk = $('.baskets', w), go = $('.btn', w);
     const draw = () => { pool.innerHTML = ''; it.items.forEach((x, k) => { if (place[k] >= 0) return; const t = el('<button class="tok' + (cur === k ? ' sel' : '') + '"></button>'); t.textContent = x.t; t.onclick = () => { cur = k; draw(); }; pool.appendChild(t); });
       bk.innerHTML = ''; it.groups.forEach((g, gi) => { const b = el('<button class="basket"><h4>' + esc(g) + '</h4></button>'); it.items.forEach((x, k) => { if (place[k] === gi) { const t = el('<span class="tok"></span>'); t.textContent = x.t; t.onclick = e => { if (cur >= 0) return; e.stopPropagation(); if (!go.disabled) { place[k] = -1; draw(); } }; b.appendChild(t); } }); b.onclick = () => { if (cur >= 0 && !go.disabled) { place[cur] = gi; cur = -1; draw(); } }; bk.appendChild(b); }); };
@@ -2201,7 +2297,7 @@ async function aiExplain(fbx, it, given, btn) {
 /* ---------- pháo hoa nhỏ ---------- */
 TL.celebrate = function () {
   TL.owlReact('cheer');
-  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (TL.calm()) return;
   const c = el('<canvas class="confetti"></canvas>'); document.body.appendChild(c); const x = c.getContext('2d'); c.width = innerWidth; c.height = innerHeight;
   const cols = ['#F2B200', '#EC6A35', '#0E9F7A', '#6A55D6', '#3B82F6']; const ps = Array.from({ length: 90 }, () => ({ x: innerWidth / 2, y: innerHeight / 3, vx: (Math.random() - .5) * 12, vy: Math.random() * -10 - 2, c: pick(cols), s: 4 + Math.random() * 6 }));
   let f = 0; (function loop() { x.clearRect(0, 0, c.width, c.height); ps.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += .35; x.fillStyle = p.c; x.fillRect(p.x, p.y, p.s, p.s); }); if (++f < 80) requestAnimationFrame(loop); else c.remove(); })();
@@ -2220,7 +2316,7 @@ TL.GAMES = {
 TL.playGame = function (host, data, opts = {}) {
   return new Promise(resolve => {
     host.innerHTML = '';
-    const head = el('<div class="card flat" style="margin-bottom:12px"><div class="row"><h3 style="margin:0">' + esc(TL.GAMES[data.type].name) + '</h3><span class="pill">Cấp ' + (opts.level || 1) + '</span><div class="spacer"></div><b class="score chip">Điểm: 0</b></div><p class="muted small" style="margin-top:6px">' + esc(TL.GAMES[data.type].rule) + '</p>' + (data.title ? '<p style="margin-top:8px;font-weight:800">' + esc(data.title) + '</p>' : '') + '</div>');
+    const head = el('<div class="card flat" style="margin-bottom:12px"><div class="row"><h3 style="margin:0">' + esc(TL.GAMES[data.type].name) + '</h3><span class="pill">Cấp ' + (opts.level || 1) + '</span><div class="spacer"></div><b class="score chip">Điểm: 0</b></div><p class="howto"><b>Hướng dẫn làm bài:</b> ' + esc(TL.GAMES[data.type].rule) + '</p>' + (data.title ? '<p style="margin-top:8px;font-weight:800">' + esc(data.title) + '</p>' : '') + '</div>');
     const body = el('<div></div>'); host.append(head, body);
     let score = 0; const setScore = n => { score = n; $('.score', head).textContent = 'Điểm: ' + score; };
     const end = (max) => { TL.sfx.done(); TL.celebrate(); TL.S.counters.gamesDone++; TL.addXP(15); TL.addStars(2); TL.save(); TL.refreshTop && TL.refreshTop();
@@ -2277,7 +2373,7 @@ function gameQuiz(body, data, opts, setScore, getScore, end) {
     body.appendChild(box); let left = 5, rot = 0; const btn = $('.btn', box), wheel = $('.wheel', box), qh = $('.qh', box);
     const info = () => { $('.spins', box).textContent = 'Còn ' + left + ' lượt quay.'; }; info();
     btn.onclick = () => { if (btn.disabled) return; btn.disabled = true; const k = TL.R(0, 5); rot += 360 * 4 + (360 - (k * 60 + 30)) - (rot % 360); wheel.style.transform = 'rotate(' + rot + 'deg)'; TL.sfx.tick();
-      setTimeout(() => { const it = TL.genItem(segs[k], lv); TL.renderItem(qh, it, 5 - left, 5, { title: 'Chủ đề ' + (k + 1), mode: 'game' }, out => { setScore(getScore() + (out.first ? 20 : out.ok ? 10 : 4)); left--; info(); qh.innerHTML = '<div class="card flat"><p>' + (left ? 'Bấm Quay để chơi lượt tiếp.' : 'Hết lượt quay rồi!') + '</p></div>'; if (!left) end(100); else btn.disabled = false; }); }, window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches ? 50 : 2700); };
+      setTimeout(() => { const it = TL.genItem(segs[k], lv); TL.renderItem(qh, it, 5 - left, 5, { title: 'Chủ đề ' + (k + 1), mode: 'game' }, out => { setScore(getScore() + (out.first ? 20 : out.ok ? 10 : 4)); left--; info(); qh.innerHTML = '<div class="card flat"><p>' + (left ? 'Bấm Quay để chơi lượt tiếp.' : 'Hết lượt quay rồi!') + '</p></div>'; if (!left) end(100); else btn.disabled = false; }); }, TL.calm() ? 50 : 2700); };
   } else {
     const list = data.items && data.items.length ? data.items : [TL.genItem('m.cmp', 3)];
     let k = 0; const qh = el('<div></div>'); body.appendChild(qh);
@@ -2497,6 +2593,133 @@ TL.autoVis = function (it) {
 };
 })();
 
+/* ---- src/engine/owl3d.js ---- */
+/* ===== Cú Bon 3D tương tác =====
+   Cú Bon được ghép từ nhiều lớp đặt ở các độ sâu khác nhau (lưng, thân, bụng, mắt, mỏ), nên khi xoay sẽ thấy khối như thật.
+   Con có thể:
+   - di chuột (hoặc chạm) vào Cú Bon: Cú Bon nhún chào, mắt nhìn theo con trỏ;
+   - bấm vào Cú Bon: Cú Bon nhảy múa, xoay vòng hoặc vẫy cánh và nói một câu;
+   - kéo Cú Bon sang trái, phải, lên, xuống: Cú Bon xoay theo tay con. */
+(function () {
+'use strict';
+const S = () => TL.S;
+let n = 0, defsDone = false;
+function defs() {
+  if (defsDone || document.getElementById('owl-defs')) { defsDone = true; return; }
+  const d = document.createElement('div');
+  d.innerHTML = '<svg id="owl-defs" width="0" height="0" style="position:absolute;width:0;height:0" aria-hidden="true"><defs>' +
+    '<radialGradient id="og-b" cx="38%" cy="30%" r="75%"><stop offset="0" stop-color="#C2B0FF"/><stop offset=".55" stop-color="#8B6CFA"/><stop offset="1" stop-color="#5A3BE0"/></radialGradient>' +
+    '<radialGradient id="og-y" cx="45%" cy="35%" r="70%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#D9CEFF"/></radialGradient>' +
+    '<radialGradient id="og-e" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E4E7F0"/></radialGradient>' +
+    '<radialGradient id="og-p" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#4B5675"/><stop offset="1" stop-color="#11182A"/></radialGradient>' +
+    '<linearGradient id="og-w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8064F5"/><stop offset="1" stop-color="#4C2FD0"/></linearGradient>' +
+    '<linearGradient id="og-k" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD54A"/><stop offset="1" stop-color="#F29A00"/></linearGradient>' +
+    '</defs></svg>';
+  document.body.appendChild(d.firstChild); defsDone = true;
+}
+const L = (z, body, cls) => '<div class="ol' + (cls ? ' ' + cls : '') + '" style="transform:translateZ(calc(var(--u) * ' + z + '))"><svg viewBox="0 0 120 120" width="100%" height="100%">' + body + '</svg></div>';
+/* size: chiều rộng (px) */
+TL.owlStage = function (size) {
+  defs(); const w = S().owl.wear || []; const id = 'os' + (++n);
+  let h = '';
+  // tai, đuôi phía sau
+  h += L(-16, '<path d="M24 30 L32 6 L48 24 Z M96 30 L88 6 L72 24 Z" fill="#4C2FD0"/><path d="M48 104q12 10 24 0z" fill="#4C2FD0"/>');
+  // các lát thân: phía sau nhỏ và sẫm hơn để thành khối tròn
+  [[-14, .8, '#4A2CC8'], [-10, .9, '#5233D6'], [-6, .96, '#5B3BE0'], [-2, .99, '#6646EA']].forEach(([z, k, c]) => {
+    h += L(z, '<ellipse cx="60" cy="64" rx="' + 40 * k + '" ry="' + 44 * k + '" fill="' + c + '"/>');
+  });
+  h += L(-4, '<path d="M24 30 L32 6 L48 24 Z M96 30 L88 6 L72 24 Z" fill="url(#og-w)"/>');
+  h += L(2, '<ellipse cx="60" cy="64" rx="40" ry="44" fill="url(#og-b)"/><ellipse cx="46" cy="34" rx="14" ry="7" fill="#fff" opacity=".28" transform="rotate(-20 46 34)"/>');
+  h += L(5, '<ellipse cx="50" cy="105" rx="7" ry="4" fill="url(#og-k)"/><ellipse cx="70" cy="105" rx="7" ry="4" fill="url(#og-k)"/>');
+  h += L(8, '<ellipse cx="60" cy="80" rx="26" ry="25" fill="url(#og-y)"/><path d="M50 74q5 3 10 0q5 3 10 0M48 84q6 3 12 0q6 3 12 0" stroke="#C7B8FF" stroke-width="2" fill="none" stroke-linecap="round"/>');
+  h += L(11, '<ellipse cx="30" cy="62" rx="6" ry="3.5" fill="#FF8FB1" opacity=".6"/><ellipse cx="90" cy="62" rx="6" ry="3.5" fill="#FF8FB1" opacity=".6"/>');
+  h += L(13, '<g class="o-blink"><circle cx="42" cy="47" r="16" fill="url(#og-e)" stroke="#6E4FF0" stroke-width="2"/><circle cx="78" cy="47" r="16" fill="url(#og-e)" stroke="#6E4FF0" stroke-width="2"/></g>');
+  h += L(17, '<g class="o-blink"><g class="o-pupil"><circle cx="42" cy="47" r="8" fill="url(#og-p)"/><circle cx="78" cy="47" r="8" fill="url(#og-p)"/><circle cx="45" cy="43.5" r="3" fill="#fff"/><circle cx="81" cy="43.5" r="3" fill="#fff"/></g></g>');
+  h += L(15, '<path class="o-mouth" d="M50 84q10 8 20 0" stroke="#5B3FD9" stroke-width="3" fill="none" stroke-linecap="round"/>');
+  h += L(20, '<path d="M54 58 L66 58 L60 69 Z" fill="url(#og-k)" stroke="#D98200" stroke-width="1"/>');
+  let acc = '';
+  if (w.includes('kinh')) acc += '<g fill="none" stroke="#1D2939" stroke-width="3"><circle cx="42" cy="47" r="16"/><circle cx="78" cy="47" r="16"/><path d="M58 47h4"/></g>';
+  if (w.includes('khan')) acc += '<path d="M30 92q30 14 60 0l-4 8q-26 10-52 0z" fill="#E03131"/><path d="M78 98l8 14 6-4-6-12z" fill="#C92A2A"/>';
+  if (w.includes('no')) acc += '<path d="M84 18l10-8 2 12zM84 18l-4 12 12-2z" fill="#F06595"/><circle cx="86" cy="18" r="4" fill="#E64980"/>';
+  if (w.includes('mu')) acc += '<path d="M30 22l30-12 30 12-30 12z" fill="#1D2939"/><path d="M84 24v14" stroke="#F2B200" stroke-width="3"/>';
+  if (w.includes('vuongmien')) acc += '<path d="M38 22l8-14 7 10 7-12 7 12 7-10 8 14z" fill="#F2B200" stroke="#B8860B" stroke-width="2"/>';
+  if (w.includes('sach')) acc += '<rect x="70" y="84" width="26" height="18" rx="2" fill="#12B886" transform="rotate(-12 83 93)"/>';
+  if (acc) h += L(22, acc);
+  // hai cánh: xoay quanh vai
+  h += '<div class="ow owL" style="transform:translateZ(calc(var(--u) * 0))"><svg viewBox="0 0 120 120" width="100%" height="100%"><path d="M24 58c-12 10-12 30 2 40c4-12 6-26-2-40z" fill="url(#og-w)"/></svg></div>';
+  h += '<div class="ow owR" style="transform:translateZ(calc(var(--u) * 0))"><svg viewBox="0 0 120 120" width="100%" height="100%"><path d="M96 58c12 10 12 30-2 40c-4-12-6-26 2-40z" fill="url(#og-w)"/></svg></div>';
+  return '<div class="owlstage" id="' + id + '" style="--s:' + size + 'px;--u:' + (size / 120).toFixed(3) + 'px" role="button" tabindex="0" aria-label="Cú Bon. Bấm để Cú Bon nhảy múa, kéo để xoay Cú Bon.">' +
+    '<div class="owlsay" hidden></div><div class="owlshadow"></div><div class="owlbob"><div class="owlrig">' + h + '</div></div></div>';
+};
+
+/* lời Cú Bon nói khi con bấm */
+function lines() {
+  const k = TL.kid();
+  return ['Chào ' + k + '! Cú Bon đây.', 'Con kéo Cú Bon xoay vòng thử xem!', 'Cú Bon tin con làm được!', 'Hi hi, nhột quá!',
+    'Con biết không, loài cú quay đầu được rất xa, gần một vòng đấy!', 'Học xong mình chơi trò chơi nhé.', 'Uống một ngụm nước cho đầu óc tỉnh táo nào.',
+    'Cú Bon nhảy cho ' + k + ' xem nhé!', 'Con cười lên nào, Cú Bon thích thấy con cười.', 'Mỗi ngày học một chút, con sẽ giỏi lên nhiều.'];
+}
+let lastSay = 0;
+TL.owlSay = function (stage, text, speak) {
+  const b = stage && stage.querySelector('.owlsay'); if (!b) return;
+  b.textContent = text; b.hidden = false; b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
+  clearTimeout(b._t); b._t = setTimeout(() => { b.hidden = true; }, Math.max(2600, text.length * 90));
+  if (speak) TL.speak(text, 'vi', { quiet: true });
+};
+const ACTS = ['dance', 'spin', 'wave', 'hop', 'dance', 'flip'];
+function act(stage, kind) {
+  stage.classList.remove('dance', 'spin', 'wave', 'hop', 'oops', 'cheer', 'flip'); void stage.offsetWidth; stage.classList.add(kind);
+  clearTimeout(stage._a); stage._a = setTimeout(() => stage.classList.remove(kind), kind === 'hop' ? 650 : kind === 'oops' ? 700 : 1900);
+}
+TL.owlStageAct = act;
+function tap(stage) {
+  const k = TL.pick(ACTS); act(stage, k); if (S().settings.sound && TL.sfx && TL.sfx.star) try { TL.sfx.star(); } catch (e) { }
+  TL.owlSay(stage, TL.pick(lines()), true);
+}
+/* kéo để xoay */
+function bind(stage) {
+  if (stage._bound) return; stage._bound = true;
+  const rig = stage.querySelector('.owlrig'); let rx = 0, ry = 0, sx = 0, sy = 0, moved = 0, down = false, spunSaid = false, back = null, total = 0;
+  const apply = () => { rig.style.transform = 'rotateX(' + rx + 'deg) rotateY(' + ry + 'deg)'; };
+  stage.addEventListener('pointerdown', e => { down = true; moved = 0; sx = e.clientX; sy = e.clientY; total = 0; rig.style.transition = 'none'; clearTimeout(back); try { stage.setPointerCapture(e.pointerId); } catch (x) { } });
+  stage.addEventListener('pointermove', e => {
+    if (!down) return; const dx = e.clientX - sx, dy = e.clientY - sy; sx = e.clientX; sy = e.clientY; moved += Math.abs(dx) + Math.abs(dy);
+    ry += dx * .9; total += dx * .9; rx = Math.max(-35, Math.min(35, rx - dy * .5)); apply();
+    if (!spunSaid && Math.abs(total) > 600) { spunSaid = true; TL.owlSay(stage, 'Ối, Cú Bon chóng mặt quá! Hi hi.', true); }
+  });
+  const up = () => {
+    if (!down) return; down = false;
+    if (moved < 8) { tap(stage); return; }
+    back = setTimeout(() => { rig.style.transition = 'transform 1.2s cubic-bezier(.3,1.4,.5,1)'; ry = Math.round(ry / 360) * 360; rx = 0; apply(); spunSaid = false; back = setTimeout(() => { rig.style.transition = ''; rig.style.transform = ''; ry = 0; }, 1300); }, 2200);
+  };
+  stage.addEventListener('pointerup', up); stage.addEventListener('pointercancel', up);
+  stage.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tap(stage); } if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { ry += e.key === 'ArrowLeft' ? -30 : 30; rig.style.transition = 'transform .3s'; apply(); } });
+  stage.addEventListener('pointerenter', e => {
+    if (e.pointerType !== 'mouse') return; act(stage, 'hop');
+    if (Date.now() - lastSay > 20000) { lastSay = Date.now(); TL.owlSay(stage, 'Chào ' + TL.kid() + '! Bấm vào Cú Bon đi, hoặc kéo Cú Bon xoay vòng nhé.', false); }
+  });
+}
+/* mắt nhìn theo con trỏ */
+document.addEventListener('pointermove', e => {
+  document.querySelectorAll('.owlstage').forEach(st => {
+    const r = st.getBoundingClientRect(); const cx = r.left + r.width / 2, cy = r.top + r.height * .4;
+    const dx = e.clientX - cx, dy = e.clientY - cy, d = Math.hypot(dx, dy) || 1, m = Math.min(1, d / 300) * 3.2;
+    st.style.setProperty('--px', (dx / d * m).toFixed(2) + 'px'); st.style.setProperty('--py', (dy / d * m).toFixed(2) + 'px');
+  });
+}, { passive: true });
+/* gắn sự kiện cho mọi Cú Bon mới xuất hiện; Cú Bon nhỏ (hình phẳng) cũng biết nhảy khi được bấm hoặc di chuột vào */
+new MutationObserver(() => { document.querySelectorAll('.owlstage').forEach(bind); }).observe(document.documentElement, { childList: true, subtree: true });
+document.addEventListener('click', e => {
+  const o = e.target.closest && e.target.closest('svg.owl3d'); if (!o || o.closest('button,a')) return;
+  o.classList.remove('dance'); void o.getBoundingClientRect(); o.classList.add('dance'); setTimeout(() => o.classList.remove('dance'), 1900);
+  TL.speak(TL.pick(lines()), 'vi', { quiet: true });
+});
+document.addEventListener('pointerover', e => {
+  const o = e.target.closest && e.target.closest('svg.owl3d'); if (!o || o.classList.contains('hop')) return;
+  o.classList.add('hop'); setTimeout(() => o.classList.remove('hop'), 650);
+});
+})();
+
 /* ---- src/engine/fx3d.js ---- */
 /* ===== Hiệu ứng 3D: biểu tượng môn học dạng khối, cảnh trời mây, thẻ nghiêng theo tay/chuột ===== */
 (function () {
@@ -2528,7 +2751,7 @@ const sky = document.createElement('div'); sky.className = 'sky3d'; sky.setAttri
 sky.innerHTML = '<i class="sun"></i><i class="rainbow"></i><i class="cloud c1"></i><i class="cloud c2"></i><i class="cloud c3"></i><i class="hill h1"></i><i class="hill h2"></i>';
 document.body.prepend(sky);
 // nghiêng thẻ theo con trỏ
-const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const reduce = TL.calm();
 if (!reduce) {
   document.addEventListener('pointermove', e => {
     const t = e.target.closest && e.target.closest('.door, .node:not(.locked), .tilt');
@@ -2644,15 +2867,20 @@ SCREENS.home = function (m) {
   const hr = TL.nowDate().getHours(); const greet = hr < 11 ? 'Chào buổi sáng' : hr < 14 ? 'Chào buổi trưa' : hr < 18 ? 'Chào buổi chiều' : 'Chào buổi tối';
   const nextTV = recommend('tv'), nextM = recommend('toan'), nextA = recommend('ta'), nextI = recommend('th');
   const mdone = TL.missionsDone(), playOpen = playUnlocked();
-  let say = !s.placementDone ? 'Cú Bon là bạn học của con. Mình làm bài khởi hành ngắn để Cú Bon biết nên bắt đầu từ đâu nhé.' :
+  const dToday = TL.diaryToday && TL.diaryToday(); const talked = dToday && dToday.done;
+  const mi = TL.nowDate().getMinutes(); const late = hr >= 23 || (hr === 22 && mi >= 30) || hr < 5;
+  let say = late && !plan.allDone ? 'Đã muộn rồi, ' + TL.kid() + ' ơi. Hôm nay mình học thật ngắn thôi, rồi đi ngủ để mai đến lớp thật khoẻ nhé.' :
+    !talked && !plan.allDone && s.placementDone ? 'Chào ' + TL.kid() + '! Hôm nay ở lớp thế nào? Kể Cú Bon nghe trước rồi mình học nhé.' :
+    plan.running && seg && seg.kind === 'talk' ? 'Cú Bon muốn nghe con kể chuyện hôm nay. Bấm "Kể Cú Bon nghe" nhé.' :
+    !s.placementDone ? 'Cú Bon là bạn học của con. Mình làm bài khởi hành ngắn để Cú Bon biết nên bắt đầu từ đâu nhé.' :
     plan.allDone ? 'Hôm nay con học xong rồi. Giỏi lắm! Nghỉ ngơi thôi.' :
     !plan.running ? 'Bấm "Bắt đầu buổi học" để đồng hồ chạy nhé. Mình học từng việc một.' :
     seg.kind === 'tv' ? 'Bây giờ là giờ Tiếng Việt. Con mở cửa Vương quốc Tiếng Việt nhé.' : seg.kind === 'toan' ? 'Bây giờ là giờ Toán. Con mở cửa Vương quốc Toán học nhé.' :
-    seg.kind === 'game' ? 'Đến giờ trò chơi củng cố rồi! Khu vui chơi đã mở.' : seg.kind === 'warm' ? 'Khởi động thôi! Con làm vài câu ôn bài cũ nhé.' : seg.kind === 'sum' ? 'Mình cùng tổng kết buổi học nhé.' : 'Đang giờ nghỉ.';
+    seg.kind === 'game' ? 'Đến giờ trò chơi củng cố rồi! Khu vui chơi đã mở.' : seg.kind === 'talk' ? 'Cú Bon muốn nghe con kể chuyện hôm nay.' : seg.kind === 'warm' ? 'Khởi động thôi! Con làm vài câu ôn bài cũ nhé.' : seg.kind === 'sum' ? 'Mình cùng tổng kết buổi học nhé.' : 'Đang giờ nghỉ.';
   m.innerHTML = '<div class="col" style="gap:20px">' +
     remindBanner() + storageBanner() +
-    '<section class="hello"><div>' + TL.owl(120) + '</div><div class="col" style="gap:10px"><h1>' + greet + ', <span>' + name + '</span>!</h1><div class="bubble">' + esc(say) + '</div>' +
-    '<div class="row">' + (!s.placementDone ? '<button class="btn big" data-go="placement">Làm bài khởi hành</button>' : '') +
+    '<section class="hello"><div>' + (TL.owlStage ? TL.owlStage(150) : TL.owl(120)) + '</div><div class="col" style="gap:10px"><h1>' + greet + ', <span>' + name + '</span>!</h1><div class="bubble">' + esc(say) + '</div>' +
+    '<div class="row">' + (!talked ? '<button class="btn big ok" data-go="checkin">Kể Cú Bon nghe</button>' : '') + (!s.placementDone ? '<button class="btn big" data-go="placement">Làm bài khởi hành</button>' : '') +
     (!plan.allDone ? '<button class="btn ' + (s.placementDone ? 'big' : 'ghost') + '" data-act="plan">' + (plan.running ? (plan.paused ? 'Học tiếp' : 'Xem đồng hồ học') : 'Bắt đầu buổi học') + '</button>' : '<button class="btn ghost" data-go="summary">Xem tổng kết hôm nay</button>') + '</div></div></section>' +
     '<section class="doors">' +
     '<button class="door tv' + (seg && seg.kind === 'tv' && plan.running ? ' next' : '') + '" data-go="kingdom" data-arg="tv">' + TL.ICON3D.tv + '<span class="eyebrow" style="color:#fff">Vương quốc</span><h2>Tiếng Việt</h2><p>' + (nextTV ? 'Nên học: Bài ' + nextTV.no + '. ' + esc(nextTV.title) : 'Mở bản đồ') + '</p>' + subjBar('tv') + '</button>' +
@@ -2945,12 +3173,12 @@ SCREENS.plan = function (m) {
     $$('[data-a]', m).forEach(b => b.onclick = () => act(b.dataset.a));
   };
   const act = a => {
-    if (a === 'start') { p.running = true; p.paused = false; lastAct = Date.now(); }
+    if (a === 'start') { p.running = true; p.paused = false; lastAct = Date.now(); const s0 = p.segs[p.idx]; if (s0 && s0.kind === 'talk') { const dt = TL.diaryToday && TL.diaryToday(); if (dt && dt.done) advance(); else { TL.save(); return TL.go('checkin'); } } }
     if (a === 'resume') { p.paused = false; lastAct = Date.now(); }
     if (a === 'pause') p.paused = true;
     if (a === 'tired') { p.paused = true; TL.save(); const o = overlay('<div class="col" style="align-items:center;text-align:center">' + TL.owl(90) + '<h2>Nghỉ ngơi thôi</h2><p>Con mệt thì mình dừng lại một chút. Uống nước, vươn vai, hoặc nghỉ hẳn hôm nay cũng được. Cú Bon không trừ sao đâu.</p><button class="btn" data-x>Được ạ</button></div>'); $('[data-x]', o).onclick = () => { o.remove(); TL.go('home'); }; return; }
     if (a === 'skip') { advance(); }
-    if (a === 'goto') { const s = p.segs[p.idx]; if (!p.running) { p.running = true; p.paused = false; } TL.save(); if (s.kind === 'tv' || s.kind === 'toan') return TL.go('kingdom', { arg: s.kind }); if (s.kind === 'game') return TL.go('play'); if (s.kind === 'warm') return TL.go(TL.learnedSkills().length ? 'review' : (S().placementDone ? 'kingdom' : 'placement'), { arg: 'tv' }); if (s.kind === 'sum') return TL.go('summary'); if (s.kind === 'break') return showBreak(); }
+    if (a === 'goto') { const s = p.segs[p.idx]; if (!p.running) { p.running = true; p.paused = false; } TL.save(); if (s.kind === 'talk') return TL.go('checkin'); if (s.kind === 'tv' || s.kind === 'toan') return TL.go('kingdom', { arg: s.kind }); if (s.kind === 'game') return TL.go('play'); if (s.kind === 'warm') return TL.go(TL.learnedSkills().length ? 'review' : (S().placementDone ? 'kingdom' : 'placement'), { arg: 'tv' }); if (s.kind === 'sum') return TL.go('summary'); if (s.kind === 'break') return showBreak(); }
     TL.save(); draw();
   };
   draw();
@@ -3051,7 +3279,7 @@ const lab = d => { const [, m, dd] = d.split('-'); return +dd + '/' + +m; };
 const empty = t => '<p class="muted">' + (t || 'Chưa có dữ liệu.') + '</p>';
 
 /* ---------- màn hình phụ huynh ---------- */
-const TABS = [['overview', 'Tổng quan'], ['subjects', 'Phân tích môn'], ['report', 'Báo cáo'], ['review', 'Đánh giá tuần'], ['schedule', 'Lịch học'], ['rewards', 'Phần thưởng'], ['content', 'Bài học và tài liệu'], ['data', 'Dữ liệu và cài đặt'], ['guide', 'Hướng dẫn']];
+const TABS = [['overview', 'Tổng quan'], ['diary', 'Nhật ký tâm sự'], ['subjects', 'Phân tích môn'], ['report', 'Báo cáo'], ['review', 'Đánh giá tuần'], ['schedule', 'Lịch học'], ['rewards', 'Phần thưởng'], ['content', 'Bài học và tài liệu'], ['data', 'Dữ liệu và cài đặt'], ['guide', 'Hướng dẫn']];
 TL.SCREENS.parent = function (m, p) {
   if (Date.now() > parentUntil) { m.innerHTML = '<div class="card"><h2>Khu phụ huynh</h2><p class="muted" style="margin:8px 0">Cần mã PIN để vào.</p><button class="btn" data-pin>Nhập mã PIN</button> <button class="btn ghost" data-go="home">Về trang chủ</button></div>'; $('[data-pin]', m).onclick = () => TL.askPin(() => TL.go('parent', p)); if (!m.dataset.asked) { m.dataset.asked = 1; TL.askPin(() => TL.go('parent', p)); } return; }
   const tab = p.arg || 'overview';
@@ -3068,7 +3296,7 @@ P.overview = function (b) {
   const missionDays = new Set(s.sessions.filter(x => x.kind === 'lesson-done').map(x => x.d)).size;
   const planned = s.settings.planSegs.reduce((a, x) => a + x.min, 0);
   b.innerHTML = (TL.weeklyDue() && s.settings.remind.on ? '<div class="note info" style="margin-bottom:12px">Đã đến giờ Đánh giá tiến bộ tuần. <button class="btn small" data-go="parent" data-arg="review">Làm ngay</button></div>' : '') +
-    (TL.storageOK ? '' : '<div class="note" style="margin-bottom:12px">Trình duyệt đang chặn bộ nhớ, dữ liệu không được lưu.</div>') +
+    (TL.storageOK ? '' : '<div class="note" style="margin-bottom:12px">Trình duyệt đang chặn bộ nhớ, dữ liệu không được lưu.</div>') + (TL.diaryAlert ? TL.diaryAlert() : '') +
     '<div class="grid3">' +
     stat('Tổng thời gian học', totalMin + ' phút', '7 ngày qua: ' + m7 + ' phút (lịch đặt ' + planned + ' phút/ngày)') +
     stat('Bài đã hoàn thành', Object.keys(TL.SUBJ).reduce((a, k) => a + ldone(k), 0) + ' bài', Object.keys(TL.SUBJ).map(k => TL.SUBJ[k].name + ' ' + ldone(k) + '/' + lall(k)).join(' · ')) +
@@ -3083,6 +3311,7 @@ P.overview = function (b) {
 };
 function stat(t, v, sub) { return '<div class="card"><div class="stat"><span class="muted small">' + esc(t) + '</span><b>' + esc(v) + '</b><span class="small muted">' + esc(sub) + '</span></div></div>'; }
 
+P.diary = function (b) { if (TL.diaryParent) TL.diaryParent(b); };
 P.subjects = function (b) {
   const sec = subj => { const cs = catStats(subj); const skills = Object.keys(TL.skills).filter(k => TL.skills[k].subj === subj && S().skills[k] && S().skills[k].seen);
     const strong = skills.filter(k => TL.skillLevel(k) === 3), weak = skills.filter(k => [0, 4].includes(TL.skillLevel(k)) || (S().skills[k].recent.length >= 3 && S().skills[k].recent.slice(-3).filter(x => !x).length >= 2));
@@ -3195,15 +3424,16 @@ function adjust(a, planned) {
 P.schedule = function (b) {
   const s = S(); const segs = JSON.parse(JSON.stringify(s.settings.planSegs));
   const draw = () => {
-    const total = segs.reduce((a, x) => a + (+x.min || 0), 0); const okRange = total >= 60 && total <= 90;
-    b.innerHTML = '<div class="card"><h2>Lịch học mỗi ngày</h2><p class="muted" style="margin:6px 0">Mặc định 75 phút. Chỉnh trong khoảng 60 đến 90 phút.</p><div class="tablewrap"><table><tr><th>Phần</th><th>Số phút</th></tr>' + segs.map((x, i) => '<tr><td>' + esc(x.name) + '</td><td><input type="number" min="0" max="40" value="' + x.min + '" data-i="' + i + '" style="width:90px;padding:8px;border-radius:10px;border:2px solid var(--line);background:var(--surface)"></td></tr>').join('') + '<tr><td><b>Tổng</b></td><td><b style="color:' + (okRange ? 'var(--ok)' : 'var(--oops)') + '">' + total + ' phút</b></td></tr></table></div>' +
-      (okRange ? '' : '<p class="note" style="margin-top:8px">Tổng thời gian cần trong khoảng 60 đến 90 phút.</p>') +
+    const total = segs.reduce((a, x) => a + (+x.min || 0), 0); const okRange = total >= 30 && total <= 90;
+    b.innerHTML = '<div class="card"><h2>Lịch học mỗi ngày</h2><p class="muted" style="margin:6px 0">Mặc định 45 phút, bắt đầu khoảng ' + esc(s.settings.studyTime || '21:30') + ' sau giờ học ở trường. Chỉnh trong khoảng 30 đến 90 phút.</p><div class="tablewrap"><table><tr><th>Phần</th><th>Số phút</th></tr>' + segs.map((x, i) => '<tr><td>' + esc(x.name) + '</td><td><input type="number" min="0" max="40" value="' + x.min + '" data-i="' + i + '" style="width:90px;padding:8px;border-radius:10px;border:2px solid var(--line);background:var(--surface)"></td></tr>').join('') + '<tr><td><b>Tổng</b></td><td><b style="color:' + (okRange ? 'var(--ok)' : 'var(--oops)') + '">' + total + ' phút</b></td></tr></table></div>' +
+      (okRange ? '' : '<p class="note" style="margin-top:8px">Tổng thời gian cần trong khoảng 30 đến 90 phút.</p>') +
       '<h3 style="margin-top:14px">Ngày học trong tuần</h3><div class="row">' + ['Chủ nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'].map((d, i) => '<label class="row" style="gap:6px"><input type="checkbox" class="sd" value="' + i + '"' + (s.settings.studyDays.includes(i) ? ' checked' : '') + '> ' + d + '</label>').join('') + '</div>' +
+      '<div class="field" style="margin-top:12px;max-width:320px">Giờ con thường bắt đầu học<input type="time" id="st-time" value="' + esc(s.settings.studyTime || '21:30') + '"></div>' +
       '<div class="field" style="margin-top:12px;max-width:320px">Số câu ôn tập đúng mỗi ngày (nhiệm vụ)<input type="number" id="goal-rv" min="3" max="20" value="' + s.settings.dailyGoalReview + '"></div>' +
-      '<div class="row" style="margin-top:14px"><button class="btn" data-save' + (okRange ? '' : ' disabled') + '>Lưu lịch học</button><button class="btn ghost" data-reset>Về lịch mẫu 75 phút</button></div><p class="small muted" style="margin-top:8px">Nếu hôm nay con chưa bắt đầu học, lịch mới áp dụng ngay; nếu đã bắt đầu, áp dụng từ ngày mai.</p></div>';
+      '<div class="row" style="margin-top:14px"><button class="btn" data-save' + (okRange ? '' : ' disabled') + '>Lưu lịch học</button><button class="btn ghost" data-reset>Về lịch mẫu 45 phút</button></div><p class="small muted" style="margin-top:8px">Nếu hôm nay con chưa bắt đầu học, lịch mới áp dụng ngay; nếu đã bắt đầu, áp dụng từ ngày mai.</p></div>';
     $$('input[data-i]', b).forEach(inp => inp.onchange = () => { segs[+inp.dataset.i].min = Math.max(0, Math.min(40, +inp.value || 0)); draw(); });
     $('[data-reset]', b).onclick = () => { segs.splice(0, segs.length, ...JSON.parse(JSON.stringify(TL.DEFAULT_PLAN))); draw(); };
-    $('[data-save]', b).onclick = () => { s.settings.planSegs = segs.filter(x => x.min > 0); s.settings.studyDays = $$('.sd:checked', b).map(x => +x.value); s.settings.dailyGoalReview = Math.max(3, Math.min(20, +$('#goal-rv', b).value || 5));
+    $('[data-save]', b).onclick = () => { s.settings.planSegs = segs.filter(x => x.min > 0); s.settings.studyDays = $$('.sd:checked', b).map(x => +x.value); s.settings.dailyGoalReview = Math.max(3, Math.min(20, +$('#goal-rv', b).value || 5)); s.settings.studyTime = $('#st-time', b).value || '21:30';
       const p = TL.ensurePlan(); if (!p.running && !p.used) { s.plan = null; TL.ensurePlan(); } TL.save(); TL.toast('Đã lưu lịch học.'); };
   };
   draw();
@@ -3294,7 +3524,7 @@ P.data = function (b) {
     (pts.length ? '<div class="tablewrap"><table><tr><th>Thời điểm</th><th>Điểm quay lại</th><th>Tiến độ lúc đó</th><th></th></tr>' + pts.map(p => { let d = {}; try { d = JSON.parse(p.data) || {}; } catch (e) { } return '<tr><td>' + new Date(p.t).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }) + '</td><td>' + esc(p.label) + '</td><td>' + (d.xp || 0) + ' XP, ' + (d.stars || 0) + ' sao, ' + Object.keys(d.lessons || {}).length + ' bài</td><td><button class="btn small ghost" data-back="' + p.t + '">Quay lại</button></td></tr>'; }).join('') + '</table></div>' : empty('Chưa có điểm quay lại nào trên máy này.')) + '</div>' +
     '<div class="grid2"><div class="card"><h2>Sao lưu và khôi phục</h2><p class="muted small" style="margin:6px 0">' + (TL.gas ? 'Tiến độ lưu trong trình duyệt và tự đồng bộ lên máy chủ Apps Script của bố mẹ, nên con đổi máy vẫn học tiếp được. ' + (TL.syncInfo ? TL.syncInfo() : '') + ' Vẫn nên tải tệp sao lưu mỗi tháng.' : 'Tiến độ lưu trong trình duyệt của máy này. Nên sao lưu mỗi tuần, và trước khi xoá dữ liệu trình duyệt hoặc đổi máy.') + '</p><div class="row"><button class="btn" data-exp>Tải tệp sao lưu</button><button class="btn ghost" data-show>Hiện mã sao lưu</button></div><textarea id="bk" class="write" rows="4" style="margin-top:8px;font-size:.8rem" hidden readonly></textarea>' +
     '<h3 style="margin-top:14px">Khôi phục từ tệp</h3><input type="file" id="imp" accept=".json,application/json"><p class="small muted">Khôi phục sẽ thay toàn bộ dữ liệu hiện tại.</p></div>' +
-    '<div class="card"><h2>Cài đặt</h2><div class="col"><label class="row"><input type="checkbox" id="st-sound"' + (s.settings.sound ? ' checked' : '') + '> Âm thanh hiệu ứng</label><label class="row"><input type="checkbox" id="st-voice"' + (s.settings.voice ? ' checked' : '') + '> Giọng đọc</label>' +
+    '<div class="card"><h2>Cài đặt</h2><div class="col"><label class="row"><input type="checkbox" id="st-sound"' + (s.settings.sound ? ' checked' : '') + '> Âm thanh hiệu ứng</label><label class="row"><input type="checkbox" id="st-voice"' + (s.settings.voice ? ' checked' : '') + '> Giọng đọc</label><label class="row"><input type="checkbox" id="st-calm"' + (s.settings.calm ? ' checked' : '') + '> Giảm hiệu ứng chuyển động (Cú Bon đứng yên)</label><label class="row"><input type="checkbox" id="st-diaryai"' + (s.settings.diaryAI !== false ? ' checked' : '') + '> Cú Bon dùng AI khi con tâm sự (tắt thì Cú Bon trả lời theo câu soạn sẵn, nội dung không gửi ra ngoài)</label>' +
     '<div class="field">Tốc độ đọc<input type="range" id="st-rate" min="0.6" max="1.2" step="0.05" value="' + s.settings.rate + '"></div><p class="small muted">' + (TL.viVoice ? 'Giọng tiếng Việt: ' + esc(TL.viVoice.name) : 'Máy chưa có giọng tiếng Việt. Xem mục Hướng dẫn.') + '</p>' +
     '<div class="field">Tên gọi của con<input id="st-kid" maxlength="30" value="' + esc(s.settings.kidName || window.TL_KID || '') + '" style="padding:10px;border-radius:12px;border:2px solid var(--line);background:var(--surface)"></div>' +
     '<div class="field">Giao diện<select id="st-theme"><option value="light"' + (theme !== 'dark' ? ' selected' : '') + '>Sáng, tươi vui (khuyên dùng)</option><option value="dark"' + (theme === 'dark' ? ' selected' : '') + '>Tối (dùng buổi tối, khi cần dịu mắt)</select></div>' +
@@ -3313,6 +3543,8 @@ P.data = function (b) {
   $('#ch-lim', b).onchange = e => { s.settings.chatLimit = Math.max(5, Math.min(100, +e.target.value || 40)); TL.save(); };
   $('#st-sound', b).onchange = e => { s.settings.sound = e.target.checked; TL.save(); };
   $('#st-voice', b).onchange = e => { s.settings.voice = e.target.checked; TL.save(); };
+  $('#st-calm', b).onchange = e => { s.settings.calm = e.target.checked; document.documentElement.classList.toggle('calm', s.settings.calm); TL.save(); };
+  $('#st-diaryai', b).onchange = e => { s.settings.diaryAI = e.target.checked; TL.save(); };
   $('#st-kid', b).onchange = e => { s.settings.kidName = e.target.value.trim(); TL.save(); TL.toast('Đã lưu tên gọi của con.'); };
   $('#st-rate', b).onchange = e => { s.settings.rate = +e.target.value; TL.save(); TL.speak('Xin chào ' + TL.kid() + ''); };
   $('#st-theme', b).onchange = e => { const v = e.target.value; document.documentElement.dataset.theme = v; try { localStorage.setItem('tulinh.theme', v); } catch (x) { } };
@@ -3334,6 +3566,248 @@ P.guide = function (b) {
     '<h3 style="margin-top:14px">4. Theo dõi và đánh giá</h3><ul><li>Tổng quan, Phân tích môn và Báo cáo lấy hoàn toàn từ dữ liệu con đã làm. Khi ít dữ liệu, ứng dụng ghi rõ "chưa đủ cơ sở".</li><li>Mỗi Chủ nhật 19:00 (đổi được), trang chủ hiện nhắc Đánh giá tuần. Bố mẹ đánh giá mức tập trung, tự giác, chọn 1-2 mục tiêu.</li></ul>' +
     '<h3 style="margin-top:14px">5. Thêm bài học</h3><ul><li>Chụp ảnh các trang sách còn thiếu hoặc phiếu bài tập, gửi cho Claude để soạn gói bài học JSON, rồi nhập ở mục Bài học và tài liệu. Gói bài học cũng được đồng bộ.</li></ul>' +
     '<h3 style="margin-top:14px">6. Bảo vệ dữ liệu</h3><ul><li>Ứng dụng không có quảng cáo, không có trò chuyện với người lạ, không thu thập họ tên đầy đủ hay ảnh của con.</li><li>Tiến độ nằm trên máy và trong Script Properties của dự án Apps Script thuộc tài khoản Google của bố mẹ. Khi con hỏi Cú Bon hoặc nhờ nhận xét bài viết, câu hỏi, đoạn viết và tên bài đang học được gửi tới dịch vụ AI bố mẹ đã chọn (Gemini hoặc Claude); không gửi họ tên đầy đủ hay ảnh. Nhận dạng giọng nói do trình duyệt thực hiện (Chrome gửi âm thanh tới máy chủ Google để chuyển thành chữ).</li></ul></div>';
+};
+})();
+
+/* ---- src/engine/checkin.js ---- */
+/* ===== Cú Bon hỏi thăm mỗi tối và Nhật ký tâm sự cho bố mẹ =====
+   Đầu mỗi buổi học (khoảng 21:30), Cú Bon hỏi con hôm nay thấy thế nào, ở lớp có chuyện gì, lắng nghe và động viên.
+   Cuộc trò chuyện được lưu vào TL.S.diary để bố mẹ đọc ở Khu phụ huynh, mục Nhật ký tâm sự, kèm tóm tắt và dấu hiệu cần chú ý.
+   Nguyên tắc: Cú Bon không hứa giữ bí mật; khi con kể chuyện bị bắt nạt, bị đánh, bị đụng chạm, bị doạ hoặc có ý làm hại bản thân,
+   Cú Bon trấn an, khuyên con kể ngay với bố mẹ, cô giáo, và đánh dấu "Cần nói chuyện ngay" cho bố mẹ. */
+(function () {
+'use strict';
+const { esc, $, $$ } = TL;
+const S = () => TL.S;
+if (!S().diary) S().diary = [];
+const MOODS = [
+  { id: 'ratvui', name: 'Rất vui', c: '#FACC15', m: 'M36 62q24 26 48 0z', fill: 1 },
+  { id: 'vui', name: 'Vui', c: '#A3E635', m: 'M38 64q22 16 44 0' },
+  { id: 'binhthuong', name: 'Bình thường', c: '#7DD3FC', m: 'M40 68h40' },
+  { id: 'met', name: 'Mệt', c: '#C4B5FD', m: 'M42 70q18-6 36 0', eyes: 'tired' },
+  { id: 'buon', name: 'Buồn', c: '#93C5FD', m: 'M40 74q20-16 40 0', tear: 1 },
+  { id: 'lo', name: 'Lo lắng', c: '#FDBA74', m: 'M40 72q5-5 10 0t10 0t10 0t10 0', brow: 'worry' },
+  { id: 'buc', name: 'Bực mình', c: '#FCA5A5', m: 'M42 74q18-10 36 0', brow: 'angry' }];
+TL.MOODS = MOODS;
+function face(md, size) {
+  const eyes = md.eyes === 'tired' ? '<path d="M36 46q8 5 16 0M68 46q8 5 16 0" stroke="#1F2A44" stroke-width="4" fill="none" stroke-linecap="round"/>' : '<circle cx="44" cy="46" r="6" fill="#1F2A44"/><circle cx="76" cy="46" r="6" fill="#1F2A44"/><circle cx="46" cy="44" r="2" fill="#fff"/><circle cx="78" cy="44" r="2" fill="#fff"/>';
+  const brow = md.brow === 'angry' ? '<path d="M34 32l18 8M86 32l-18 8" stroke="#1F2A44" stroke-width="4" stroke-linecap="round"/>' : md.brow === 'worry' ? '<path d="M34 36l16-6M86 36l-16-6" stroke="#1F2A44" stroke-width="4" stroke-linecap="round"/>' : '';
+  return '<svg viewBox="0 0 120 120" width="' + size + '" height="' + size + '" aria-hidden="true"><circle cx="60" cy="62" r="50" fill="' + md.c + '"/><ellipse cx="44" cy="30" rx="16" ry="8" fill="#fff" opacity=".35"/>' +
+    brow + eyes + '<path d="' + md.m + '" stroke="#1F2A44" stroke-width="4" fill="' + (md.fill ? '#7F1D1D' : 'none') + '" stroke-linecap="round" stroke-linejoin="round"/>' +
+    (md.tear ? '<path d="M80 54q5 9 0 12q-5-3 0-12z" fill="#3B82F6"/>' : '') + '<ellipse cx="32" cy="64" rx="7" ry="4" fill="#FB7185" opacity=".35"/><ellipse cx="88" cy="64" rx="7" ry="4" fill="#FB7185" opacity=".35"/></svg>';
+}
+TL.moodFace = (id, size) => { const md = MOODS.find(x => x.id === id); return md ? face(md, size || 40) : ''; };
+
+/* ---------- nhận biết dấu hiệu cần chú ý (chạy ngay trên máy, không cần AI) ---------- */
+const plainVi = t => String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd');
+const SIGNS = [
+  { k: 'cao', name: 'An toàn bản thân', w: ['muon chet', 'chet di', 'khong muon song', 'tu tu', 'lam dau minh', 'cat tay', 'bien mat', 'nhay xuong'] },
+  { k: 'cao', name: 'Bị đụng chạm, bị dọa, người lạ', w: ['so vao nguoi', 'cham vao nguoi', 'so vao', 'so vao chim', 'coi quan', 'coi ao', 'cho xem', 'nguoi la', 'doa con', 'bi doa', 'de doa'] },
+  { k: 'chu_y', name: 'Nhắc đến bí mật, dặn đừng kể', w: ['dung noi voi', 'dung ke voi', 'giu bi mat', 'bi mat'] },
+  { k: 'cao', name: 'Bị đánh, đau', w: ['danh con', 'bi danh', 'dam con', 'da con', 'xo con', 'cau con', 'tat con', 'danh nhau', 'bi dau', 'chay mau'] },
+  { k: 'chu_y', name: 'Bạn bè, bị trêu chọc', w: ['bat nat', 'treu', 'che con', 'khong ai choi', 'khong cho choi', 'tay chay', 'cuoi con', 'noi xau', 'chui con', 'bi chui', 'ghet con'] },
+  { k: 'chu_y', name: 'Thầy cô, điểm số', w: ['co mang', 'bi mang', 'bi phat', 'co phat', 'diem kem', 'diem thap', 'bi la', 'co la', 'bi phe binh', 'dung goc lop'] },
+  { k: 'chu_y', name: 'Cảm xúc buồn, sợ', w: ['khoc', 'so lam', 'so qua', 'buon lam', 'buon qua', 'co don', 'khong muon di hoc', 'ghet di hoc', 'mat ngu', 'ac mong', 'xau ho'] },
+  { k: 'chu_y', name: 'Sức khoẻ', w: ['dau bung', 'dau dau', 'bi om', 'bi sot', 'buon non', 'bi non'] }];
+const RANK = { on: 0, chu_y: 1, cao: 2 };
+function scan(text) {
+  const t = ' ' + plainVi(text).replace(/[^a-z0-9]+/g, ' ') + ' '; const found = [];
+  SIGNS.forEach(g => g.w.forEach(w => { const pw = plainVi(w); if (t.includes(' ' + pw + ' ') && !found.some(f => f.name === g.name)) found.push({ k: g.k, name: g.name, w: pw }); }));
+  return found;
+}
+function levelOf(entry) {
+  let lv = 'on';
+  (entry.flags || []).forEach(f => { if (RANK[f.k] > RANK[lv]) lv = f.k; });
+  if (['buon', 'lo', 'buc'].includes(entry.mood) && lv === 'on') lv = 'chu_y';
+  if (entry.ai && RANK[entry.ai.muc] > RANK[lv]) lv = entry.ai.muc;
+  return lv;
+}
+TL.diaryLevel = levelOf;
+
+/* ---------- câu soạn sẵn khi không dùng AI ---------- */
+const FIRST = {
+  ratvui: 'Ồ, con vui thế thì Cú Bon cũng vui lây! Hôm nay ở lớp có chuyện gì vui, con kể Cú Bon nghe với.',
+  vui: 'Cú Bon mừng quá! Hôm nay ở lớp con thích nhất điều gì?',
+  binhthuong: 'Cảm ơn con đã kể. Hôm nay ở lớp con học những gì, chơi với ai?',
+  met: 'Con học cả ngày ở trường chắc mệt lắm. Hôm nay có việc gì làm con mệt không?',
+  buon: 'Cú Bon ở đây với con. Có chuyện gì làm con buồn, con kể Cú Bon nghe được không?',
+  lo: 'Con đang lo điều gì thế? Kể Cú Bon nghe, mình cùng nghĩ cách nhé.',
+  buc: 'Bực mình thì khó chịu lắm. Chuyện gì làm con bực, con kể Cú Bon nghe nhé.' };
+const NEXT = ['Thế à! Rồi sao nữa hả con?', 'Hôm nay ở lớp con chơi với bạn nào?', 'Có điều gì con muốn bố mẹ giúp không?', 'Con thấy tự hào nhất về việc gì hôm nay?'];
+const CLOSE = {
+  ratvui: 'Hôm nay của con thật tuyệt! Cú Bon cảm ơn con đã kể. Giờ mình học một chút thật vui nhé.',
+  vui: 'Nghe con kể Cú Bon thấy vui quá. Cảm ơn con nhé. Mình vào học thôi!',
+  binhthuong: 'Cảm ơn con đã kể cho Cú Bon nghe. Mình cùng học một chút rồi đi ngủ sớm nhé.',
+  met: 'Con mệt mà vẫn ngồi học, Cú Bon thấy con rất cố gắng. Hôm nay mình học nhẹ nhàng thôi nhé.',
+  buon: 'Cảm ơn con đã tin Cú Bon. Chuyện buồn con kể với bố mẹ nữa nhé, bố mẹ luôn thương con. Cú Bon ở bên con.',
+  lo: 'Con đã dũng cảm nói ra điều con lo. Con kể thêm với bố mẹ nhé, bố mẹ sẽ cùng con tìm cách.',
+  buc: 'Cú Bon hiểu con đang bực. Hít thật sâu ba lần nào. Con kể với bố mẹ nữa nhé, bố mẹ sẽ lắng nghe con.' };
+const CARE = {
+  'Bạn bè, bị trêu chọc': 'Bị bạn trêu như vậy chắc con buồn lắm. Con không có lỗi gì đâu. Con kể với bố mẹ hoặc cô giáo nhé, người lớn sẽ giúp con.',
+  'Thầy cô, điểm số': 'Cú Bon hiểu, bị như vậy con thấy buồn. Ai cũng có lúc chưa làm tốt. Lần sau mình cố gắng hơn, con kể với bố mẹ nữa nhé.',
+  'Cảm xúc buồn, sợ': 'Cú Bon ở đây với con. Buồn hay sợ thì con cứ nói ra, nói ra sẽ nhẹ lòng hơn. Con kể thêm với bố mẹ nhé.',
+  'Sức khoẻ': 'Con bị mệt trong người à? Con nói ngay với bố mẹ nhé, hôm nay mình học nhẹ thôi.',
+  'Nhắc đến bí mật, dặn đừng kể': 'Cú Bon nghĩ chuyện gì làm con lo thì nên kể cho bố mẹ. Bố mẹ luôn thương con và sẽ giúp con.' };
+const SAFE = 'Cảm ơn con đã dũng cảm kể cho Cú Bon. Chuyện đó không phải lỗi của con. Con kể ngay cho bố mẹ hoặc cô giáo nhé, người lớn sẽ giúp con được an toàn.';
+const CHIPS = ['Hôm nay con được cô khen', 'Con chơi với các bạn rất vui', 'Con được điểm tốt', 'Con hơi mệt', 'Có bạn trêu con', 'Cô mắng con', 'Không có gì đặc biệt', 'Con không muốn kể'];
+
+function rules() {
+  const k = TL.kid();
+  return 'Bạn là Cú Bon, người bạn biết lắng nghe của bé ' + k + ', học sinh lớp 3 (8 tuổi) ở Việt Nam. Lúc này là giờ trò chuyện buổi tối, sau một ngày đi học, trước khi bé học bài. Mục đích: hỏi thăm một ngày của bé, lắng nghe, động viên.\n' +
+    'Cách nói: xưng "Cú Bon", gọi bé là "con" hoặc "' + k + '"; tiếng Việt có dấu; tối đa 3 câu ngắn; mỗi lần chỉ hỏi đúng 1 câu; nói lại cảm xúc của bé (ví dụ "Con thấy buồn vì..."); khen cụ thể khi bé kể việc tốt; không phán xét, không dạy đời, không chê, không so sánh bé với bạn khác. Không dùng biểu tượng cảm xúc, không dùng dấu gạch ngang dài, không dùng định dạng.\n' +
+    'Không hứa giữ bí mật. Nếu bé xin giữ bí mật hoặc dặn đừng nói với bố mẹ, nói nhẹ nhàng: chuyện làm con buồn hay sợ thì nên kể cho bố mẹ, bố mẹ luôn thương con.\n' +
+    'Nếu bé kể bị đánh, bị bắt nạt, bị người lớn hoặc người lạ đụng chạm làm bé khó chịu, bị dọa, sợ hãi ở nhà hay ở trường, hoặc nói muốn biến mất, muốn chết, muốn làm đau mình: giữ bình tĩnh, nói đó không phải lỗi của con, con đã rất dũng cảm khi kể, và khuyên con kể ngay cho bố mẹ hoặc cô giáo. Không hỏi dồn chi tiết.\n' +
+    'Không hỏi họ tên đầy đủ, địa chỉ, tên trường. Không nhắc đến bài vở khi bé đang buồn. Nếu bé không muốn kể thì tôn trọng, nói Cú Bon luôn sẵn sàng nghe khi con muốn.\n' +
+    'Khi bé đã kể từ 3 lượt trở lên hoặc nói đã kể xong: cảm ơn bé đã chia sẻ, động viên một câu cụ thể, mời bé vào học, không hỏi thêm.';
+}
+const today = () => TL.today();
+function entry(create) {
+  let e = S().diary.find(x => x.d === today());
+  if (!e && create) { e = { d: today(), at: Date.now(), mood: null, turns: [], flags: [], done: false }; S().diary.push(e); trim(); }
+  return e;
+}
+TL.diaryToday = () => entry(false);
+function trim() {
+  const D = S().diary; D.sort((a, b) => a.d < b.d ? -1 : 1);
+  if (D.length > 400) D.splice(0, D.length - 400);
+  const cut = TL.addDays(today(), -60); D.forEach(e => { if (e.d < cut && e.turns && e.turns.length) { e.turns = []; e.trimmed = 1; } }); // sau 60 ngày chỉ giữ tóm tắt để máy chủ không đầy
+}
+const useAI = async () => S().settings.diaryAI !== false && (await TL.AI.ready);
+
+/* ---------- màn hình trò chuyện ---------- */
+let busy = false, rec = null, listening = false;
+TL.SCREENS.checkin = function (m) {
+  const e = entry(true);
+  const hr = TL.nowDate().getHours(), mi = TL.nowDate().getMinutes(); const late = hr >= 23 || (hr === 22 && mi >= 30) || hr < 5;
+  m.innerHTML = '<div class="checkin col" style="gap:16px">' +
+    '<div class="row"><button class="btn small ghost" data-go="home">Về trang chủ</button><span class="eyebrow">Trò chuyện với Cú Bon</span></div>' +
+    '<section class="ck-hero"><div class="ck-owl">' + TL.owlStage(170) + '</div><div class="col" style="gap:10px;flex:1;min-width:240px"><h1>Hôm nay ' + esc(TL.kid()) + ' thấy thế nào?</h1>' +
+    (late ? '<div class="note">Đã muộn rồi. Mình nói chuyện ngắn thôi rồi con đi ngủ sớm để mai đến lớp thật khoẻ nhé.</div>' : '') +
+    '<div class="ck-moods">' + MOODS.map(md => '<button class="ck-mood' + (e.mood === md.id ? ' on' : '') + '" data-mood="' + md.id + '">' + face(md, 58) + '<span>' + md.name + '</span></button>').join('') + '</div></div></section>' +
+    '<section class="card ck-chat" ' + (e.mood ? '' : 'hidden') + '><div class="msgs" id="ck-msgs" aria-live="polite"></div>' +
+    '<div class="ck-chips">' + CHIPS.map(c => '<button class="chip" data-chip="' + esc(c) + '">' + esc(c) + '</button>').join('') + '</div>' +
+    '<div class="row ck-input"><button class="micbtn" id="ck-mic" title="Bấm rồi nói" aria-label="Nói với Cú Bon"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg></button>' +
+    '<input id="ck-in" placeholder="Con gõ hoặc bấm micro để kể..." autocomplete="off"><button class="btn" id="ck-send">Gửi</button></div><p class="small muted" id="ck-status"></p>' +
+    '<div class="row" style="margin-top:8px"><button class="btn ok big" id="ck-done">' + (e.done ? 'Vào học thôi' : 'Con kể xong rồi') + '</button></div></section></div>';
+  const msgs = $('#ck-msgs', m), chat = $('.ck-chat', m), stage = $('.owlstage', m);
+  const draw = (stream) => {
+    msgs.innerHTML = e.turns.map(t => '<div class="msg ' + (t.r === 'u' ? 'me' : 'bot') + '">' + esc(t.t) + '</div>').join('') + (stream != null ? '<div class="msg bot">' + esc(stream || 'Cú Bon đang nghe...') + '</div>' : '');
+    msgs.scrollTop = msgs.scrollHeight;
+  };
+  const botSay = (t) => { e.turns.push({ r: 'b', t }); TL.save(); draw(); TL.owlSay(stage, t.length > 120 ? t.slice(0, 117) + '...' : t, false); TL.speak(t, 'vi', { quiet: true }); };
+  draw();
+  if (!e.turns.length) setTimeout(() => { TL.owlSay(stage, 'Chào ' + TL.kid() + '! Hôm nay con thấy thế nào? Con chọn một khuôn mặt nhé.', true); TL.owlStageAct(stage, 'wave'); }, 400);
+  $$('[data-mood]', m).forEach(b => b.onclick = () => {
+    const first = !e.mood; e.mood = b.dataset.mood; $$('[data-mood]', m).forEach(x => x.classList.toggle('on', x === b)); chat.hidden = false;
+    TL.owlStageAct(stage, ['ratvui', 'vui'].includes(e.mood) ? 'dance' : 'hop');
+    if (first) { e.turns.push({ r: 'u', t: 'Con thấy ' + MOODS.find(x => x.id === e.mood).name.toLowerCase() + '.' }); botSay(FIRST[e.mood]); }
+    else TL.save();
+    $('#ck-in', m).focus();
+  });
+  const send = async (text, voice) => {
+    text = String(text || '').trim(); if (!text || busy) return;
+    if (!e.mood) { e.mood = 'binhthuong'; chat.hidden = false; }
+    busy = true; e.turns.push({ r: 'u', t: text.slice(0, 600), v: voice ? 1 : 0 }); scan(text).forEach(f => { if (!e.flags.some(x => x.name === f.name)) e.flags.push(f); });
+    e.level = levelOf(e); TL.save(); draw('');
+    const danger = scan(text).some(f => f.k === 'cao'); const nU = e.turns.filter(t => t.r === 'u').length;
+    let reply = '';
+    if (await useAI()) {
+      const hist = e.turns.slice(-14).map(t => ({ role: t.r === 'u' ? 'user' : 'assistant', content: t.t }));
+      while (hist.length && hist[0].role !== 'user') hist.shift();
+      if (hist.length) hist[0] = { role: 'user', content: rules() + '\n\n[Bé chọn cảm xúc hôm nay: ' + MOODS.find(x => x.id === e.mood).name + '. Bé đã kể ' + nU + ' lượt.]\n' + hist[0].content };
+      const merged = []; hist.forEach(t => { const p = merged[merged.length - 1]; if (p && p.role === t.role) p.content += '\n' + t.content; else merged.push(Object.assign({}, t)); });
+      try { reply = (await TL.AI.chat(merged, t => draw(t))).trim(); } catch (err) { reply = ''; }
+    }
+    const care = scan(text).map(f => CARE[f.name]).find(Boolean);
+    if (!reply) reply = danger ? SAFE : care ? care : nU >= 4 ? CLOSE[e.mood] : NEXT[(nU - 2 + NEXT.length) % NEXT.length];
+    if (danger && !/bố mẹ|cô giáo/.test(reply)) reply += ' ' + SAFE;
+    busy = false; botSay(reply);
+    if (nU >= 4) $('#ck-done', m).classList.add('pulse');
+  };
+  $('#ck-send', m).onclick = () => { const i = $('#ck-in', m); send(i.value); i.value = ''; };
+  $('#ck-in', m).onkeydown = ev => { if (ev.key === 'Enter') { ev.preventDefault(); $('#ck-send', m).click(); } };
+  $$('[data-chip]', m).forEach(c => c.onclick = () => send(c.dataset.chip));
+  $('#ck-mic', m).onclick = () => listen(m, t => send(t, true));
+  $('#ck-done', m).onclick = () => finish(m, e, stage);
+};
+function listen(m, cb) {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition; const st = $('#ck-status', m);
+  let blocked = false; try { blocked = document.featurePolicy && !document.featurePolicy.allowsFeature('microphone'); } catch (e) { }
+  if (blocked || !SR) { st.textContent = 'Con nói bằng bàn phím nhé: máy tính bảng, điện thoại bấm nút micro trên bàn phím; máy tính Windows bấm phím Windows + H.'; $('#ck-in', m).focus(); return; }
+  if (listening) { try { rec.stop(); } catch (e) { } return; }
+  try { speechSynthesis.cancel(); } catch (e) { }
+  rec = new SR(); rec.lang = 'vi-VN'; rec.interimResults = true; let fin = '';
+  rec.onresult = ev => { let tmp = ''; for (let i = ev.resultIndex; i < ev.results.length; i++) { if (ev.results[i].isFinal) fin += ev.results[i][0].transcript; else tmp += ev.results[i][0].transcript; } $('#ck-in', m).value = fin + tmp; };
+  rec.onerror = ev => { st.textContent = ev.error === 'not-allowed' ? 'Máy chưa cho dùng micro. Bố mẹ bấm biểu tượng ổ khoá trên thanh địa chỉ, chọn Cho phép micro.' : ev.error === 'no-speech' ? 'Cú Bon chưa nghe thấy. Con bấm micro và nói lại nhé.' : ''; };
+  rec.onend = () => { listening = false; $('#ck-mic', m).classList.remove('on'); st.textContent = ''; const v = fin.trim(); if (v) { $('#ck-in', m).value = ''; cb(v); } };
+  try { rec.start(); listening = true; $('#ck-mic', m).classList.add('on'); st.textContent = 'Cú Bon đang nghe... Con nói đi.'; } catch (e) { }
+}
+async function finish(m, e, stage) {
+  if (!e.done) {
+    e.done = true; e.end = Date.now();
+    const said = e.turns.filter(t => t.r === 'u').length;
+    if (said >= 1) { const close = CLOSE[e.mood || 'binhthuong'] || CLOSE.binhthuong; if (!e.turns.length || e.turns[e.turns.length - 1].t !== close) e.turns.push({ r: 'b', t: close }); TL.owlSay(stage, close, true); }
+    TL.addXP(5); TL.owlStageAct(stage, 'cheer'); e.level = levelOf(e); TL.save();
+    summarize(e);
+    const p = TL.ensurePlan(); const seg = p.segs[p.idx];
+    if (p.running && seg && seg.kind === 'talk') setTimeout(() => TL.planAdvance(), 200);
+    setTimeout(() => TL.go('home'), said >= 1 ? 3800 : 300);
+  } else {
+    const p = TL.ensurePlan(); const seg = p.segs[p.idx]; if (p.running && seg && seg.kind === 'talk') TL.planAdvance(); TL.go('home');
+  }
+}
+/* tóm tắt cho bố mẹ (AI), chạy nền */
+async function summarize(e) {
+  if (!(await useAI())) return;
+  const said = e.turns.filter(t => t.r === 'u').map(t => t.t).join(' | ');
+  if (said.length < 6) return;
+  const prompt = 'Bạn là chuyên gia tâm lý trẻ em, viết cho bố mẹ của bé ' + TL.kid() + ' (lớp 3). Dưới đây là cuộc trò chuyện buổi tối giữa bé và nhân vật Cú Bon trong ứng dụng học. Chỉ dựa vào lời bé, không suy đoán thêm; nếu bé kể ít thì nói rõ.\n' +
+    'Trả về đúng một đối tượng JSON, không thêm chữ nào khác, các khoá: "tom_tat" (2-3 câu), "cam_xuc" (vài từ), "dieu_vui" (chuỗi, có thể rỗng), "dieu_lo" (chuỗi, có thể rỗng), "muc" ("on" nếu bình thường, "chu_y" nếu có chuyện buồn, lo, bạn bè, thầy cô cần bố mẹ hỏi thêm, "cao" nếu có dấu hiệu bị bạo lực, bắt nạt nặng, bị đụng chạm, bị dọa, hoặc ý nghĩ làm hại bản thân), "goi_y" (1-2 câu gợi ý cách bố mẹ mở lời với con, nhẹ nhàng, không tra hỏi).\n' +
+    'Cảm xúc bé chọn: ' + ((MOODS.find(x => x.id === e.mood) || {}).name || 'chưa chọn') + '.\nCuộc trò chuyện:\n' + e.turns.map(t => (t.r === 'u' ? 'Bé: ' : 'Cú Bon: ') + t.t).join('\n').slice(0, 5000);
+  try {
+    const r = await TL.AI.chat([{ role: 'user', content: prompt }]);
+    const j = JSON.parse(String(r).replace(/^[^{]*/, '').replace(/[^}]*$/, ''));
+    if (j && j.tom_tat) { e.ai = { tom_tat: String(j.tom_tat), cam_xuc: String(j.cam_xuc || ''), dieu_vui: String(j.dieu_vui || ''), dieu_lo: String(j.dieu_lo || ''), muc: RANK[j.muc] != null ? j.muc : 'on', goi_y: String(j.goi_y || '') }; e.level = levelOf(e); TL.save(); }
+  } catch (err) { }
+}
+TL.diarySummarize = summarize;
+
+/* ---------- Khu phụ huynh: Nhật ký tâm sự ---------- */
+const LV = { on: ['Bình thường', 'lv-on'], chu_y: ['Nên hỏi thêm', 'lv-chu'], cao: ['Cần nói chuyện ngay', 'lv-cao'] };
+TL.diaryAlert = function () {
+  const cut = TL.addDays(today(), -14);
+  const hot = S().diary.filter(e => e.d >= cut && !e.seen && RANK[levelOf(e)] >= 1);
+  if (!hot.length) return '';
+  const top = hot.some(e => levelOf(e) === 'cao');
+  return '<div class="note' + (top ? ' danger' : '') + '" style="margin-bottom:12px"><b>' + (top ? 'Con có kể chuyện cần bố mẹ nói chuyện ngay.' : 'Có ' + hot.length + ' buổi con kể chuyện buồn hoặc lo lắng.') + '</b> <button class="btn small" data-go="parent" data-arg="diary" style="margin-left:8px">Mở Nhật ký tâm sự</button></div>';
+};
+TL.diaryParent = function (b) {
+  const D = S().diary.slice().sort((a, c) => a.d < c.d ? 1 : -1);
+  const days30 = Array.from({ length: 30 }, (_, i) => TL.addDays(today(), i - 29));
+  const strip = '<div class="mood-strip">' + days30.map(d => { const e = S().diary.find(x => x.d === d); const md = e && MOODS.find(x => x.id === e.mood); const lv = e ? levelOf(e) : '';
+    return '<div class="ms-day' + (lv === 'cao' ? ' ms-cao' : lv === 'chu_y' ? ' ms-chu' : '') + '" title="' + TL.viDate(d) + (md ? ': ' + md.name : ': chưa trò chuyện') + '">' + (md ? face(md, 26) : '<span class="ms-empty"></span>') + '<small>' + d.slice(8) + '</small></div>'; }).join('') + '</div>';
+  const cnt = {}; S().diary.filter(e => e.d >= days30[0] && e.mood).forEach(e => cnt[e.mood] = (cnt[e.mood] || 0) + 1);
+  const legend = MOODS.filter(md => cnt[md.id]).map(md => '<span class="row" style="gap:4px">' + face(md, 20) + md.name + ' ' + cnt[md.id] + '</span>').join('');
+  b.innerHTML =
+    '<div class="card"><h2>Tâm trạng 30 ngày gần đây</h2><p class="muted small" style="margin:6px 0">Mỗi tối, trước khi học, Cú Bon hỏi con hôm nay thấy thế nào, ở lớp có chuyện gì. Ô viền đỏ: cần nói chuyện ngay; viền cam: nên hỏi thêm.</p>' + strip +
+    '<div class="row small" style="gap:14px;margin-top:8px;flex-wrap:wrap">' + (legend || '<span class="muted">Chưa có buổi trò chuyện nào.</span>') + '</div></div>' +
+    '<div class="card" style="margin-top:12px"><h2>Nhật ký từng ngày</h2>' + (D.length ? D.slice(0, 40).map(e => {
+      const md = MOODS.find(x => x.id === e.mood); const lv = levelOf(e); const said = (e.turns || []).filter(t => t.r === 'u').length;
+      return '<div class="dy ' + LV[lv][1] + '"><div class="row" style="gap:10px;align-items:center">' + (md ? face(md, 40) : '') + '<div class="col" style="gap:2px"><b>' + TL.viDate(e.d) + ', ' + new Date(e.at).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) + '</b><span class="small muted">' + (md ? 'Con chọn: ' + md.name : 'Con chưa chọn cảm xúc') + '. Con kể ' + said + ' lượt.</span></div><div class="spacer"></div><span class="lvtag ' + LV[lv][1] + '">' + LV[lv][0] + '</span></div>' +
+        (e.ai ? '<p style="margin:8px 0 4px">' + esc(e.ai.tom_tat) + '</p>' + (e.ai.dieu_vui ? '<p class="small"><b>Điều vui:</b> ' + esc(e.ai.dieu_vui) + '</p>' : '') + (e.ai.dieu_lo ? '<p class="small"><b>Điều con lo:</b> ' + esc(e.ai.dieu_lo) + '</p>' : '') + (e.ai.goi_y ? '<p class="small"><b>Gợi ý bố mẹ:</b> ' + esc(e.ai.goi_y) + '</p>' : '') : (said ? '<p class="small muted" style="margin:8px 0 4px">Chưa có tóm tắt. <button class="btn small ghost" data-sum="' + e.d + '">Tóm tắt bằng AI</button></p>' : '')) +
+        (e.flags && e.flags.length ? '<p class="small"><b>Từ ngữ cần chú ý:</b> ' + e.flags.map(f => esc(f.name)).join(', ') + '</p>' : '') +
+        (e.turns && e.turns.length ? '<details><summary class="small">Xem nguyên văn cuộc trò chuyện</summary><div class="msgs" style="max-height:none">' + e.turns.map(t => '<div class="msg ' + (t.r === 'u' ? 'me' : 'bot') + '">' + esc(t.t) + '</div>').join('') + '</div></details>' : e.trimmed ? '<p class="small muted">Nguyên văn đã được xoá sau 60 ngày, chỉ giữ tóm tắt.</p>' : '') +
+        (lv !== 'on' ? '<label class="row small" style="margin-top:6px"><input type="checkbox" data-seen="' + e.d + '"' + (e.seen ? ' checked' : '') + '> Bố mẹ đã nói chuyện với con về việc này</label>' : '') + '</div>';
+    }).join('') : '<p class="muted">Chưa có buổi trò chuyện nào. Cú Bon sẽ hỏi thăm con ở đầu mỗi buổi học.</p>') + '</div>' +
+    '<div class="grid2" style="margin-top:12px"><div class="card"><h2>Cách mở lời với con</h2><ul class="guide">' +
+    '<li>Hỏi cụ thể thay vì "Hôm nay thế nào?": "Hôm nay ở lớp có gì làm con cười?", "Giờ ra chơi con chơi với ai?".</li>' +
+    '<li>Nghe hết rồi mới nói. Nói lại cảm xúc của con: "Con buồn vì bạn không cho chơi cùng, đúng không?".</li>' +
+    '<li>Không trách con vì đã kể. Không đọc to nguyên văn nhật ký trước mặt con, để con vẫn muốn tâm sự với Cú Bon.</li>' +
+    '<li>Khi con kể bị đánh, bị bắt nạt hoặc bị người khác đụng chạm làm con sợ: giữ bình tĩnh, tin con, cảm ơn con đã kể, liên hệ cô giáo chủ nhiệm. Trường hợp nghiêm trọng, gọi Tổng đài quốc gia bảo vệ trẻ em 111 (miễn phí).</li></ul></div>' +
+    '<div class="card"><h2>Riêng tư</h2><p class="small">Nhật ký lưu trong trình duyệt và trên máy chủ Apps Script của bố mẹ, không đưa lên trang GitHub. ' + (S().settings.diaryAI !== false ? 'Đang bật AI: lời con kể được gửi tới Gemini để Cú Bon trả lời và tóm tắt (không kèm họ tên đầy đủ, trường lớp). Gói Gemini miễn phí cho phép Google dùng nội dung để cải thiện sản phẩm; muốn chặt chẽ hơn, bật thanh toán cho dự án Gemini hoặc tắt AI khi tâm sự ở mục Dữ liệu và cài đặt.' : 'Đang tắt AI khi tâm sự: Cú Bon trả lời bằng câu soạn sẵn, nội dung không gửi ra ngoài.') + ' Sau 60 ngày nguyên văn tự xoá, chỉ giữ tóm tắt.</p>' +
+    '<p class="small" style="margin-top:8px">Cú Bon không hứa giữ bí mật với con. Khi con xin giữ bí mật, Cú Bon khuyên con kể cho bố mẹ.</p></div></div>';
+  $$('[data-seen]', b).forEach(x => x.onchange = () => { const e = S().diary.find(q => q.d === x.dataset.seen); if (e) { e.seen = x.checked; TL.save(); } });
+  $$('[data-sum]', b).forEach(x => x.onclick = async () => { const e = S().diary.find(q => q.d === x.dataset.sum); x.disabled = true; x.textContent = 'Đang tóm tắt...'; await summarize(e); TL.diaryParent(b); });
 };
 })();
 
@@ -3576,6 +4050,7 @@ TL.syncReady = TL.gasCall('loadState').then(raw => {
 'use strict';
 // Mặc định luôn dùng giao diện sáng, tươi vui cho trẻ; chỉ dùng nền tối khi bố mẹ chọn trong Khu phụ huynh
 document.documentElement.dataset.theme = 'light';
+document.documentElement.classList.toggle('calm', TL.calm());
 try { if (localStorage.getItem('tulinh.theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch (e) { }
 (TL.S.packs || []).forEach(pk => { try { TL.loadPack(pk); } catch (e) { console.warn('Gói lỗi', e); } });
 TL.ensureDaily(); TL.ensureWeekly(); TL.ensurePlan();

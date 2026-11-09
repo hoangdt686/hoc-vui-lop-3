@@ -231,7 +231,7 @@ td.num { font-variant-numeric: tabular-nums; text-align: right; }
 .memcard .f { background: var(--xp-soft); } .memcard .b { background: var(--ok-soft); transform: rotateY(180deg); font-weight: 700; }
 html.calm *, html.calm *::before, html.calm *::after { animation: none !important; transition: none !important; }
 
-/* Hỏi Cú Bon */
+/* Hỏi Cú Uyên Bác */
 .chatfab { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 15; display: flex; align-items: center; gap: 6px; padding: 4px 16px 4px 6px; border-radius: 999px; border: 2px solid var(--xp); background: var(--surface); font-weight: 900; box-shadow: var(--shadow); min-height: 56px; }
 .chatpanel { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(84px + env(safe-area-inset-bottom, 0px)); z-index: 16; width: min(400px, calc(100vw - 32px)); max-height: min(560px, calc(100vh - 120px)); display: flex; flex-direction: column; gap: 8px; background: var(--surface); border: 2px solid var(--xp); border-radius: 20px; padding: 12px; box-shadow: var(--shadow); }
 .chatpanel header b { font-family: var(--f-display); font-size: 1.2rem; }
@@ -374,7 +374,7 @@ html.calm .door, html.calm .node { transform: none !important; }
 :root[data-theme="light"] .step.past { background: #E9E2FF; }
 html.calm .sky3d .sun { animation: none; }
 
-/* ===== Cú Bon 3D chuyển động ===== */
+/* ===== Cú Uyên Bác 3D chuyển động ===== */
 .owl3d { overflow: visible; }
 .owl3d g, .owl3d ellipse.o-shadow { transform-box: view-box; }
 .owl3d .o-all { transform-origin: 60px 108px; animation: owlIdle 3.2s ease-in-out infinite; }
@@ -412,7 +412,7 @@ html.calm .owl3d *, html.calm .owl3d { animation: none !important; }
 .vis .row .vis3d{max-width:44%}
 @keyframes visPop{from{transform:scale(.85) translateY(8px);opacity:0}to{transform:none;opacity:1}}
 html.calm .vis .vis3d {animation:none}
-/* ===== Cú Bon 3D tương tác (owl3d.js) ===== */
+/* ===== Cú Uyên Bác 3D tương tác (owl3d.js) ===== */
 .owlstage { position: relative; width: var(--s); height: var(--s); perspective: calc(var(--s) * 5); cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; outline: none; flex: 0 0 auto; }
 .owlstage:active { cursor: grabbing; }
 .owlstage:focus-visible { box-shadow: 0 0 0 4px #A78BFA; border-radius: 50%; }
@@ -436,7 +436,7 @@ html.calm .vis .vis3d {animation:none}
 @keyframes osWingR { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-10deg); } }
 @keyframes osFlapL { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(38deg); } }
 @keyframes osFlapR { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-38deg); } }
-/* khi đang kéo xoay thì tắt lắc tự động để Cú Bon theo tay */
+/* khi đang kéo xoay thì tắt lắc tự động để Cú Uyên Bác theo tay */
 .owlstage .owlrig[style*="rotate"] { animation: none; }
 .owlstage.dance .owlbob { animation: osDance .95s ease-in-out 2; }
 .owlstage.dance .owL svg, .owlstage.cheer .owL svg, .owlstage.wave .owL svg { animation: osFlapL .2s ease-in-out infinite; }
@@ -590,7 +590,7 @@ const KEY = 'tulinh.slw.v1';
 TL.storageOK = true;
 /* Lịch mẫu 45 phút, học khoảng 21:30 sau giờ học ở trường */
 const DEFAULT_PLAN = [
-  { id: 'talk', name: 'Trò chuyện với Cú Bon', min: 4, kind: 'talk' },
+  { id: 'talk', name: 'Trò chuyện với Cú Uyên Bác', min: 4, kind: 'talk' },
   { id: 'tv', name: 'Tiếng Việt', min: 15, kind: 'tv' },
   { id: 'b1', name: 'Nghỉ giải lao', min: 2, kind: 'break' },
   { id: 'toan', name: 'Toán', min: 15, kind: 'toan' },
@@ -619,7 +619,7 @@ function load(given) {
   if (!s || s.v !== 1) return d;
   const hadVer = s.settings && s.settings.planVer;
   s.settings = Object.assign(d.settings, s.settings || {});
-  if (!hadVer) { // bản cũ: lịch mẫu 75 phút; bố mẹ chưa sửa thì đổi sang lịch 45 phút có phần trò chuyện với Cú Bon
+  if (!hadVer) { // bản cũ: lịch mẫu 75 phút; bố mẹ chưa sửa thì đổi sang lịch 45 phút có phần trò chuyện với Cú Uyên Bác
     const segs = s.settings.planSegs || [];
     if (segs.map(x => x.id).join() === OLD_PLAN_IDS) { s.settings.planSegs = DEFAULT_PLAN; if (s.plan && !s.plan.running) s.plan = null; }
     s.settings.planVer = 2;
@@ -1351,7 +1351,7 @@ function spellGen(key) {
     const p = parseBlank(pick(def.w));
     const mode = TL.viVoice && Math.random() < .35 ? 'listen' : (Math.random() < .5 ? 'word' : 'blank');
     if (mode === 'blank') return { type: 'mcq', q: 'Chọn chữ thích hợp điền vào chỗ trống: ' + p.blank, choices: p.parts, answer: p.parts[0], hint: def.tip, solution: ['Viết đúng là: ' + p.right + '.'], spell: true };
-    if (mode === 'listen') return { type: 'mcq', q: 'Nghe Cú Bon đọc rồi chọn từ viết đúng.', say: p.right, choices: [p.right, ...p.wrong], answer: p.right, hint: def.tip, solution: ['Từ Cú Bon đọc là: ' + p.right + '.'], spell: true };
+    if (mode === 'listen') return { type: 'mcq', q: 'Nghe Cú Uyên Bác đọc rồi chọn từ viết đúng.', say: p.right, choices: [p.right, ...p.wrong], answer: p.right, hint: def.tip, solution: ['Từ Cú Uyên Bác đọc là: ' + p.right + '.'], spell: true };
     return { type: 'mcq', q: 'Từ nào viết đúng chính tả?', choices: [p.right, ...p.wrong], answer: p.right, hint: def.tip, solution: ['Viết đúng là: ' + p.right + '.'], spell: true };
   };
 }
@@ -1701,7 +1701,7 @@ function vocabGen(unit) {
     const tip = 'Unit ' + unit.u + ': ' + unit.words.map(w => w[0] + ' (' + w[1] + ')').join(', ') + '.';
     if (mode === 'en2vi') return { type: 'mcq', q: 'Từ "' + en + '" nghĩa là gì?', say: en, lang: 'en', noAuto: true, choices: [vi, ...ds.map(d => d[1])], answer: vi, hint: 'Nhớ lại phần từ mới của bài ' + unit.title + '.', solution: [en + ' = ' + vi + '.'], tipEn: tip };
     if (mode === 'vi2en') return { type: 'mcq', q: '"' + vi + '" trong tiếng Anh là:', choices: [en, ...ds.map(d => d[0])], answer: en, hint: 'Đọc to từng từ tiếng Anh và nhớ lại nghĩa.', solution: [vi + ' = ' + en + '.'], tipEn: tip, sayChoices: true };
-    return { type: 'mcq', q: 'Nghe Cú Bon đọc rồi chọn từ đúng.', say: en, lang: 'en', choices: [en, ...ds.map(d => d[0])], answer: en, hint: 'Bấm Nghe để nghe lại. Chú ý âm đầu của từ.', solution: ['Từ Cú Bon đọc là: ' + en + ' (' + vi + ').'] };
+    return { type: 'mcq', q: 'Nghe Cú Uyên Bác đọc rồi chọn từ đúng.', say: en, lang: 'en', choices: [en, ...ds.map(d => d[0])], answer: en, hint: 'Bấm Nghe để nghe lại. Chú ý âm đầu của từ.', solution: ['Từ Cú Uyên Bác đọc là: ' + en + ' (' + vi + ').'] };
   };
 }
 function sentGen(unit) {
@@ -1726,7 +1726,7 @@ U.forEach(unit => {
   const skills = hasSent ? [id + 'v', id + 's'] : [id + 'v'];
   TL.lessons.push({
     id: 'e' + String(unit.u).padStart(2, '0'), subject: 'ta', lang: 'en', book: 'Tiếng Anh 3 Global Success, tập một', no: unit.u ? 'U' + unit.u : 'S', title: (unit.u ? 'Unit ' + unit.u + '. ' : '') + unit.title, page: unit.page, region: unit.region, level: 'full', verified: true, skills,
-    warm: 'Bài này: ' + unit.vi + '. Mở sách Tiếng Anh 3 tập một trang ' + unit.page + '. Nghe thầy cô hoặc Cú Bon đọc từ mới, nói to theo.',
+    warm: 'Bài này: ' + unit.vi + '. Mở sách Tiếng Anh 3 tập một trang ' + unit.page + '. Nghe thầy cô hoặc Cú Uyên Bác đọc từ mới, nói to theo.',
     gloss: unit.words.map(w => [w[0], w[1]]),
     rule: { title: 'Mẫu câu', text: unit.pats.map(p => p[0] + ' = ' + p[1]).join('  |  '), ex: unit.phon ? unit.phon.map(p => p[0] + ': ' + p[1]) : [] },
     guide: [ 'Nghe và nhắc lại từng từ mới: ' + unit.words.map(w => w[0]).join(', ') + '.' ].concat(unit.pats.map(p => 'Mẫu câu: "' + p[0] + '" nghĩa là: ' + p[1])).concat(unit.phon ? ['Luyện âm: ' + unit.phon.map(p => '"' + p[0] + '" trong từ ' + p[1]).join('; ') + '.'] : []),
@@ -1954,6 +1954,8 @@ const CFG = (() => {
   return c.api ? c : null;
 })();
 if (CFG && CFG.n && !window.TL_KID) window.TL_KID = CFG.n;
+// lưu tên gọi vào tiến độ để đồng bộ: máy khác (điện thoại) mở link không có tên vẫn hiện đúng tên con
+if (CFG && CFG.n && TL.S && TL.S.settings && !TL.S.settings.kidName) { TL.S.settings.kidName = CFG.n; }
 TL.gas = !!GS() || !!CFG;
 TL.hosted = !GS() && !!CFG;
 function gasCall(fn, arg) {
@@ -1984,18 +1986,18 @@ AI.ready = (async () => {
     AI.via = 'Claude (claude.ai)'; AI.state = 'on'; return true;
   } catch (e) { AI.state = 'off'; AI.reason = 'Không kết nối được gia sư AI.'; return false; }
 })();
-const RULES = 'Bạn là Cú Bon, gia sư của bé ' + TL.kid() + ' học lớp 3 (8-9 tuổi) ở Việt Nam, bộ sách Kết nối tri thức với cuộc sống. ' +
-  'Quy tắc: xưng "Cú Bon", gọi bé là "' + TL.kid() + '" hoặc "con"; câu ngắn, từ ngữ đơn giản; luôn khen một điều cụ thể trước; không chê bai, không nói "sai rồi" nặng nề; ' +
+const RULES = 'Bạn là Cú Uyên Bác, gia sư của bé ' + TL.kid() + ' học lớp 3 (8-9 tuổi) ở Việt Nam, bộ sách Kết nối tri thức với cuộc sống. ' +
+  'Quy tắc: xưng "Cú Uyên Bác", gọi bé là "' + TL.kid() + '" hoặc "con"; câu ngắn, từ ngữ đơn giản; luôn khen một điều cụ thể trước; không chê bai, không nói "sai rồi" nặng nề; ' +
   'không viết hộ, không đưa đáp án hay bài văn mẫu; đặt câu hỏi gợi mở để bé tự nghĩ; không dùng biểu tượng cảm xúc; không dùng dấu gạch ngang dài; chỉ dựa vào dữ liệu được đưa dưới đây.';
 function errMsg(e) {
   const c = e && e.code;
   if (c === 'not_granted') { AI.state = 'off'; AI.reason = 'Phụ huynh chưa cho phép dùng gia sư AI trên trang này.'; return AI.reason; }
-  if (c === 'rate_limited') return 'Cú Bon đang bận một chút, con thử lại sau ít phút nhé.';
-  if (c === 'daily_limit') return 'Hôm nay Cú Bon đã trả lời đủ số lượt bố mẹ cho phép. Mai mình nói chuyện tiếp nhé.';
-  if (c === 'bad_key') return 'Khoá AI bố mẹ đặt chưa đúng nên Cú Bon chưa trả lời được. Con nhờ bố mẹ kiểm tra lại nhé.';
-  if (c === 'no_key') { AI.state = 'off'; AI.reason = 'Máy chủ chưa có khoá AI.'; return 'Cú Bon chưa được kết nối. Con nhờ bố mẹ giúp nhé.'; }
+  if (c === 'rate_limited') return 'Cú Uyên Bác đang bận một chút, con thử lại sau ít phút nhé.';
+  if (c === 'daily_limit') return 'Hôm nay Cú Uyên Bác đã trả lời đủ số lượt bố mẹ cho phép. Mai mình nói chuyện tiếp nhé.';
+  if (c === 'bad_key') return 'Khoá AI bố mẹ đặt chưa đúng nên Cú Uyên Bác chưa trả lời được. Con nhờ bố mẹ kiểm tra lại nhé.';
+  if (c === 'no_key') { AI.state = 'off'; AI.reason = 'Máy chủ chưa có khoá AI.'; return 'Cú Uyên Bác chưa được kết nối. Con nhờ bố mẹ giúp nhé.'; }
   if (c === 'cancelled') return '';
-  return 'Cú Bon chưa trả lời được lúc này. Con thử lại sau nhé.';
+  return 'Cú Uyên Bác chưa trả lời được lúc này. Con thử lại sau nhé.';
 }
 AI.writingFeedback = async function (task, text, onText) {
   if (!(await AI.ready)) throw { code: 'off', message: AI.reason };
@@ -2108,9 +2110,9 @@ TL.ICON = {
   calc: '<svg width="120" height="120" viewBox="0 0 120 120" class="deco" aria-hidden="true"><text x="10" y="70" font-size="64" font-weight="900" fill="#fff">+×</text><text x="30" y="115" font-size="48" font-weight="900" fill="#fff">=</text></svg>'
 };
 
-/* ---------- Cú Bon (nhân vật do nhóm vẽ) ---------- */
+/* ---------- Cú Uyên Bác (nhân vật do nhóm vẽ) ---------- */
 let owlN = 0;
-/* Cú Bon 3D: khối tròn có đổ bóng, mắt long lanh, cánh vỗ, chớp mắt. mood: happy | think | sad.
+/* Cú Uyên Bác 3D: khối tròn có đổ bóng, mắt long lanh, cánh vỗ, chớp mắt. mood: happy | think | sad.
    Các nhóm o-all, o-wingL, o-wingR, o-eyes, o-feet được CSS làm chuyển động (nhún nhảy, vỗ cánh, chớp mắt). */
 TL.owl = function (size = 96, mood = 'happy') {
   const w = TL.S.owl.wear || []; const k = 'ow' + (++owlN);
@@ -2120,7 +2122,7 @@ TL.owl = function (size = 96, mood = 'happy') {
       '<circle cx="45" cy="43.5" r="3" fill="#fff"/><circle cx="81" cy="43.5" r="3" fill="#fff"/><circle cx="39.5" cy="50" r="1.4" fill="#fff" opacity=".8"/><circle cx="75.5" cy="50" r="1.4" fill="#fff" opacity=".8"/>';
   const mouth = mood === 'sad' ? '<path d="M51 88q9-6 18 0" stroke="#5B3FD9" stroke-width="3" fill="none" stroke-linecap="round"/>'
     : mood === 'happy' ? '<path d="M50 84q10 8 20 0" stroke="#5B3FD9" stroke-width="3" fill="none" stroke-linecap="round"/>' : '';
-  return '<svg class="owl3d" width="' + size + '" height="' + size + '" viewBox="0 0 120 120" role="img" aria-label="Cú Bon">' +
+  return '<svg class="owl3d" width="' + size + '" height="' + size + '" viewBox="0 0 120 120" role="img" aria-label="Cú Uyên Bác">' +
     '<defs>' +
     '<radialGradient id="' + k + 'b" cx="38%" cy="30%" r="75%"><stop offset="0" stop-color="#B9A4FF"/><stop offset=".55" stop-color="#8B6CFA"/><stop offset="1" stop-color="#5A3BE0"/></radialGradient>' +
     '<radialGradient id="' + k + 'y" cx="45%" cy="35%" r="70%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#D9CEFF"/></radialGradient>' +
@@ -2150,7 +2152,7 @@ TL.owl = function (size = 96, mood = 'happy') {
     (w.includes('sach') ? '<rect x="70" y="84" width="26" height="18" rx="2" fill="#12B886" transform="rotate(-12 83 93)"/>' : '') +
     '</g></svg>';
 };
-/* Cú Bon phản ứng: nhảy múa khi con làm đúng, lắc đầu nhẹ khi sai */
+/* Cú Uyên Bác phản ứng: nhảy múa khi con làm đúng, lắc đầu nhẹ khi sai */
 TL.owlReact = function (kind) {
   document.querySelectorAll('.owlstage').forEach(st => TL.owlStageAct && TL.owlStageAct(st, kind));
   document.querySelectorAll('.owl3d').forEach(o => { o.classList.remove('dance', 'oops', 'cheer'); void o.getBoundingClientRect(); o.classList.add(kind); setTimeout(() => o.classList.remove(kind), kind === 'oops' ? 700 : 1900); });
@@ -2190,7 +2192,7 @@ TL.vis = function (v) {
 };
 
 /* ---------- lời khen và động viên ---------- */
-const PRAISE = ['Đúng rồi! Con giỏi lắm.', 'Chính xác! Con tự làm được rồi đó.', 'Tuyệt! Cú Bon rất vui.', 'Đúng! Con suy nghĩ cẩn thận lắm.', 'Hay quá! Con nhớ bài rất tốt.'];
+const PRAISE = ['Đúng rồi! Con giỏi lắm.', 'Chính xác! Con tự làm được rồi đó.', 'Tuyệt! Cú Uyên Bác rất vui.', 'Đúng! Con suy nghĩ cẩn thận lắm.', 'Hay quá! Con nhớ bài rất tốt.'];
 const PRAISE2 = ['Đúng rồi! Con sửa được bài, thế mới giỏi.', 'Làm lại đúng rồi! Cố gắng như vậy là rất tốt.'];
 const NUDGE = ['Chưa đúng, nhưng không sao. Mình xem gợi ý nhé.', 'Gần đúng rồi! Con đọc gợi ý rồi thử lại nhé.', 'Con thử nghĩ lại một chút nhé.'];
 
@@ -2223,7 +2225,7 @@ function renderItem(host, it, idx, total, opts, done) {
   const box = el('<div class="card"></div>');
   box.innerHTML = '<div class="qhead"><span class="eyebrow">' + esc(opts.title || 'Câu hỏi') + ' · ' + (idx + 1) + '/' + total + '</span>' +
     '<button class="iconbtn" data-act="say" title="Nghe đọc câu hỏi">' + TL.ICON.spk + '<span class="small">Nghe</span></button></div>' +
-    (it._reteach ? '<div class="fb info">Cú Bon giảng lại nhé: ' + esc(skill.tip || it.hint || '') + ' Giờ con thử câu dễ hơn này.</div>' : '') +
+    (it._reteach ? '<div class="fb info">Cú Uyên Bác giảng lại nhé: ' + esc(skill.tip || it.hint || '') + ' Giờ con thử câu dễ hơn này.</div>' : '') +
     '<div class="q">' + esc(it.q) + '</div>' + ((v => v ? '<div class="vis">' + TL.vis(v) + '</div>' : '')(it.vis || (TL.autoVis && opts.mode !== 'placement' && TL.autoVis(it)))) +
     '<div class="ans"></div><div class="fbx"></div>' + itemSource(opts);
   host.appendChild(box);
@@ -2235,7 +2237,7 @@ function renderItem(host, it, idx, total, opts, done) {
   function submit(given) {
     if (finished) return; attempts++; TL._curAttempts = attempts; lastGiven = given; S.counters.tries++;
     const ok = TL.check(it, given);
-    if (opts.neutral) { finish(ok, given); fbx.innerHTML = '<div class="fb info">Cú Bon đã ghi lại. Mình sang câu tiếp nhé.</div>'; nextBtn(); return; }
+    if (opts.neutral) { finish(ok, given); fbx.innerHTML = '<div class="fb info">Cú Uyên Bác đã ghi lại. Mình sang câu tiếp nhé.</div>'; nextBtn(); return; }
     if (ok) { TL.sfx.ok(); TL.owlReact('dance'); markAns(true, given); const first = attempts === 1; finish(first ? true : 'after', given);
       fbx.innerHTML = '<div class="fb ok">' + esc(first ? pick(PRAISE) : pick(PRAISE2)) + (first ? ' +1 sao' : '') + '</div>'; nextBtn(); return; }
     TL.sfx.oops(); TL.owlReact('oops'); markAns(false, given);
@@ -2251,7 +2253,7 @@ function renderItem(host, it, idx, total, opts, done) {
       const sim = el('<button class="btn">Làm câu tương tự</button>');
       sim.onclick = () => { const n = TL.genSimilar(it, true); n._similar = true; renderItem(host, n, idx, total, Object.assign({}, opts), o2 => { if (o2.first) { S.counters.fixed++; } done({ ok: false, first: false, inserted: true }); }); };
       r.appendChild(sim);
-      if (TL.AI && TL.AI.state === 'on') { const ex = el('<button class="btn ghost">Nhờ Cú Bon giảng cách khác</button>'); ex.onclick = () => aiExplain(fbx, it, lastGiven, ex); r.appendChild(ex); }
+      if (TL.AI && TL.AI.state === 'on') { const ex = el('<button class="btn ghost">Nhờ Cú Uyên Bác giảng cách khác</button>'); ex.onclick = () => aiExplain(fbx, it, lastGiven, ex); r.appendChild(ex); }
     } else { const nb = el('<button class="btn">Câu tiếp theo</button>'); nb.onclick = () => done(resultObj); r.appendChild(nb); }
     fbx.appendChild(r);
   }
@@ -2316,9 +2318,9 @@ function renderItem(host, it, idx, total, opts, done) {
 }
 TL.renderItem = renderItem;
 async function aiExplain(fbx, it, given, btn) {
-  btn.disabled = true; const out = el('<div class="fb info">Cú Bon đang nghĩ...</div>'); fbx.appendChild(out);
+  btn.disabled = true; const out = el('<div class="fb info">Cú Uyên Bác đang nghĩ...</div>'); fbx.appendChild(out);
   try { await TL.AI.explain(it, Array.isArray(given) ? given.join(', ') : String(given), t => { out.textContent = t; }); }
-  catch (e) { out.textContent = e.message || 'Cú Bon chưa trả lời được lúc này.'; }
+  catch (e) { out.textContent = e.message || 'Cú Uyên Bác chưa trả lời được lúc này.'; }
 }
 
 /* ---------- pháo hoa nhỏ ---------- */
@@ -2336,7 +2338,7 @@ TL.GAMES = {
   pairs: { name: 'Lật thẻ ghép đôi', rule: 'Lật hai thẻ. Nếu hai thẻ là một cặp đúng thì giữ lại. Ghép hết các cặp là thắng.' },
   pop: { name: 'Hái bóng bay', rule: 'Đọc yêu cầu, bấm vào những quả bóng đúng. Bấm hết bóng đúng là thắng.' },
   sort: { name: 'Giỏ phân loại', rule: 'Bấm một thẻ rồi bấm vào giỏ phù hợp. Xếp đúng hết là thắng.' },
-  race: { name: 'Vượt chướng ngại vật', rule: 'Trả lời đúng để Cú Bon tiến thêm một ô. Đến cờ đích là thắng. Trả lời chưa đúng thì Cú Bon đứng chờ, con được gợi ý và thử lại.' },
+  race: { name: 'Vượt chướng ngại vật', rule: 'Trả lời đúng để Cú Uyên Bác tiến thêm một ô. Đến cờ đích là thắng. Trả lời chưa đúng thì Cú Uyên Bác đứng chờ, con được gợi ý và thử lại.' },
   wheel: { name: 'Vòng quay may mắn', rule: 'Bấm quay. Vòng quay chọn một chủ đề, con trả lời câu hỏi để nhận điểm. Có 5 lượt quay.' },
   puzzle: { name: 'Xếp hình kiến thức', rule: 'Sắp xếp các mảnh theo đúng thứ tự: số từ bé đến lớn, các bước làm, các phần của câu chuyện.' }
 };
@@ -2379,7 +2381,7 @@ function gameSort(host, it, win, setScore) {
   const draw = () => { pool.innerHTML = ''; it.items.forEach((x, k) => { if (place[k] >= 0) return; const t = el('<button class="tok' + (cur === k ? ' sel' : '') + '"></button>'); t.textContent = x.t; t.onclick = () => { cur = k; draw(); }; pool.appendChild(t); });
     bk.innerHTML = ''; it.groups.forEach((g, gi) => { const b = el('<button class="basket"><h4>' + esc(g) + '</h4></button>'); it.items.forEach((x, k) => { if (place[k] === gi) { const t = el('<span class="tok"></span>'); t.textContent = x.t; t.onclick = e => { if (cur >= 0) return; e.stopPropagation(); place[k] = -1; draw(); }; b.appendChild(t); } }); b.onclick = () => { if (cur >= 0) { place[cur] = gi; cur = -1; draw(); } }; bk.appendChild(b); }); };
   go.onclick = () => { if (place.includes(-1)) { TL.toast('Con xếp hết các thẻ nhé.'); return; } const wrong = it.items.filter((x, k) => place[k] !== x.g).length; setScore((it.items.length - wrong) * 10);
-    if (!wrong) { go.disabled = true; TL.sfx.ok(); win(); } else { TL.sfx.oops(); fb.innerHTML = '<div class="fb hint">Còn ' + wrong + ' thẻ chưa đúng giỏ. Cú Bon đã lấy chúng ra, con xếp lại nhé. Gợi ý: ' + esc(it.hint) + '</div>'; it.items.forEach((x, k) => { if (place[k] !== x.g) place[k] = -1; }); draw(); } };
+    if (!wrong) { go.disabled = true; TL.sfx.ok(); win(); } else { TL.sfx.oops(); fb.innerHTML = '<div class="fb hint">Còn ' + wrong + ' thẻ chưa đúng giỏ. Cú Uyên Bác đã lấy chúng ra, con xếp lại nhé. Gợi ý: ' + esc(it.hint) + '</div>'; it.items.forEach((x, k) => { if (place[k] !== x.g) place[k] = -1; }); draw(); } };
   draw(); host.appendChild(w);
 }
 function gameQuiz(body, data, opts, setScore, getScore, end) {
@@ -2621,7 +2623,7 @@ TL.autoVis = function (it) {
 })();
 
 /* ---- src/engine/voice.js ---- */
-/* ===== Giọng nói của Cú Bon qua máy chủ =====
+/* ===== Giọng nói của Cú Uyên Bác qua máy chủ =====
    Nhiều máy (ví dụ Chrome trên Windows) không có giọng đọc tiếng Việt. Khi đó ứng dụng nhờ máy chủ Apps Script gọi Gemini đọc thành tiếng
    (âm thanh PCM 24 kHz), rồi phát bằng loa máy. Câu đã đọc được giữ lại trong phiên để đọc lại ngay, không gọi máy chủ lần nữa. */
 (function () {
@@ -2671,14 +2673,14 @@ TL.speechStop = function () { TL.cloudStop(); };
 })();
 
 /* ---- src/engine/owl3d.js ---- */
-/* ===== Cú Bon 3D tương tác =====
-   Cú Bon được vẽ lại liên tục theo góc quay (cách dựng hình 2,5D): thân là khối bầu dục, mắt, mỏ, bụng nằm trên bề mặt thân,
+/* ===== Cú Uyên Bác 3D tương tác =====
+   Cú Uyên Bác được vẽ lại liên tục theo góc quay (cách dựng hình 2,5D): thân là khối bầu dục, mắt, mỏ, bụng nằm trên bề mặt thân,
    khi quay thì dịch sang bên và co lại như vật thật, quay hẳn ra sau thì thấy lưng và đuôi. Cách này không dùng các tấm 3D chồng nhau
    nên hình không bị vỡ thành vệt khi xoay.
    Con có thể:
-   - di chuột (hoặc chạm) vào Cú Bon: Cú Bon nhún chào, mắt nhìn theo con trỏ;
-   - bấm vào Cú Bon: Cú Bon nhảy múa, xoay vòng, vẫy cánh và nói một câu;
-   - kéo Cú Bon sang trái, phải, lên, xuống: Cú Bon xoay theo tay con. */
+   - di chuột (hoặc chạm) vào Cú Uyên Bác: Cú Uyên Bác nhún chào, mắt nhìn theo con trỏ;
+   - bấm vào Cú Uyên Bác: Cú Uyên Bác nhảy múa, xoay vòng, vẫy cánh và nói một câu;
+   - kéo Cú Uyên Bác sang trái, phải, lên, xuống: Cú Uyên Bác xoay theo tay con. */
 (function () {
 'use strict';
 const S = () => TL.S;
@@ -2776,16 +2778,16 @@ function render(st) {
 /* size: chiều rộng (px) */
 TL.owlStage = function (size) {
   const id = 'os' + (++n);
-  return '<div class="owlstage" id="' + id + '" style="--s:' + size + 'px" role="button" tabindex="0" aria-label="Cú Bon. Bấm để Cú Bon nhảy múa, kéo để xoay Cú Bon.">' +
+  return '<div class="owlstage" id="' + id + '" style="--s:' + size + 'px" role="button" tabindex="0" aria-label="Cú Uyên Bác. Bấm để Cú Uyên Bác nhảy múa, kéo để xoay Cú Uyên Bác.">' +
     '<div class="owlsay" hidden></div><div class="owlshadow"></div><div class="owlbob"><svg class="owl25" viewBox="-6 -8 132 132" width="100%" height="100%" aria-hidden="true"></svg></div></div>';
 };
 
-/* lời Cú Bon nói khi con bấm */
+/* lời Cú Uyên Bác nói khi con bấm */
 function lines() {
   const k = TL.kid();
-  return ['Chào ' + k + '! Cú Bon đây.', 'Con kéo Cú Bon xoay vòng thử xem!', 'Cú Bon tin con làm được!', 'Hi hi, nhột quá!',
+  return ['Chào ' + k + '! Cú Uyên Bác đây.', 'Con kéo Cú Uyên Bác xoay vòng thử xem!', 'Cú Uyên Bác tin con làm được!', 'Hi hi, nhột quá!',
     'Con biết không, loài cú quay đầu được rất xa, gần một vòng đấy!', 'Học xong mình chơi trò chơi nhé.', 'Uống một ngụm nước cho đầu óc tỉnh táo nào.',
-    'Cú Bon nhảy cho ' + k + ' xem nhé!', 'Con cười lên nào, Cú Bon thích thấy con cười.', 'Mỗi ngày học một chút, con sẽ giỏi lên nhiều.'];
+    'Cú Uyên Bác nhảy cho ' + k + ' xem nhé!', 'Con cười lên nào, Cú Uyên Bác thích thấy con cười.', 'Mỗi ngày học một chút, con sẽ giỏi lên nhiều.'];
 }
 let lastSay = 0;
 TL.owlSay = function (stage, text, speak) {
@@ -2807,7 +2809,7 @@ function tap(stage) {
   TL.owlSay(stage, TL.pick(lines()), true);
 }
 const ease = x => x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
-/* vòng vẽ: chỉ chạy khi Cú Bon còn trên trang */
+/* vòng vẽ: chỉ chạy khi Cú Uyên Bác còn trên trang */
 function loop(stage) {
   const o = stage._o; if (!stage.isConnected) { o.run = false; return; }
   const now = performance.now();
@@ -2829,7 +2831,7 @@ function bind(stage) {
   stage.addEventListener('pointermove', e => {
     if (!o.down) return; const dx = e.clientX - sx, dy = e.clientY - sy; sx = e.clientX; sy = e.clientY; moved += Math.abs(dx) + Math.abs(dy);
     o.yaw += dx * .9; total += dx * .9; o.pitch = Math.max(-30, Math.min(30, o.pitch - dy * .5));
-    if (!spunSaid && Math.abs(total) > 600) { spunSaid = true; TL.owlSay(stage, 'Ối, Cú Bon chóng mặt quá! Hi hi.', true); }
+    if (!spunSaid && Math.abs(total) > 600) { spunSaid = true; TL.owlSay(stage, 'Ối, Cú Uyên Bác chóng mặt quá! Hi hi.', true); }
   });
   const up = () => {
     if (!o.down) return; o.down = false;
@@ -2840,7 +2842,7 @@ function bind(stage) {
   stage.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tap(stage); } if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { o.tween = { from: o.yaw, to: o.yaw + (e.key === 'ArrowLeft' ? -45 : 45), t0: performance.now(), dur: 300 }; } });
   stage.addEventListener('pointerenter', e => {
     if (e.pointerType !== 'mouse') return; act(stage, 'hop');
-    if (Date.now() - lastSay > 20000) { lastSay = Date.now(); TL.owlSay(stage, 'Chào ' + TL.kid() + '! Bấm vào Cú Bon đi, hoặc kéo Cú Bon xoay vòng nhé.', false); }
+    if (Date.now() - lastSay > 20000) { lastSay = Date.now(); TL.owlSay(stage, 'Chào ' + TL.kid() + '! Bấm vào Cú Uyên Bác đi, hoặc kéo Cú Uyên Bác xoay vòng nhé.', false); }
   });
   render(stage); requestAnimationFrame(() => loop(stage));
 }
@@ -2852,7 +2854,7 @@ document.addEventListener('pointermove', e => {
     st._o.px = dx / d * m; st._o.py = dy / d * m;
   });
 }, { passive: true });
-/* gắn sự kiện cho mọi Cú Bon mới xuất hiện; Cú Bon nhỏ (hình phẳng) cũng biết nhảy khi được bấm hoặc di chuột vào */
+/* gắn sự kiện cho mọi Cú Uyên Bác mới xuất hiện; Cú Uyên Bác nhỏ (hình phẳng) cũng biết nhảy khi được bấm hoặc di chuột vào */
 new MutationObserver(() => { document.querySelectorAll('.owlstage').forEach(bind); }).observe(document.documentElement, { childList: true, subtree: true });
 document.addEventListener('click', e => {
   const o = e.target.closest && e.target.closest('svg.owl3d'); if (!o || o.closest('button,a')) return;
@@ -2943,7 +2945,7 @@ document.addEventListener('click', e => {
 
 /* ---------- định tuyến ---------- */
 TL.go = function (name, params = {}) {
-  if (!['checkin', 'parent', 'boot'].includes(name) && TL.needCheckin && TL.needCheckin()) { name = 'checkin'; params = {}; } // mỗi ngày phải trò chuyện với Cú Bon trước khi học
+  if (!['checkin', 'parent', 'boot'].includes(name) && TL.needCheckin && TL.needCheckin()) { name = 'checkin'; params = {}; } // mỗi ngày phải trò chuyện với Cú Uyên Bác trước khi học
   if (TL.speechStop) TL.speechStop();
   try { speechSynthesis.cancel(); } catch (e) { }
   screen = Object.assign({ name }, params); document.body.classList.toggle('in-ck', name === 'checkin' || name === 'boot');
@@ -3016,17 +3018,17 @@ SCREENS.home = function (m) {
   const dToday = TL.diaryToday && TL.diaryToday(); const talked = dToday && dToday.done;
   const mi = TL.nowDate().getMinutes(); const late = hr >= 23 || (hr === 22 && mi >= 30) || hr < 5;
   let say = late && !plan.allDone ? 'Đã muộn rồi, ' + TL.kid() + ' ơi. Hôm nay mình học thật ngắn thôi, rồi đi ngủ để mai đến lớp thật khoẻ nhé.' :
-    !talked && !plan.allDone && s.placementDone ? 'Chào ' + TL.kid() + '! Hôm nay ở lớp thế nào? Kể Cú Bon nghe trước rồi mình học nhé.' :
-    plan.running && seg && seg.kind === 'talk' ? 'Cú Bon muốn nghe con kể chuyện hôm nay. Bấm "Kể Cú Bon nghe" nhé.' :
-    !s.placementDone ? 'Cú Bon là bạn học của con. Mình làm bài khởi hành ngắn để Cú Bon biết nên bắt đầu từ đâu nhé.' :
+    !talked && !plan.allDone && s.placementDone ? 'Chào ' + TL.kid() + '! Hôm nay ở lớp thế nào? Kể Cú Uyên Bác nghe trước rồi mình học nhé.' :
+    plan.running && seg && seg.kind === 'talk' ? 'Cú Uyên Bác muốn nghe con kể chuyện hôm nay. Bấm "Kể Cú Uyên Bác nghe" nhé.' :
+    !s.placementDone ? 'Cú Uyên Bác là bạn học của con. Mình làm bài khởi hành ngắn để Cú Uyên Bác biết nên bắt đầu từ đâu nhé.' :
     plan.allDone ? 'Hôm nay con học xong rồi. Giỏi lắm! Nghỉ ngơi thôi.' :
     !plan.running ? 'Bấm "Bắt đầu buổi học" để đồng hồ chạy nhé. Mình học từng việc một.' :
     seg.kind === 'tv' ? 'Bây giờ là giờ Tiếng Việt. Con mở cửa Vương quốc Tiếng Việt nhé.' : seg.kind === 'toan' ? 'Bây giờ là giờ Toán. Con mở cửa Vương quốc Toán học nhé.' :
-    seg.kind === 'game' ? 'Đến giờ trò chơi củng cố rồi! Khu vui chơi đã mở.' : seg.kind === 'talk' ? 'Cú Bon muốn nghe con kể chuyện hôm nay.' : seg.kind === 'warm' ? 'Khởi động thôi! Con làm vài câu ôn bài cũ nhé.' : seg.kind === 'sum' ? 'Mình cùng tổng kết buổi học nhé.' : 'Đang giờ nghỉ.';
+    seg.kind === 'game' ? 'Đến giờ trò chơi củng cố rồi! Khu vui chơi đã mở.' : seg.kind === 'talk' ? 'Cú Uyên Bác muốn nghe con kể chuyện hôm nay.' : seg.kind === 'warm' ? 'Khởi động thôi! Con làm vài câu ôn bài cũ nhé.' : seg.kind === 'sum' ? 'Mình cùng tổng kết buổi học nhé.' : 'Đang giờ nghỉ.';
   m.innerHTML = '<div class="col" style="gap:20px">' +
-    remindBanner() + storageBanner() +
+    linkBanner() + remindBanner() + storageBanner() +
     '<section class="hello"><div>' + (TL.owlStage ? TL.owlStage(150) : TL.owl(120)) + '</div><div class="col" style="gap:10px"><h1>' + greet + ', <span>' + name + '</span>!</h1><div class="bubble">' + esc(say) + '</div>' +
-    '<div class="row">' + (!talked ? '<button class="btn big ok" data-go="checkin">Kể Cú Bon nghe</button>' : '') + (!s.placementDone ? '<button class="btn big" data-go="placement">Làm bài khởi hành</button>' : '') +
+    '<div class="row">' + (!talked ? '<button class="btn big ok" data-go="checkin">Kể Cú Uyên Bác nghe</button>' : '') + (!s.placementDone ? '<button class="btn big" data-go="placement">Làm bài khởi hành</button>' : '') +
     (!plan.allDone ? '<button class="btn ' + (s.placementDone ? 'big' : 'ghost') + '" data-act="plan">' + (plan.running ? (plan.paused ? 'Học tiếp' : 'Xem đồng hồ học') : 'Bắt đầu buổi học') + '</button>' : '<button class="btn ghost" data-go="summary">Xem tổng kết hôm nay</button>') + '</div></div></section>' +
     '<section class="doors">' +
     '<button class="door tv' + (seg && seg.kind === 'tv' && plan.running ? ' next' : '') + '" data-go="kingdom" data-arg="tv">' + TL.ICON3D.tv + '<span class="eyebrow" style="color:#fff">Vương quốc</span><h2>Tiếng Việt</h2><p>' + (nextTV ? 'Nên học: Bài ' + nextTV.no + '. ' + esc(nextTV.title) : 'Mở bản đồ') + '</p>' + subjBar('tv') + '</button>' +
@@ -3054,6 +3056,8 @@ function remindBanner() {
   if (!weeklyDue()) return '';
   return '<div class="note info"><b>Nhắc phụ huynh:</b> đã đến giờ Đánh giá tiến bộ hằng tuần. <button class="btn small" data-go="parent" data-arg="review" style="margin-left:8px">Mở đánh giá</button></div>';
 }
+function linkBanner() { return !TL.gas && /github\.io$/.test(location.hostname) ? '<div class="note danger"><b>Máy này chưa kết nối với tài khoản học của con.</b> Bố mẹ mở đường link đầy đủ (có phần sau dấu #) một lần trên máy này; từ lần sau chỉ cần mở link ngắn. Chưa kết nối thì không có tên con, tiến độ và trò chuyện AI.</div>' : ''; }
+TL.linkBanner = linkBanner;
 function storageBanner() { return TL.storageOK ? '' : '<div class="note">Trình duyệt đang chặn bộ nhớ nên tiến độ hôm nay sẽ không được lưu. Hãy mở bằng cửa sổ thường (không phải ẩn danh).</div>'; }
 function weeklyDue() {
   const r = S().settings.remind; const wk = TL.weekKey(); if (S().reviews.some(x => x.w === wk)) return false;
@@ -3113,7 +3117,7 @@ SCREENS.lesson = function (m, p) {
     m.innerHTML = '<div class="row"><button class="btn small ghost" data-go="kingdom" data-arg="' + l.subject + '">Về bản đồ</button><span class="pill" style="background:var(--' + TL.SUBJ[l.subject].css + '-soft)">' + TL.SUBJ[l.subject].name + (l.subject === 'ta' ? '' : ' · Bài ' + l.no) + '</span>' + (l.level === 'practice' ? '<span class="pill">' + (l.verified ? 'Bài luyện tập' : 'Luyện tập, chưa đối chiếu sách') + '</span>' : '') + '</div>' +
       '<h1 style="margin-top:10px">' + esc(l.title) + '</h1><p class="src">' + esc(sourceText(l)) + '</p>' +
       '<div class="steps">' + steps.map((s, i) => '<span class="step' + (i === k ? ' on' : i < k ? ' past' : '') + '">' + (i + 1) + '. ' + s + '</span>').join('') + '</div>' +
-      '<div class="lesson-body"><div id="stage"></div><aside class="tutor-side card flat"><div class="row">' + TL.owl(64) + '<b>Cú Bon</b></div><p class="small tutor-msg" style="margin-top:8px"></p></aside></div>';
+      '<div class="lesson-body"><div id="stage"></div><aside class="tutor-side card flat"><div class="row">' + TL.owl(64) + '<b>Cú Uyên Bác</b></div><p class="small tutor-msg" style="margin-top:8px"></p></aside></div>';
     const stage = $('#stage', m), msg = $('.tutor-msg', m);
     const tutor = t => { msg.textContent = t; };
     const next = () => { st.step = k + 1; TL.save(); if (st.step >= steps.length) return; render(); };
@@ -3130,7 +3134,7 @@ STEP['Khởi động'] = function (stage, l, next, tutor, run) {
     html += '<span class="eyebrow">Khởi động</span><p class="q" style="margin-top:6px">' + esc(l.warm) + '</p>';
   } else if (isTV && l.level === 'full') {
     html += '<span class="eyebrow">Khởi động</span><p class="q" style="margin-top:6px">' + esc(l.warm) + '</p><div class="note info" style="margin-top:14px"><b>Mở sách Tiếng Việt 3, tập một, trang ' + l.page + '.</b> Đọc bài "' + esc(l.title) + '"' + (l.author ? ' (' + esc(l.author) + ')' : '') + '. Đây là bài ' + esc(l.kind) + '.</div>' +
-      (S().readings[l.id] ? '<button class="btn ghost" data-read style="margin-top:12px">' + TL.ICON.spk + ' Nghe Cú Bon đọc mẫu</button>' : '<p class="small muted" style="margin-top:10px">Muốn nghe đọc mẫu: phụ huynh gõ bài đọc vào Khu phụ huynh, mục Bài học và tài liệu.</p>') +
+      (S().readings[l.id] ? '<button class="btn ghost" data-read style="margin-top:12px">' + TL.ICON.spk + ' Nghe Cú Uyên Bác đọc mẫu</button>' : '<p class="small muted" style="margin-top:10px">Muốn nghe đọc mẫu: phụ huynh gõ bài đọc vào Khu phụ huynh, mục Bài học và tài liệu.</p>') +
       '<p style="margin-top:14px">Đọc xong, con bấm nút bên dưới.</p>';
   } else {
     html += '<span class="eyebrow">Khởi động</span><p class="q" style="margin-top:6px">' + esc(l.explore || l.skills.map(s => TL.skills[s].tip).filter(Boolean).join(' ')) + '</p>';
@@ -3174,7 +3178,7 @@ function itemsFor(skills, n, startEasy) {
   return out;
 }
 STEP['Thực hành'] = async function (stage, l, next, tutor, run) {
-  tutor('Hai câu đầu Cú Bon cho sẵn gợi ý. Sau đó con tự làm nhé. Sai cũng không sao, mình sửa cùng nhau.');
+  tutor('Hai câu đầu Cú Uyên Bác cho sẵn gợi ý. Sau đó con tự làm nhé. Sai cũng không sao, mình sửa cùng nhau.');
   let items = [], readN = 0;
   if (l.subject === 'tv' && typeof l.practice === 'string') { const bank = TL.skills[l.practice].bank; items = bank.map(b => Object.assign(JSON.parse(JSON.stringify(b)), { skill: l.practice })).map(it => { if (it.choices && !it.keepOrder) it.choices = TL.shuffle(it.choices); if (it.type === 'order') it.items = TL.shuffle(it.answer); return it; }); readN = items.length; items = items.concat(itemsFor(l.self, l.self.length, false)); }
   else { const sks = TL.uniq([].concat(l.practice, l.self)); const nb = sks.reduce((a, k) => a + (TL.skills[k].bank && !TL.skills[k].gen ? TL.skills[k].bank.length : 0), 0); items = itemsFor(sks, Math.max(l.level === 'full' ? 7 : 8, Math.min(nb, 8)), true); }
@@ -3185,20 +3189,20 @@ STEP['Thực hành'] = async function (stage, l, next, tutor, run) {
   next();
 };
 function writeTask(stage, l, next, tutor) {
-  tutor('Giờ là phần luyện viết. Con viết bằng lời của con nhé. Cú Bon không viết hộ đâu, nhưng sẽ gợi ý.');
+  tutor('Giờ là phần luyện viết. Con viết bằng lời của con nhé. Cú Uyên Bác không viết hộ đâu, nhưng sẽ gợi ý.');
   const draft = (S().writings.find(w => w.lesson === l.id && !w.sent) || {}).text || '';
   stage.innerHTML = '<div class="card"><span class="eyebrow">Luyện viết</span><p class="q" style="margin-top:6px">' + esc(l.write.prompt) + '</p><textarea class="write" id="w-' + l.id + '" placeholder="Con viết ở đây...">' + esc(draft) + '</textarea>' +
     '<div class="checklist" style="margin-top:10px"><p class="eyebrow">Con tự kiểm tra</p>' + l.write.check.map((c, i) => '<label><input type="checkbox" id="ck-' + l.id + '-' + i + '"> ' + esc(c) + '</label>').join('') + '</div>' +
-    '<div class="row" style="margin-top:12px"><button class="btn ghost" data-ai>Nhờ Cú Bon nhận xét</button><button class="btn" data-send>Nộp bài viết</button></div><div class="ai-out"></div><p class="small muted ai-note" style="margin-top:8px"></p></div>';
+    '<div class="row" style="margin-top:12px"><button class="btn ghost" data-ai>Nhờ Cú Uyên Bác nhận xét</button><button class="btn" data-send>Nộp bài viết</button></div><div class="ai-out"></div><p class="small muted ai-note" style="margin-top:8px"></p></div>';
   const ta = $('textarea', stage), out = $('.ai-out', stage), note = $('.ai-note', stage);
   ta.oninput = () => { let w = S().writings.find(x => x.lesson === l.id && !x.sent); if (!w) { w = { lesson: l.id, text: '', d: TL.today() }; S().writings.push(w); } w.text = ta.value; TL.save(); };
   const aiBtn = $('[data-ai]', stage);
   TL.AI.ready.then(ok => { if (!ok) { aiBtn.disabled = true; note.textContent = 'Gia sư AI chưa được kết nối ở bản này (' + TL.AI.reason + ') Con dùng bảng tự kiểm ở trên, hoặc nhờ bố mẹ đọc giúp.'; } });
-  aiBtn.onclick = async () => { if (ta.value.trim().split(/[.!?]/).filter(x => x.trim()).length < 1) { TL.toast('Con viết ít nhất một câu nhé.'); return; } aiBtn.disabled = true; out.innerHTML = '<div class="fb info">Cú Bon đang đọc bài của con...</div>';
+  aiBtn.onclick = async () => { if (ta.value.trim().split(/[.!?]/).filter(x => x.trim()).length < 1) { TL.toast('Con viết ít nhất một câu nhé.'); return; } aiBtn.disabled = true; out.innerHTML = '<div class="fb info">Cú Uyên Bác đang đọc bài của con...</div>';
     try { await TL.AI.writingFeedback(l.write, ta.value, t => { out.firstChild.textContent = t; }); } catch (e) { out.innerHTML = '<div class="fb hint">' + esc(e.message || 'Chưa nhận xét được.') + '</div>'; } aiBtn.disabled = false; };
   $('[data-send]', stage).onclick = () => { const sents = ta.value.split(/[.!?]/).filter(x => x.trim().length > 2).length; if (sents < 2) { TL.toast('Con viết ít nhất 2 câu nhé.'); return; }
     const w = S().writings.find(x => x.lesson === l.id && !x.sent) || { lesson: l.id, text: ta.value, d: TL.today() }; w.text = ta.value; w.sent = true; w.checks = l.write.check.filter((_, i) => $('#ck-' + l.id + '-' + i).checked).length; if (!S().writings.includes(w)) S().writings.push(w);
-    S().counters.writes++; TL.addXP(20); TL.addStars(2); TL.logSession('write', 'tv', l.id, 1, 1); TL.save(); TL.toast('Cú Bon đã cất bài viết của con. +20 XP'); next(); };
+    S().counters.writes++; TL.addXP(20); TL.addStars(2); TL.logSession('write', 'tv', l.id, 1, 1); TL.save(); TL.toast('Cú Uyên Bác đã cất bài viết của con. +20 XP'); next(); };
 }
 STEP['Trò chơi'] = async function (stage, l, next, tutor) {
   tutor('Chơi mà học! Con đọc luật chơi trước nhé.');
@@ -3206,7 +3210,7 @@ STEP['Trò chơi'] = async function (stage, l, next, tutor) {
   play();
 };
 STEP['Kiểm tra'] = async function (stage, l, next, tutor, run) {
-  tutor('Phần kiểm tra không có gợi ý sẵn. Con cứ bình tĩnh. Nếu chưa đúng, Cú Bon vẫn giúp.');
+  tutor('Phần kiểm tra không có gợi ý sẵn. Con cứ bình tĩnh. Nếu chưa đúng, Cú Uyên Bác vẫn giúp.');
   const items = itemsFor(l.memory, 4, false);
   const old = TL.learnedSkills().filter(s => !l.skills.includes(s) && TL.skills[s].subj === l.subject && !TL.skills[s].reading && !TL.skills[s].kc);
   if (old.length) items.push(TL.genItem(TL.pick(old)));
@@ -3231,10 +3235,10 @@ STEP['Hẹn ôn tập'] = function (stage, l, next, tutor, run, st) {
   TL.logSession('lesson-done', l.subject, l.id, 0, 0);
   const newB = TL.checkBadges(); TL.save(); TL.sfx.done(); TL.celebrate();
   const sched = TL.uniq(l.skills).map(s => { const k = S().skills[s]; return k && k.due ? '<tr><td>' + esc(TL.skills[s].name) + '</td><td>' + (k.due <= TL.today() ? 'Hôm nay' : TL.viDate(k.due)) + '</td><td><span class="pill lv' + TL.skillLevel(s) + '">' + TL.LEVELS[TL.skillLevel(s)] + '</span></td></tr>' : ''; }).join('');
-  tutor('Con đã cố gắng rất nhiều. Cú Bon tự hào về con!');
+  tutor('Con đã cố gắng rất nhiều. Cú Uyên Bác tự hào về con!');
   stage.innerHTML = '<div class="card" style="text-align:center"><h2>Hoàn thành bài ' + l.no + '!</h2><p class="stars" style="font-size:2rem">' + '★'.repeat(stars) + '☆'.repeat(3 - stars) + '</p><p>Con làm đúng ngay ' + run.firstOk + '/' + run.n + ' câu thực hành' + (run.testN ? ' và ' + run.testOk + '/' + run.testN + ' câu kiểm tra' : '') + '. Nhận thêm ' + (S().xp - run.startXP) + ' XP và ' + (S().stars - run.startStars) + ' sao.</p>' +
     (newB.length ? '<div class="note ok" style="margin-top:10px">Huy hiệu mới: ' + newB.map(b => esc(b.name)).join(', ') + '</div>' : '') + '</div>' +
-    '<div class="card" style="margin-top:14px"><span class="eyebrow">Hẹn ôn tập</span><p class="small muted" style="margin:6px 0">Cú Bon sẽ nhắc con ôn lại những kiến thức này vào đúng ngày. Ôn cách quãng giúp con nhớ lâu.</p><div class="tablewrap"><table><tr><th>Kiến thức</th><th>Ngày ôn</th><th>Mức hiện tại</th></tr>' + sched + '</table></div></div>' +
+    '<div class="card" style="margin-top:14px"><span class="eyebrow">Hẹn ôn tập</span><p class="small muted" style="margin:6px 0">Cú Uyên Bác sẽ nhắc con ôn lại những kiến thức này vào đúng ngày. Ôn cách quãng giúp con nhớ lâu.</p><div class="tablewrap"><table><tr><th>Kiến thức</th><th>Ngày ôn</th><th>Mức hiện tại</th></tr>' + sched + '</table></div></div>' +
     '<div class="row" style="margin-top:14px"><button class="btn big" data-go="kingdom" data-arg="' + l.subject + '">Về bản đồ</button><button class="btn ghost" data-go="home">Về trang chủ</button></div>';
 };
 
@@ -3242,7 +3246,7 @@ STEP['Hẹn ôn tập'] = function (stage, l, next, tutor, run, st) {
 SCREENS.review = async function (m) {
   let due = TL.dueSkills(); const self = !due.length;
   if (self) due = TL.learnedSkills();
-  if (!due.length) { m.innerHTML = '<div class="card"><h2>Chưa có kiến thức nào để ôn</h2><p>Con học một bài trước, Cú Bon sẽ hẹn ngày ôn.</p><button class="btn" data-go="home" style="margin-top:12px">Về trang chủ</button></div>'; return; }
+  if (!due.length) { m.innerHTML = '<div class="card"><h2>Chưa có kiến thức nào để ôn</h2><p>Con học một bài trước, Cú Uyên Bác sẽ hẹn ngày ôn.</p><button class="btn" data-go="home" style="margin-top:12px">Về trang chủ</button></div>'; return; }
   due = TL.shuffle(due).sort((a, b) => TL.skillLevel(b) === 4 ? 1 : 0);
   const items = []; for (let i = 0; i < Math.min(10, Math.max(5, due.length)); i++) items.push(TL.genItem(due[i % due.length]));
   const mixed = TL.shuffle(items);
@@ -3250,7 +3254,7 @@ SCREENS.review = async function (m) {
   screen.subj = null;
   const r = await TL.runItems($('#rv', m), mixed, { title: 'Ôn tập', mode: 'review', onEach: (it, first) => { S().counters.reviewN++; if (first) { S().counters.reviewOk++; S().memoryStars++; TL.progressMission('review'); } } });
   TL.checkBadges(); TL.save();
-  $('#rv', m).innerHTML = '<div class="card" style="text-align:center"><h2>Ôn tập xong!</h2><p>Con nhớ đúng ngay ' + r.firstOk + '/' + r.n + ' câu. ' + (r.firstOk >= r.n * .8 ? 'Trí nhớ của con rất tốt!' : 'Những câu chưa nhớ, Cú Bon sẽ hẹn con ôn lại sớm hơn.') + '</p><div class="row" style="justify-content:center;margin-top:10px"><button class="btn" data-go="home">Về trang chủ</button></div></div>';
+  $('#rv', m).innerHTML = '<div class="card" style="text-align:center"><h2>Ôn tập xong!</h2><p>Con nhớ đúng ngay ' + r.firstOk + '/' + r.n + ' câu. ' + (r.firstOk >= r.n * .8 ? 'Trí nhớ của con rất tốt!' : 'Những câu chưa nhớ, Cú Uyên Bác sẽ hẹn con ôn lại sớm hơn.') + '</p><div class="row" style="justify-content:center;margin-top:10px"><button class="btn" data-go="home">Về trang chủ</button></div></div>';
 };
 
 /* ---------- khu vui chơi ---------- */
@@ -3259,7 +3263,7 @@ SCREENS.play = function (m) {
   const learned = TL.learnedSkills().filter(s => !TL.skills[s].reading && !TL.skills[s].kc);
   const pool = learned.length ? learned : ['m.t2', 'm.t5', 'tv.ck', 'tv.svhd'];
   const levels = S().gameLv || (S().gameLv = {});
-  m.innerHTML = '<div class="row"><button class="btn small ghost" data-go="home">Về trang chủ</button></div><h1 style="margin:8px 0">Khu vui chơi</h1><p class="muted">Nội dung trò chơi lấy từ các bài con đã học' + (learned.length ? '' : ' (con chưa học bài nào nên Cú Bon chọn bài đầu tiên)') + '. Thắng một trò, cấp độ trò đó tăng lên.</p><div class="grid3" style="margin-top:14px" id="glist"></div><div id="gstage" style="margin-top:16px"></div>';
+  m.innerHTML = '<div class="row"><button class="btn small ghost" data-go="home">Về trang chủ</button></div><h1 style="margin:8px 0">Khu vui chơi</h1><p class="muted">Nội dung trò chơi lấy từ các bài con đã học' + (learned.length ? '' : ' (con chưa học bài nào nên Cú Uyên Bác chọn bài đầu tiên)') + '. Thắng một trò, cấp độ trò đó tăng lên.</p><div class="grid3" style="margin-top:14px" id="glist"></div><div id="gstage" style="margin-top:16px"></div>';
   Object.keys(TL.GAMES).forEach(k => { const g = TL.GAMES[k]; const lv = levels[k] || 1;
     const c = el('<div class="card"><h3>' + esc(g.name) + '</h3><p class="small muted">' + esc(g.rule) + '</p><div class="row" style="margin-top:10px"><span class="pill">Cấp ' + lv + '</span><div class="spacer"></div><button class="btn small">Chơi</button></div></div>');
     $('.btn', c).onclick = () => startGame(k); $('#glist', m).appendChild(c); });
@@ -3289,7 +3293,7 @@ TL.makeGame = makeGame;
 
 /* ---------- bài khởi hành ---------- */
 SCREENS.placement = function (m) {
-  m.innerHTML = '<div class="card"><div class="hello">' + TL.owl(110) + '<div class="col"><h1>Bài khởi hành</h1><p>Có ' + (TL.placement.toan.length + TL.placement.tv.length) + ' câu: Toán trước, Tiếng Việt sau. Bài này không chấm điểm, không có đúng sai hiện ra. Cú Bon chỉ muốn biết con đã nắm chắc phần nào để chọn bài học phù hợp.</p><p class="muted small">Làm trong khoảng 10 đến 15 phút. Con làm thật bình tĩnh nhé.</p><div class="row"><button class="btn big" data-start>Bắt đầu</button><button class="btn ghost" data-go="home">Để sau</button></div></div></div></div>';
+  m.innerHTML = '<div class="card"><div class="hello">' + TL.owl(110) + '<div class="col"><h1>Bài khởi hành</h1><p>Có ' + (TL.placement.toan.length + TL.placement.tv.length) + ' câu: Toán trước, Tiếng Việt sau. Bài này không chấm điểm, không có đúng sai hiện ra. Cú Uyên Bác chỉ muốn biết con đã nắm chắc phần nào để chọn bài học phù hợp.</p><p class="muted small">Làm trong khoảng 10 đến 15 phút. Con làm thật bình tĩnh nhé.</p><div class="row"><button class="btn big" data-start>Bắt đầu</button><button class="btn ghost" data-go="home">Để sau</button></div></div></div></div>';
   $('[data-start]', m).onclick = async () => {
     TL.restorePoint('Trước khi làm bài khởi hành');
     const items = TL.placement.toan.map(s => TL.genItem(s, 2)).concat(TL.placement.tv.map(s => TL.genItem(s, 2)));
@@ -3302,7 +3306,7 @@ SCREENS.placement = function (m) {
     if (res.tv.ok >= 6) S().unlocked.tv2 = true; if (res.tv.ok >= 7) S().unlocked.tv3 = true; if (res.tv.ok >= 8) S().unlocked.tv4 = true;
     S().placement = res; S().placementDone = true; TL.addXP(30); TL.checkBadges(); TL.save(); TL.celebrate();
     const rm = TL.recommend('toan'), rv = TL.recommend('tv');
-    m.innerHTML = '<div class="card"><h1>Cảm ơn con!</h1><p style="margin-top:8px">Cú Bon đã biết con nên bắt đầu từ đâu rồi. Con nhận huy hiệu Nhà thám hiểm và 30 XP.</p><div class="grid2" style="margin-top:14px"><div class="card flat"><span class="eyebrow">Toán</span><p>Nên học trước: <b>' + (rm ? 'Bài ' + rm.no + '. ' + esc(rm.title) : 'đã ổn') + '</b></p></div><div class="card flat"><span class="eyebrow">Tiếng Việt</span><p>Nên học trước: <b>' + (rv ? 'Bài ' + rv.no + '. ' + esc(rv.title) : 'đã ổn') + '</b></p></div></div><p class="small muted" style="margin-top:12px">Kết quả chi tiết dành cho phụ huynh nằm trong Khu phụ huynh. Một bài kiểm tra chưa đủ để đánh giá năng lực; ứng dụng sẽ tiếp tục điều chỉnh theo kết quả học hằng ngày.</p><button class="btn big" data-go="home" style="margin-top:12px">Về trang chủ</button></div>';
+    m.innerHTML = '<div class="card"><h1>Cảm ơn con!</h1><p style="margin-top:8px">Cú Uyên Bác đã biết con nên bắt đầu từ đâu rồi. Con nhận huy hiệu Nhà thám hiểm và 30 XP.</p><div class="grid2" style="margin-top:14px"><div class="card flat"><span class="eyebrow">Toán</span><p>Nên học trước: <b>' + (rm ? 'Bài ' + rm.no + '. ' + esc(rm.title) : 'đã ổn') + '</b></p></div><div class="card flat"><span class="eyebrow">Tiếng Việt</span><p>Nên học trước: <b>' + (rv ? 'Bài ' + rv.no + '. ' + esc(rv.title) : 'đã ổn') + '</b></p></div></div><p class="small muted" style="margin-top:12px">Kết quả chi tiết dành cho phụ huynh nằm trong Khu phụ huynh. Một bài kiểm tra chưa đủ để đánh giá năng lực; ứng dụng sẽ tiếp tục điều chỉnh theo kết quả học hằng ngày.</p><button class="btn big" data-go="home" style="margin-top:12px">Về trang chủ</button></div>';
   };
 };
 
@@ -3322,7 +3326,7 @@ SCREENS.plan = function (m) {
     if (a === 'start') { p.running = true; p.paused = false; lastAct = Date.now(); const s0 = p.segs[p.idx]; if (s0 && s0.kind === 'talk') { const dt = TL.diaryToday && TL.diaryToday(); if (dt && dt.done) advance(); else { TL.save(); return TL.go('checkin'); } } }
     if (a === 'resume') { p.paused = false; lastAct = Date.now(); }
     if (a === 'pause') p.paused = true;
-    if (a === 'tired') { p.paused = true; TL.save(); const o = overlay('<div class="col" style="align-items:center;text-align:center">' + TL.owl(90) + '<h2>Nghỉ ngơi thôi</h2><p>Con mệt thì mình dừng lại một chút. Uống nước, vươn vai, hoặc nghỉ hẳn hôm nay cũng được. Cú Bon không trừ sao đâu.</p><button class="btn" data-x>Được ạ</button></div>'); $('[data-x]', o).onclick = () => { o.remove(); TL.go('home'); }; return; }
+    if (a === 'tired') { p.paused = true; TL.save(); const o = overlay('<div class="col" style="align-items:center;text-align:center">' + TL.owl(90) + '<h2>Nghỉ ngơi thôi</h2><p>Con mệt thì mình dừng lại một chút. Uống nước, vươn vai, hoặc nghỉ hẳn hôm nay cũng được. Cú Uyên Bác không trừ sao đâu.</p><button class="btn" data-x>Được ạ</button></div>'); $('[data-x]', o).onclick = () => { o.remove(); TL.go('home'); }; return; }
     if (a === 'skip') { advance(); }
     if (a === 'goto') { const s = p.segs[p.idx]; if (!p.running) { p.running = true; p.paused = false; } TL.save(); if (s.kind === 'talk') return TL.go('checkin'); if (s.kind === 'tv' || s.kind === 'toan') return TL.go('kingdom', { arg: s.kind }); if (s.kind === 'game') return TL.go('play'); if (s.kind === 'warm') return TL.go(TL.learnedSkills().length ? 'review' : (S().placementDone ? 'kingdom' : 'placement'), { arg: 'tv' }); if (s.kind === 'sum') return TL.go('summary'); if (s.kind === 'break') return showBreak(); }
     TL.save(); draw();
@@ -3340,7 +3344,7 @@ SCREENS.summary = function (m) {
   m.innerHTML = '<div class="card"><div class="hello">' + TL.owl(110) + '<div class="col"><h1>Tổng kết hôm nay</h1><p>Con đã học ' + min + ' phút, trả lời ' + n + ' câu, đúng ngay lần đầu ' + ok + ' câu.</p></div></div>' +
     '<div class="grid3" style="margin-top:14px"><div class="stat"><span class="muted small">Bài học xong</span><b>' + lessons.length + '</b></div><div class="stat"><span class="muted small">Câu đã thử</span><b>' + n + '</b></div><div class="stat"><span class="muted small">Sao hiện có</span><b>' + (S().stars - S().starsSpent) + '</b></div></div>' +
     (lessons.length ? '<p style="margin-top:12px">Bài đã học: ' + lessons.map(l => esc(l.title)).join('; ') + '.</p>' : '') +
-    '<p style="margin-top:12px;font-weight:800">Cú Bon khen con vì đã cố gắng' + (n ? ' trả lời ' + n + ' câu' : '') + '. Con tự nói một điều con học được hôm nay nhé!</p>' +
+    '<p style="margin-top:12px;font-weight:800">Cú Uyên Bác khen con vì đã cố gắng' + (n ? ' trả lời ' + n + ' câu' : '') + '. Con tự nói một điều con học được hôm nay nhé!</p>' +
     '<div class="row" style="margin-top:14px">' + (p.running && !p.allDone && p.segs[p.idx].kind === 'sum' ? '<button class="btn big" data-fin>Kết thúc buổi học</button>' : '') + '<button class="btn ghost" data-go="home">Về trang chủ</button></div></div>';
   const f = $('[data-fin]', m); if (f) f.onclick = () => { const pp = TL.ensurePlan(); pp.idx = pp.segs.length - 1; pp.segs.forEach(s => s.done = true); finishPlan(); };
 };
@@ -3350,7 +3354,7 @@ SCREENS.trophy = function (m) {
   const s = S(), lp = TL.levelProgress(), lv = lp.l;
   m.innerHTML = '<div class="row"><button class="btn small ghost" data-go="home">Về trang chủ</button></div><h1 style="margin:8px 0">Kho báu của ' + TL.kid() + '</h1>' +
     '<div class="grid2"><div class="card"><span class="eyebrow">Cấp độ ' + lv + '</span><div class="bar" style="margin:8px 0"><i style="width:' + Math.round(100 * lp.cur / lp.need) + '%"></i></div><p class="small muted">XP tăng mỗi khi con thử trả lời, kể cả khi chưa đúng. Cố gắng là được ghi nhận.</p></div>' +
-    '<div class="card"><span class="eyebrow">Tủ đồ của Cú Bon</span><div class="row" style="margin-top:8px">' + TL.owl(84) + '<div class="col" style="gap:6px" id="wear"></div></div></div></div>' +
+    '<div class="card"><span class="eyebrow">Tủ đồ của Cú Uyên Bác</span><div class="row" style="margin-top:8px">' + TL.owl(84) + '<div class="col" style="gap:6px" id="wear"></div></div></div></div>' +
     '<h2 style="margin-top:20px">Huy hiệu</h2><div class="grid3" style="margin-top:10px">' + TL.BADGES.map(b => '<div class="card flat" style="' + (s.badges[b.id] ? '' : 'opacity:.5') + '"><div class="row"><svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="20" fill="' + b.color + '"/><path d="M22 10l3.6 7.4 8 1.1-5.8 5.6 1.4 8L22 28.3l-7.2 3.8 1.4-8-5.8-5.6 8-1.1z" fill="#fff"/></svg><div><b>' + esc(b.name) + '</b><p class="small muted">' + esc(b.desc) + '</p>' + (s.badges[b.id] ? '<p class="small">Nhận ngày ' + TL.viDate(s.badges[b.id]) + '</p>' : '') + '</div></div></div>').join('') + '</div>' +
     '<h2 style="margin-top:20px">Đổi sao lấy quà</h2><p class="muted">Con đang có ' + (s.stars - s.starsSpent) + ' sao. Quà do bố mẹ đặt. Khi đổi, cần bố mẹ nhập mã PIN.</p><div class="grid3" style="margin-top:10px" id="rw"></div>';
   const wear = $('#wear', m);
@@ -3611,7 +3615,7 @@ P.content = function (b) {
     '<tr><td>Tiếng Anh 3 Global Success, tập một</td><td>Đủ sách: Starter, Unit 1-10, có bài học trong ứng dụng</td><td>Tập hai</td></tr><tr><td>Tin học 3</td><td>Bản mẫu 40 trang: Bài 1-7 có bài học</td><td>Bài 8-16 (từ trang 38)</td></tr>' +
     '<tr><td>Sách bài tập Qbooks (4 cuốn)</td><td>Chỉ có ảnh bìa</td><td>Các trang bài tập: chụp ảnh tuần đang học gửi cho Claude</td></tr></table></div></div>' +
     '<div class="card" style="margin-top:12px"><div class="row"><h2>Danh mục bài trong ứng dụng</h2><div class="spacer"></div><label class="row"><input type="checkbox" id="unl"' + (s.settings.unlockAll ? ' checked' : '') + '> Mở khoá tất cả vùng đất</label></div><div class="tablewrap" style="margin-top:8px"><table><tr><th>Môn</th><th>Bài</th><th>Trang</th><th>Mức</th><th>Trạng thái</th></tr>' + TL.lessons.map(l => '<tr><td>' + TL.SUBJ[l.subject].name + '</td><td>' + l.no + '. ' + esc(l.title) + '</td><td class="num">' + l.page + '</td><td>' + lvName(l) + '</td><td>' + ({ done: 'Đã xong', doing: 'Đang học' }[(s.lessons[l.id] || {}).status] || 'Chưa học') + '</td></tr>').join('') + '</table></div></div>' +
-    '<div class="card" style="margin-top:12px"><h2>Bài đọc để nghe đọc mẫu</h2><p class="muted small" style="margin:6px 0">Ứng dụng không chép sẵn bài đọc của sách (có bản quyền). Bố mẹ có thể gõ lại bài đọc từ sách giấy; văn bản chỉ lưu trên máy này và chỉ dùng để Cú Bon đọc mẫu.</p><div class="row"><select id="rd-sel">' + fullTV.map(l => '<option value="' + l.id + '">Bài ' + l.no + '. ' + esc(l.title) + ' (trang ' + l.page + ')</option>').join('') + '</select></div><textarea id="rd-text" rows="6" class="write" style="margin-top:8px"></textarea><div class="row" style="margin-top:8px"><button class="btn small" data-rds>Lưu bài đọc</button><button class="btn small ghost" data-rdt>Nghe thử</button></div></div>' +
+    '<div class="card" style="margin-top:12px"><h2>Bài đọc để nghe đọc mẫu</h2><p class="muted small" style="margin:6px 0">Ứng dụng không chép sẵn bài đọc của sách (có bản quyền). Bố mẹ có thể gõ lại bài đọc từ sách giấy; văn bản chỉ lưu trên máy này và chỉ dùng để Cú Uyên Bác đọc mẫu.</p><div class="row"><select id="rd-sel">' + fullTV.map(l => '<option value="' + l.id + '">Bài ' + l.no + '. ' + esc(l.title) + ' (trang ' + l.page + ')</option>').join('') + '</select></div><textarea id="rd-text" rows="6" class="write" style="margin-top:8px"></textarea><div class="row" style="margin-top:8px"><button class="btn small" data-rds>Lưu bài đọc</button><button class="btn small ghost" data-rdt>Nghe thử</button></div></div>' +
     '<div class="card" style="margin-top:12px"><h2>Nhập thêm bài học (gói JSON)</h2><p class="muted small" style="margin:6px 0">Dùng cho phiếu bài tập cô giao hoặc bài từ sách bài tập. Định dạng theo tài liệu "contracts/lesson-pack.schema.md". Có thể nhờ Claude soạn gói từ ảnh chụp trang sách.</p><input type="file" id="pk-file" accept=".json,application/json"><textarea id="pk-text" rows="5" class="write" style="margin-top:8px;font-size:.9rem" placeholder="Hoặc dán nội dung JSON vào đây"></textarea><div class="row" style="margin-top:8px"><button class="btn small" data-pk>Nhập gói bài học</button></div><div id="pk-msg"></div>' +
     (s.packs.length ? '<h3 style="margin-top:12px">Gói đã nhập</h3><ul>' + s.packs.map((p, i) => '<li>' + esc(p.pack) + ' (' + p.lessons.length + ' bài) <button class="btn small ghost" data-pkdel="' + i + '">Gỡ</button></li>').join('') + '</ul>' : '') + '</div>';
   $('#unl', b).onchange = e => { s.settings.unlockAll = e.target.checked; TL.save(); };
@@ -3665,20 +3669,20 @@ TL.saveFile = async function (name, text) {
 P.data = function (b) {
   const s = S(); const theme = document.documentElement.dataset.theme || 'auto';
   const pts = TL.points().slice().reverse();
-  b.innerHTML = '<div class="card" style="margin-bottom:12px"><h2>Bố mẹ lỡ tay làm bài thay con?</h2><p class="muted small" style="margin:6px 0">Trước bài khởi hành, trước mỗi bài học mới và đầu mỗi ngày, ứng dụng tự lưu một điểm quay lại trên máy này (12 điểm gần nhất). Chọn một điểm để đưa tiến độ học về đúng lúc đó. Cài đặt, mã PIN và tin nhắn với Cú Bon giữ nguyên.</p>' +
+  b.innerHTML = '<div class="card" style="margin-bottom:12px"><h2>Bố mẹ lỡ tay làm bài thay con?</h2><p class="muted small" style="margin:6px 0">Trước bài khởi hành, trước mỗi bài học mới và đầu mỗi ngày, ứng dụng tự lưu một điểm quay lại trên máy này (12 điểm gần nhất). Chọn một điểm để đưa tiến độ học về đúng lúc đó. Cài đặt, mã PIN và tin nhắn với Cú Uyên Bác giữ nguyên.</p>' +
     '<div class="row" style="margin:8px 0">' + (TL.trialOn() ? '<button class="btn" data-trial-end>Kết thúc học thử, bỏ kết quả</button>' : '<button class="btn" data-trial>Bố mẹ học thử (không lưu kết quả)</button>') + '</div>' +
     (pts.length ? '<div class="tablewrap"><table><tr><th>Thời điểm</th><th>Điểm quay lại</th><th>Tiến độ lúc đó</th><th></th></tr>' + pts.map(p => { let d = {}; try { d = JSON.parse(p.data) || {}; } catch (e) { } return '<tr><td>' + new Date(p.t).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }) + '</td><td>' + esc(p.label) + '</td><td>' + (d.xp || 0) + ' XP, ' + (d.stars || 0) + ' sao, ' + Object.keys(d.lessons || {}).length + ' bài</td><td><button class="btn small ghost" data-back="' + p.t + '">Quay lại</button></td></tr>'; }).join('') + '</table></div>' : empty('Chưa có điểm quay lại nào trên máy này.')) + '</div>' +
     '<div class="grid2"><div class="card"><h2>Sao lưu và khôi phục</h2><p class="muted small" style="margin:6px 0">' + (TL.gas ? 'Tiến độ lưu trong trình duyệt và tự đồng bộ lên máy chủ Apps Script của bố mẹ, nên con đổi máy vẫn học tiếp được. ' + (TL.syncInfo ? TL.syncInfo() : '') + ' Vẫn nên tải tệp sao lưu mỗi tháng.' : 'Tiến độ lưu trong trình duyệt của máy này. Nên sao lưu mỗi tuần, và trước khi xoá dữ liệu trình duyệt hoặc đổi máy.') + '</p><div class="row"><button class="btn" data-exp>Tải tệp sao lưu</button><button class="btn ghost" data-show>Hiện mã sao lưu</button></div><textarea id="bk" class="write" rows="4" style="margin-top:8px;font-size:.8rem" hidden readonly></textarea>' +
     '<h3 style="margin-top:14px">Khôi phục từ tệp</h3><input type="file" id="imp" accept=".json,application/json"><p class="small muted">Khôi phục sẽ thay toàn bộ dữ liệu hiện tại.</p></div>' +
-    '<div class="card"><h2>Cài đặt</h2><div class="col"><label class="row"><input type="checkbox" id="st-sound"' + (s.settings.sound ? ' checked' : '') + '> Âm thanh hiệu ứng</label><label class="row"><input type="checkbox" id="st-voice"' + (s.settings.voice ? ' checked' : '') + '> Giọng đọc</label><label class="row"><input type="checkbox" id="st-calm"' + (s.settings.calm ? ' checked' : '') + '> Giảm hiệu ứng chuyển động (Cú Bon đứng yên)</label><label class="row"><input type="checkbox" id="st-ckreq"' + (s.settings.checkinRequired !== false ? ' checked' : '') + '> Bắt buộc con trò chuyện với Cú Bon (bằng giọng nói) trước khi học mỗi ngày</label><label class="row"><input type="checkbox" id="st-diaryai"' + (s.settings.diaryAI !== false ? ' checked' : '') + '> Cú Bon dùng AI khi con tâm sự (tắt thì Cú Bon trả lời theo câu soạn sẵn, nội dung không gửi ra ngoài)</label>' +
+    '<div class="card"><h2>Cài đặt</h2><div class="col"><label class="row"><input type="checkbox" id="st-sound"' + (s.settings.sound ? ' checked' : '') + '> Âm thanh hiệu ứng</label><label class="row"><input type="checkbox" id="st-voice"' + (s.settings.voice ? ' checked' : '') + '> Giọng đọc</label><label class="row"><input type="checkbox" id="st-calm"' + (s.settings.calm ? ' checked' : '') + '> Giảm hiệu ứng chuyển động (Cú Uyên Bác đứng yên)</label><label class="row"><input type="checkbox" id="st-ckreq"' + (s.settings.checkinRequired !== false ? ' checked' : '') + '> Bắt buộc con trò chuyện với Cú Uyên Bác (bằng giọng nói) trước khi học mỗi ngày</label><label class="row"><input type="checkbox" id="st-diaryai"' + (s.settings.diaryAI !== false ? ' checked' : '') + '> Cú Uyên Bác dùng AI khi con tâm sự (tắt thì Cú Uyên Bác trả lời theo câu soạn sẵn, nội dung không gửi ra ngoài)</label>' +
     '<div class="field">Tốc độ đọc<input type="range" id="st-rate" min="0.6" max="1.2" step="0.05" value="' + s.settings.rate + '"></div><p class="small muted">' + (TL.viVoice ? 'Giọng tiếng Việt: ' + esc(TL.viVoice.name) : 'Máy chưa có giọng tiếng Việt. Xem mục Hướng dẫn.') + '</p>' +
     '<div class="field">Tên gọi của con<input id="st-kid" maxlength="30" value="' + esc(s.settings.kidName || window.TL_KID || '') + '" style="padding:10px;border-radius:12px;border:2px solid var(--line);background:var(--surface)"></div>' +
     '<div class="field">Giao diện<select id="st-theme"><option value="light"' + (theme !== 'dark' ? ' selected' : '') + '>Sáng, tươi vui (khuyên dùng)</option><option value="dark"' + (theme === 'dark' ? ' selected' : '') + '>Tối (dùng buổi tối, khi cần dịu mắt)</select></div>' +
     '<div class="row"><button class="btn small ghost" data-pinch>Đổi mã PIN</button><button class="btn small ghost" data-place>Cho con làm lại bài khởi hành</button></div>' +
     '<p class="small">Gia sư AI: ' + (TL.AI.state === 'on' ? 'đã kết nối qua ' + esc(TL.AI.via) + (TL.gas ? ' (khoá API nằm trong Script Properties của Apps Script, không nằm trong trang)' : ' (qua tài khoản Claude, không có khoá API trong ứng dụng)') : 'chưa kết nối. ' + esc(TL.AI.reason)) + '</p></div></div></div>' +
-    '<div class="card" style="margin-top:12px"><h2>Trò chuyện Hỏi Cú Bon</h2><div class="row" style="margin-top:6px"><label class="row"><input type="checkbox" id="ch-on"' + (s.settings.chatOn ? ' checked' : '') + '> Cho con dùng Hỏi Cú Bon</label><label class="row">Tối đa <input type="number" id="ch-lim" min="5" max="100" value="' + (s.settings.chatLimit || 40) + '" style="width:80px;padding:8px;border-radius:10px;border:2px solid var(--line);background:var(--surface)"> câu hỏi mỗi ngày</label></div>' +
-    '<p class="small muted" style="margin-top:6px">Cú Bon chỉ gợi ý, không nói đáp án khi con chưa thử. Mỗi câu hỏi dùng lượt Claude của tài khoản đang mở trang. Dưới đây là 30 tin nhắn gần nhất để bố mẹ xem con hỏi gì.</p>' +
-    '<div class="tablewrap" style="max-height:320px;overflow:auto;margin-top:8px">' + ((s.chat || []).length ? '<table><tr><th>Ngày</th><th>Ai</th><th>Nội dung</th></tr>' + s.chat.slice(-30).reverse().map(m => '<tr><td>' + TL.viDate(m.d) + '</td><td>' + (m.r === 'u' ? 'Con' : 'Cú Bon') + '</td><td>' + esc(m.t) + '</td></tr>').join('') + '</table>' : empty('Con chưa trò chuyện với Cú Bon.')) + '</div></div>' +
+    '<div class="card" style="margin-top:12px"><h2>Trò chuyện Hỏi Cú Uyên Bác</h2><div class="row" style="margin-top:6px"><label class="row"><input type="checkbox" id="ch-on"' + (s.settings.chatOn ? ' checked' : '') + '> Cho con dùng Hỏi Cú Uyên Bác</label><label class="row">Tối đa <input type="number" id="ch-lim" min="5" max="100" value="' + (s.settings.chatLimit || 40) + '" style="width:80px;padding:8px;border-radius:10px;border:2px solid var(--line);background:var(--surface)"> câu hỏi mỗi ngày</label></div>' +
+    '<p class="small muted" style="margin-top:6px">Cú Uyên Bác chỉ gợi ý, không nói đáp án khi con chưa thử. Mỗi câu hỏi dùng lượt Claude của tài khoản đang mở trang. Dưới đây là 30 tin nhắn gần nhất để bố mẹ xem con hỏi gì.</p>' +
+    '<div class="tablewrap" style="max-height:320px;overflow:auto;margin-top:8px">' + ((s.chat || []).length ? '<table><tr><th>Ngày</th><th>Ai</th><th>Nội dung</th></tr>' + s.chat.slice(-30).reverse().map(m => '<tr><td>' + TL.viDate(m.d) + '</td><td>' + (m.r === 'u' ? 'Con' : 'Cú Uyên Bác') + '</td><td>' + esc(m.t) + '</td></tr>').join('') + '</table>' : empty('Con chưa trò chuyện với Cú Uyên Bác.')) + '</div></div>' +
     '<div class="card" style="margin-top:12px"><h2>Xoá dữ liệu</h2><p class="muted small" style="margin:6px 0">Xoá toàn bộ tiến độ, nhật ký, đánh giá và thiết lập trên máy này. Không thể hoàn tác. Gõ chữ XOA rồi bấm nút.</p><div class="row"><input id="del-c" style="padding:10px;border-radius:12px;border:2px solid var(--line);background:var(--surface)" placeholder="XOA"><button class="btn" style="background:var(--oops)" data-del>Xoá toàn bộ dữ liệu</button></div></div>' +
     '<div class="card" style="margin-top:12px"><h2>Công cụ kiểm thử</h2><p class="muted small" style="margin:6px 0">Dùng để thử lịch ôn tập mà không cần chờ. Đang lệch ngày: ' + (TL.dayShift || 0) + ' (chỉ trong lần mở này, không lưu).</p><div class="row"><button class="btn small ghost" data-shift="1">Giả lập sang ngày mai</button><button class="btn small ghost" data-shift="0">Về ngày thật</button></div></div>';
   const dump = () => JSON.stringify({ app: 'tulinh-slw', exported: new Date().toISOString(), data: s });
@@ -3707,21 +3711,21 @@ P.data = function (b) {
 /* ---------- hướng dẫn ---------- */
 P.guide = function (b) {
   b.innerHTML = '<div class="card" style="max-width:820px"><h2>Hướng dẫn sử dụng</h2>' +
-    '<h3 style="margin-top:14px">1. Mở ứng dụng</h3><ul><li>Con mở đường link ứng dụng (bản Google Apps Script của bố mẹ). Không cần đăng nhập tài khoản nào. Nên lưu link thành dấu trang hoặc thêm vào màn hình chính của máy tính bảng.</li><li>Tiến độ tự đồng bộ lên máy chủ Apps Script của bố mẹ, con học trên máy khác vẫn tiếp tục được.</li><li>Gia sư AI chạy bằng khoá API bố mẹ đặt trong Script Properties của dự án Apps Script. Xem tệp Hướng dẫn phụ huynh để lấy khoá và đặt giới hạn lượt hỏi mỗi ngày.</li></ul>' +'<h3 style="margin-top:14px">Hỏi Cú Bon</h3><ul><li>Nút Hỏi Cú Bon ở góc phải dưới. Cú Bon biết con đang học bài nào, câu nào; khi con chưa thử, Cú Bon chỉ gợi ý, không nói đáp án.</li><li>Con bấm nút micro để nói thay vì gõ. Cú Bon đọc to câu trả lời. Bật "Nói chuyện liên tục" thì sau khi Cú Bon nói xong, micro tự mở để con hỏi tiếp. Nói chuyện bằng giọng nói cần trình duyệt Chrome, Edge hoặc Safari và cho phép dùng micro.</li><li>Bố mẹ bật tắt, giới hạn số câu hỏi mỗi ngày và xem lại tin nhắn ở mục Dữ liệu và cài đặt.</li></ul>' +
+    '<h3 style="margin-top:14px">1. Mở ứng dụng</h3><ul><li>Con mở đường link ứng dụng (bản Google Apps Script của bố mẹ). Không cần đăng nhập tài khoản nào. Nên lưu link thành dấu trang hoặc thêm vào màn hình chính của máy tính bảng.</li><li>Tiến độ tự đồng bộ lên máy chủ Apps Script của bố mẹ, con học trên máy khác vẫn tiếp tục được.</li><li>Gia sư AI chạy bằng khoá API bố mẹ đặt trong Script Properties của dự án Apps Script. Xem tệp Hướng dẫn phụ huynh để lấy khoá và đặt giới hạn lượt hỏi mỗi ngày.</li></ul>' +'<h3 style="margin-top:14px">Hỏi Cú Uyên Bác</h3><ul><li>Nút Hỏi Cú Uyên Bác ở góc phải dưới. Cú Uyên Bác biết con đang học bài nào, câu nào; khi con chưa thử, Cú Uyên Bác chỉ gợi ý, không nói đáp án.</li><li>Con bấm nút micro để nói thay vì gõ. Cú Uyên Bác đọc to câu trả lời. Bật "Nói chuyện liên tục" thì sau khi Cú Uyên Bác nói xong, micro tự mở để con hỏi tiếp. Nói chuyện bằng giọng nói cần trình duyệt Chrome, Edge hoặc Safari và cho phép dùng micro.</li><li>Bố mẹ bật tắt, giới hạn số câu hỏi mỗi ngày và xem lại tin nhắn ở mục Dữ liệu và cài đặt.</li></ul>' +
     '<h3 style="margin-top:14px">2. Buổi học hằng ngày</h3><ul><li>Con bấm "Bắt đầu buổi học". Đồng hồ chạy theo lịch: Khởi động, Tiếng Việt, nghỉ, Toán, nghỉ, Trò chơi, Tổng kết.</li><li>Mỗi bài có 8 bước: Khởi động, Khám phá, Giải thích, Thực hành, Trò chơi, Kiểm tra, Ghi nhớ, Hẹn ôn tập.</li><li>Khi con trả lời sai: lần 1 có gợi ý, lần 2 hiện cách làm từng bước và câu tương tự dễ hơn. Sao không bao giờ bị trừ.</li><li>Đồng hồ tự dừng khi con rời máy 3 phút. Con có nút "Con mệt rồi" để nghỉ.</li></ul>' +
-    '<h3 style="margin-top:14px">3. Bài đọc Tiếng Việt</h3><ul><li>Ở bước Khởi động, ứng dụng chỉ trang sách cần mở. Con đọc trong sách giấy rồi trả lời câu hỏi trên máy.</li><li>Muốn Cú Bon đọc mẫu: vào Bài học và tài liệu, gõ bài đọc.</li><li>Giọng đọc tiếng Việt trên Windows: Cài đặt, Thời gian và ngôn ngữ, Ngôn ngữ và khu vực, Thêm ngôn ngữ, chọn Tiếng Việt, đánh dấu Giọng nói (Speech). Khởi động lại trình duyệt.</li></ul>' +
+    '<h3 style="margin-top:14px">3. Bài đọc Tiếng Việt</h3><ul><li>Ở bước Khởi động, ứng dụng chỉ trang sách cần mở. Con đọc trong sách giấy rồi trả lời câu hỏi trên máy.</li><li>Muốn Cú Uyên Bác đọc mẫu: vào Bài học và tài liệu, gõ bài đọc.</li><li>Giọng đọc tiếng Việt trên Windows: Cài đặt, Thời gian và ngôn ngữ, Ngôn ngữ và khu vực, Thêm ngôn ngữ, chọn Tiếng Việt, đánh dấu Giọng nói (Speech). Khởi động lại trình duyệt.</li></ul>' +
     '<h3 style="margin-top:14px">4. Theo dõi và đánh giá</h3><ul><li>Tổng quan, Phân tích môn và Báo cáo lấy hoàn toàn từ dữ liệu con đã làm. Khi ít dữ liệu, ứng dụng ghi rõ "chưa đủ cơ sở".</li><li>Mỗi Chủ nhật 19:00 (đổi được), trang chủ hiện nhắc Đánh giá tuần. Bố mẹ đánh giá mức tập trung, tự giác, chọn 1-2 mục tiêu.</li></ul>' +
     '<h3 style="margin-top:14px">5. Thêm bài học</h3><ul><li>Chụp ảnh các trang sách còn thiếu hoặc phiếu bài tập, gửi cho Claude để soạn gói bài học JSON, rồi nhập ở mục Bài học và tài liệu. Gói bài học cũng được đồng bộ.</li></ul>' +
-    '<h3 style="margin-top:14px">6. Bảo vệ dữ liệu</h3><ul><li>Ứng dụng không có quảng cáo, không có trò chuyện với người lạ, không thu thập họ tên đầy đủ hay ảnh của con.</li><li>Tiến độ nằm trên máy và trong Script Properties của dự án Apps Script thuộc tài khoản Google của bố mẹ. Khi con hỏi Cú Bon hoặc nhờ nhận xét bài viết, câu hỏi, đoạn viết và tên bài đang học được gửi tới dịch vụ AI bố mẹ đã chọn (Gemini hoặc Claude); không gửi họ tên đầy đủ hay ảnh. Nhận dạng giọng nói do trình duyệt thực hiện (Chrome gửi âm thanh tới máy chủ Google để chuyển thành chữ).</li></ul></div>';
+    '<h3 style="margin-top:14px">6. Bảo vệ dữ liệu</h3><ul><li>Ứng dụng không có quảng cáo, không có trò chuyện với người lạ, không thu thập họ tên đầy đủ hay ảnh của con.</li><li>Tiến độ nằm trên máy và trong Script Properties của dự án Apps Script thuộc tài khoản Google của bố mẹ. Khi con hỏi Cú Uyên Bác hoặc nhờ nhận xét bài viết, câu hỏi, đoạn viết và tên bài đang học được gửi tới dịch vụ AI bố mẹ đã chọn (Gemini hoặc Claude); không gửi họ tên đầy đủ hay ảnh. Nhận dạng giọng nói do trình duyệt thực hiện (Chrome gửi âm thanh tới máy chủ Google để chuyển thành chữ).</li></ul></div>';
 };
 })();
 
 /* ---- src/engine/checkin.js ---- */
-/* ===== Cú Bon hỏi thăm mỗi tối và Nhật ký tâm sự cho bố mẹ =====
-   Đầu mỗi buổi học (khoảng 21:30), Cú Bon hỏi con hôm nay thấy thế nào, ở lớp có chuyện gì, lắng nghe và động viên.
+/* ===== Cú Uyên Bác hỏi thăm mỗi tối và Nhật ký tâm sự cho bố mẹ =====
+   Đầu mỗi buổi học (khoảng 21:30), Cú Uyên Bác hỏi con hôm nay thấy thế nào, ở lớp có chuyện gì, lắng nghe và động viên.
    Cuộc trò chuyện được lưu vào TL.S.diary để bố mẹ đọc ở Khu phụ huynh, mục Nhật ký tâm sự, kèm tóm tắt và dấu hiệu cần chú ý.
-   Nguyên tắc: Cú Bon không hứa giữ bí mật; khi con kể chuyện bị bắt nạt, bị đánh, bị đụng chạm, bị doạ hoặc có ý làm hại bản thân,
-   Cú Bon trấn an, khuyên con kể ngay với bố mẹ, cô giáo, và đánh dấu "Cần nói chuyện ngay" cho bố mẹ. */
+   Nguyên tắc: Cú Uyên Bác không hứa giữ bí mật; khi con kể chuyện bị bắt nạt, bị đánh, bị đụng chạm, bị doạ hoặc có ý làm hại bản thân,
+   Cú Uyên Bác trấn an, khuyên con kể ngay với bố mẹ, cô giáo, và đánh dấu "Cần nói chuyện ngay" cho bố mẹ. */
 (function () {
 'use strict';
 const { esc, $, $$ } = TL;
@@ -3773,39 +3777,39 @@ TL.diaryLevel = levelOf;
 
 /* ---------- câu soạn sẵn khi không dùng AI ---------- */
 const FIRST = {
-  ratvui: 'Ồ, con vui thế thì Cú Bon cũng vui lây! Hôm nay ở lớp có chuyện gì vui, con kể Cú Bon nghe với.',
-  vui: 'Cú Bon mừng quá! Hôm nay ở lớp con thích nhất điều gì?',
+  ratvui: 'Ồ, con vui thế thì Cú Uyên Bác cũng vui lây! Hôm nay ở lớp có chuyện gì vui, con kể Cú Uyên Bác nghe với.',
+  vui: 'Cú Uyên Bác mừng quá! Hôm nay ở lớp con thích nhất điều gì?',
   binhthuong: 'Cảm ơn con đã kể. Hôm nay ở lớp con học những gì, chơi với ai?',
   met: 'Con học cả ngày ở trường chắc mệt lắm. Hôm nay có việc gì làm con mệt không?',
-  buon: 'Cú Bon ở đây với con. Có chuyện gì làm con buồn, con kể Cú Bon nghe được không?',
-  lo: 'Con đang lo điều gì thế? Kể Cú Bon nghe, mình cùng nghĩ cách nhé.',
-  buc: 'Bực mình thì khó chịu lắm. Chuyện gì làm con bực, con kể Cú Bon nghe nhé.' };
+  buon: 'Cú Uyên Bác ở đây với con. Có chuyện gì làm con buồn, con kể Cú Uyên Bác nghe được không?',
+  lo: 'Con đang lo điều gì thế? Kể Cú Uyên Bác nghe, mình cùng nghĩ cách nhé.',
+  buc: 'Bực mình thì khó chịu lắm. Chuyện gì làm con bực, con kể Cú Uyên Bác nghe nhé.' };
 const NEXT = ['Thế à! Rồi sao nữa hả con?', 'Hôm nay ở lớp con chơi với bạn nào?', 'Có điều gì con muốn bố mẹ giúp không?', 'Con thấy tự hào nhất về việc gì hôm nay?'];
 const CLOSE = {
-  ratvui: 'Hôm nay của con thật tuyệt! Cú Bon cảm ơn con đã kể. Giờ mình học một chút thật vui nhé.',
-  vui: 'Nghe con kể Cú Bon thấy vui quá. Cảm ơn con nhé. Mình vào học thôi!',
-  binhthuong: 'Cảm ơn con đã kể cho Cú Bon nghe. Mình cùng học một chút rồi đi ngủ sớm nhé.',
-  met: 'Con mệt mà vẫn ngồi học, Cú Bon thấy con rất cố gắng. Hôm nay mình học nhẹ nhàng thôi nhé.',
-  buon: 'Cảm ơn con đã tin Cú Bon. Chuyện buồn con kể với bố mẹ nữa nhé, bố mẹ luôn thương con. Cú Bon ở bên con.',
+  ratvui: 'Hôm nay của con thật tuyệt! Cú Uyên Bác cảm ơn con đã kể. Giờ mình học một chút thật vui nhé.',
+  vui: 'Nghe con kể Cú Uyên Bác thấy vui quá. Cảm ơn con nhé. Mình vào học thôi!',
+  binhthuong: 'Cảm ơn con đã kể cho Cú Uyên Bác nghe. Mình cùng học một chút rồi đi ngủ sớm nhé.',
+  met: 'Con mệt mà vẫn ngồi học, Cú Uyên Bác thấy con rất cố gắng. Hôm nay mình học nhẹ nhàng thôi nhé.',
+  buon: 'Cảm ơn con đã tin Cú Uyên Bác. Chuyện buồn con kể với bố mẹ nữa nhé, bố mẹ luôn thương con. Cú Uyên Bác ở bên con.',
   lo: 'Con đã dũng cảm nói ra điều con lo. Con kể thêm với bố mẹ nhé, bố mẹ sẽ cùng con tìm cách.',
-  buc: 'Cú Bon hiểu con đang bực. Hít thật sâu ba lần nào. Con kể với bố mẹ nữa nhé, bố mẹ sẽ lắng nghe con.' };
+  buc: 'Cú Uyên Bác hiểu con đang bực. Hít thật sâu ba lần nào. Con kể với bố mẹ nữa nhé, bố mẹ sẽ lắng nghe con.' };
 const CARE = {
   'Bạn bè, bị trêu chọc': 'Bị bạn trêu như vậy chắc con buồn lắm. Con không có lỗi gì đâu. Con kể với bố mẹ hoặc cô giáo nhé, người lớn sẽ giúp con.',
-  'Thầy cô, điểm số': 'Cú Bon hiểu, bị như vậy con thấy buồn. Ai cũng có lúc chưa làm tốt. Lần sau mình cố gắng hơn, con kể với bố mẹ nữa nhé.',
-  'Cảm xúc buồn, sợ': 'Cú Bon ở đây với con. Buồn hay sợ thì con cứ nói ra, nói ra sẽ nhẹ lòng hơn. Con kể thêm với bố mẹ nhé.',
+  'Thầy cô, điểm số': 'Cú Uyên Bác hiểu, bị như vậy con thấy buồn. Ai cũng có lúc chưa làm tốt. Lần sau mình cố gắng hơn, con kể với bố mẹ nữa nhé.',
+  'Cảm xúc buồn, sợ': 'Cú Uyên Bác ở đây với con. Buồn hay sợ thì con cứ nói ra, nói ra sẽ nhẹ lòng hơn. Con kể thêm với bố mẹ nhé.',
   'Sức khoẻ': 'Con bị mệt trong người à? Con nói ngay với bố mẹ nhé, hôm nay mình học nhẹ thôi.',
-  'Nhắc đến bí mật, dặn đừng kể': 'Cú Bon nghĩ chuyện gì làm con lo thì nên kể cho bố mẹ. Bố mẹ luôn thương con và sẽ giúp con.' };
-const SAFE = 'Cảm ơn con đã dũng cảm kể cho Cú Bon. Chuyện đó không phải lỗi của con. Con kể ngay cho bố mẹ hoặc cô giáo nhé, người lớn sẽ giúp con được an toàn.';
+  'Nhắc đến bí mật, dặn đừng kể': 'Cú Uyên Bác nghĩ chuyện gì làm con lo thì nên kể cho bố mẹ. Bố mẹ luôn thương con và sẽ giúp con.' };
+const SAFE = 'Cảm ơn con đã dũng cảm kể cho Cú Uyên Bác. Chuyện đó không phải lỗi của con. Con kể ngay cho bố mẹ hoặc cô giáo nhé, người lớn sẽ giúp con được an toàn.';
 const CHIPS = ['Hôm nay con được cô khen', 'Con chơi với các bạn rất vui', 'Con được điểm tốt', 'Con hơi mệt', 'Có bạn trêu con', 'Cô mắng con', 'Không có gì đặc biệt', 'Con không muốn kể'];
 
 function rules() {
   const k = TL.kid();
-  return 'Bạn là Cú Bon, người bạn biết lắng nghe của bé ' + k + ', học sinh lớp 3 (8 tuổi) ở Việt Nam. Lúc này là giờ trò chuyện buổi tối, sau một ngày đi học, trước khi bé học bài. Mục đích: hỏi thăm một ngày của bé, lắng nghe, động viên.\n' +
-    'Cách nói: xưng "Cú Bon", gọi bé là "con" hoặc "' + k + '"; tiếng Việt có dấu; tối đa 3 câu ngắn; mỗi lần chỉ hỏi đúng 1 câu; nói lại cảm xúc của bé (ví dụ "Con thấy buồn vì..."); khen cụ thể khi bé kể việc tốt; không phán xét, không dạy đời, không chê, không so sánh bé với bạn khác. Không dùng biểu tượng cảm xúc, không dùng dấu gạch ngang dài, không dùng định dạng.\n' +
+  return 'Bạn là Cú Uyên Bác, người bạn biết lắng nghe của bé ' + k + ', học sinh lớp 3 (8 tuổi) ở Việt Nam. Lúc này là giờ trò chuyện buổi tối, sau một ngày đi học, trước khi bé học bài. Mục đích: hỏi thăm một ngày của bé, lắng nghe, động viên.\n' +
+    'Cách nói: xưng "Cú Uyên Bác", gọi bé là "con" hoặc "' + k + '"; tiếng Việt có dấu; tối đa 3 câu ngắn; mỗi lần chỉ hỏi đúng 1 câu; nói lại cảm xúc của bé (ví dụ "Con thấy buồn vì..."); khen cụ thể khi bé kể việc tốt; không phán xét, không dạy đời, không chê, không so sánh bé với bạn khác. Không dùng biểu tượng cảm xúc, không dùng dấu gạch ngang dài, không dùng định dạng.\n' +
     'Không hứa giữ bí mật. Nếu bé xin giữ bí mật hoặc dặn đừng nói với bố mẹ, nói nhẹ nhàng: chuyện làm con buồn hay sợ thì nên kể cho bố mẹ, bố mẹ luôn thương con.\n' +
     'Nếu bé kể bị đánh, bị bắt nạt, bị người lớn hoặc người lạ đụng chạm làm bé khó chịu, bị dọa, sợ hãi ở nhà hay ở trường, hoặc nói muốn biến mất, muốn chết, muốn làm đau mình: giữ bình tĩnh, nói đó không phải lỗi của con, con đã rất dũng cảm khi kể, và khuyên con kể ngay cho bố mẹ hoặc cô giáo. Không hỏi dồn chi tiết.\n' +
-    'Không hỏi họ tên đầy đủ, địa chỉ, tên trường. Không nhắc đến bài vở khi bé đang buồn. Nếu bé không muốn kể thì tôn trọng, nói Cú Bon luôn sẵn sàng nghe khi con muốn.\n' +
-    'Không vội kết thúc: bé còn muốn kể thì tiếp tục lắng nghe và hỏi tiếp nhẹ nhàng, dù đã nhiều lượt. Sau khoảng 5 lượt có thể hỏi "Con còn muốn kể gì cho Cú Bon nữa không?". Chỉ khi bé nói đã kể xong, muốn đi học hoặc tạm biệt thì mới cảm ơn, động viên một câu cụ thể và mời bé vào học.';
+    'Không hỏi họ tên đầy đủ, địa chỉ, tên trường. Không nhắc đến bài vở khi bé đang buồn. Nếu bé không muốn kể thì tôn trọng, nói Cú Uyên Bác luôn sẵn sàng nghe khi con muốn.\n' +
+    'Không vội kết thúc: bé còn muốn kể thì tiếp tục lắng nghe và hỏi tiếp nhẹ nhàng, dù đã nhiều lượt. Sau khoảng 5 lượt có thể hỏi "Con còn muốn kể gì cho Cú Uyên Bác nữa không?". Chỉ khi bé nói đã kể xong, muốn đi học hoặc tạm biệt thì mới cảm ơn, động viên một câu cụ thể và mời bé vào học.';
 }
 const today = () => TL.today();
 function entry(create) {
@@ -3839,35 +3843,35 @@ TL.SCREENS.checkin = function (m) {
   const e = entry(true); const voiceOK = !!SR && !micBlocked();
   const hr = TL.nowDate().getHours(), mi = TL.nowDate().getMinutes(); const late = hr >= 23 || (hr === 22 && mi >= 30) || hr < 5;
   let silent = 0, auto = false, started = false, sayId = 0;
-  m.innerHTML = '<div class="checkin col" style="gap:16px">' +
+  m.innerHTML = '<div class="checkin col" style="gap:16px">' + (TL.linkBanner ? TL.linkBanner() : '') +
     '<section class="ck-hero ck-voice"><div class="ck-owl">' + TL.owlStage(190) + '</div><div class="col" style="gap:12px;flex:1;min-width:260px">' +
-    '<span class="eyebrow">Trò chuyện với Cú Bon' + (e.done ? '' : ' trước khi học') + '</span>' +
-    '<div class="ck-caption" id="ck-cap" aria-live="polite">' + esc(e.done ? 'Hôm nay con đã kể cho Cú Bon nghe rồi. Cảm ơn con!' : 'Chào ' + TL.kid() + '! Cú Bon nhớ con quá. Con chạm vào nút bên dưới để mình nói chuyện nhé.') + '</div>' +
+    '<span class="eyebrow">Trò chuyện với Cú Uyên Bác' + (e.done ? '' : ' trước khi học') + '</span>' +
+    '<div class="ck-caption" id="ck-cap" aria-live="polite">' + esc(e.done ? 'Hôm nay con đã kể cho Cú Uyên Bác nghe rồi. Cảm ơn con!' : 'Chào ' + TL.kid() + '! Cú Uyên Bác nhớ con quá. Con chạm vào nút bên dưới để mình nói chuyện nhé.') + '</div>' +
     (late ? '<div class="note">Đã muộn rồi. Mình nói chuyện ngắn thôi rồi con học nhanh và đi ngủ sớm nhé.</div>' : '') +
     '<div class="row ck-ctl">' +
     (e.done ? '<button class="btn big ok" id="ck-go">Vào học thôi</button>' :
-      '<button class="btn big ok" id="ck-start">' + (e.turns.length ? 'Nói chuyện tiếp với Cú Bon' : 'Bắt đầu nói chuyện') + '</button>' +
+      '<button class="btn big ok" id="ck-start">' + (e.turns.length ? 'Nói chuyện tiếp với Cú Uyên Bác' : 'Bắt đầu nói chuyện') + '</button>' +
       '<button class="ck-mic" id="ck-mic" hidden aria-label="Bấm để nói"><svg width="42" height="42" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg></button>' +
-      '<div class="col" style="gap:4px"><b id="ck-st" class="ck-st"></b><button class="linkbtn small" id="ck-rep" hidden>Cú Bon nói lại</button></div>') + '</div>' +
+      '<div class="col" style="gap:4px"><b id="ck-st" class="ck-st"></b><button class="linkbtn small" id="ck-rep" hidden>Cú Uyên Bác nói lại</button></div>') + '</div>' +
     '<div class="ck-moods small-moods" title="Con cũng có thể chạm vào khuôn mặt">' + MOODS.map(md => '<button class="ck-mood' + (e.mood === md.id ? ' on' : '') + '" data-mood="' + md.id + '">' + face(md, 40) + '<span>' + md.name + '</span></button>').join('') + '</div>' +
     '</div></section>' +
     '<section class="card ck-chat"><div class="row"><span class="eyebrow">Cuộc trò chuyện hôm nay</span><div class="spacer"></div>' + (e.done ? '' : '<button class="btn ghost small" id="ck-done" disabled>Con kể xong rồi</button>') + '</div>' +
     '<div class="msgs" id="ck-msgs" aria-live="polite"></div>' +
-    '<p class="howto" id="ck-tip">' + (voiceOK ? '<b>Hướng dẫn làm bài:</b> Cú Bon hỏi xong thì micro tự bật, con nói to, rõ. Con kể bao lâu cũng được; nói xong con chờ một chút, Cú Bon sẽ trả lời. Muốn dừng, con nói "Con kể xong rồi" hoặc bấm nút cùng tên.' : '<b>Hướng dẫn làm bài:</b> Máy này chưa nghe được giọng nói trực tiếp. Con bấm vào ô bên dưới rồi nói bằng micro trên bàn phím (máy tính bảng, điện thoại), hoặc bấm phím Windows + H trên máy tính.') + '</p>' +
+    '<p class="howto" id="ck-tip">' + (voiceOK ? '<b>Hướng dẫn làm bài:</b> Cú Uyên Bác hỏi xong thì micro tự bật, con nói to, rõ. Con kể bao lâu cũng được; nói xong con chờ một chút, Cú Uyên Bác sẽ trả lời. Muốn dừng, con nói "Con kể xong rồi" hoặc bấm nút cùng tên.' : '<b>Hướng dẫn làm bài:</b> Máy này chưa nghe được giọng nói trực tiếp. Con bấm vào ô bên dưới rồi nói bằng micro trên bàn phím (máy tính bảng, điện thoại), hoặc bấm phím Windows + H trên máy tính.') + '</p>' +
     '<div class="row ck-input" id="ck-typ"' + (voiceOK ? ' hidden' : '') + '><input id="ck-in" placeholder="Con nói hoặc gõ vào đây..." autocomplete="off"><button class="btn" id="ck-send">Gửi</button></div>' +
     (voiceOK && !e.done ? '<button class="linkbtn small" id="ck-type">Micro không nghe được? Bấm vào đây để gõ chữ</button>' : '') + '</section></div>';
   const msgs = $('#ck-msgs', m), stage = $('.owlstage', m), cap = $('#ck-cap', m), st = $('#ck-st', m);
   const status = t => { if (st) st.textContent = t || ''; };
   const draw = (stream) => {
-    msgs.innerHTML = e.turns.map(t => '<div class="msg ' + (t.r === 'u' ? 'me' : 'bot') + '">' + esc(t.t) + '</div>').join('') + (stream != null ? '<div class="msg bot">' + esc(stream || 'Cú Bon đang nghĩ...') + '</div>' : '');
+    msgs.innerHTML = e.turns.map(t => '<div class="msg ' + (t.r === 'u' ? 'me' : 'bot') + '">' + esc(t.t) + '</div>').join('') + (stream != null ? '<div class="msg bot">' + esc(stream || 'Cú Uyên Bác đang nghĩ...') + '</div>' : '');
     msgs.scrollTop = msgs.scrollHeight;
     const nU = e.turns.filter(t => t.r === 'u').length; const d = $('#ck-done', m); if (d) { d.disabled = nU < 2; d.classList.toggle('ok', nU >= 2); d.classList.toggle('ghost', nU < 2); }
   };
   draw();
   if (e.done) { $('#ck-go', m).onclick = () => goLearn(); TL.owlStageAct(stage, 'dance'); return; }
-  /* Cú Bon nói (đọc to), nói xong thì tự bật micro */
+  /* Cú Uyên Bác nói (đọc to), nói xong thì tự bật micro */
   const say = (t, then) => {
-    cap.textContent = t; TL.owlStageAct(stage, 'wave'); status('Cú Bon đang nói...'); if (stage._o) stage._o.talk = true;
+    cap.textContent = t; TL.owlStageAct(stage, 'wave'); status('Cú Uyên Bác đang nói...'); if (stage._o) stage._o.talk = true;
     let fired = false; const sid = ++sayId;
     const done = () => { if (fired || sid !== sayId) return; fired = true; status(''); if (stage._o) stage._o.talk = false; if (then) then(); else if (auto && voiceOK) setTimeout(hear, 250); };
     const cloud = !TL.viVoice && TL.gas; let safety = null;
@@ -3885,25 +3889,24 @@ TL.SCREENS.checkin = function (m) {
     waitEnd(9000); // chưa nói gì thì chờ 9 giây
     rec.onresult = ev => { tmp = ''; for (let i = ev.resultIndex; i < ev.results.length; i++) { if (ev.results[i].isFinal) fin += ev.results[i][0].transcript + ' '; else tmp += ev.results[i][0].transcript; } status('Con nói: ' + (fin + tmp)); waitEnd(tmp ? 4000 : 3000); };
     rec.onerror = ev => {
-      if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') { auto = false; status(''); cap.textContent = 'Máy chưa cho Cú Bon nghe. Bố mẹ bấm biểu tượng ổ khoá trên thanh địa chỉ, chọn Cho phép micro, rồi con bấm nút micro nhé.'; $('#ck-typ', m).hidden = false; }
+      if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') { auto = false; status(''); cap.textContent = 'Máy chưa cho Cú Uyên Bác nghe. Bố mẹ bấm biểu tượng ổ khoá trên thanh địa chỉ, chọn Cho phép micro, rồi con bấm nút micro nhé.'; $('#ck-typ', m).hidden = false; }
     };
     rec.onend = () => {
       clearTimeout(quiet); listening = false; micBtn.classList.remove('on'); const v = fin.trim();
       if (v) { silent = 0; send(v, true); return; }
       silent++; status('');
       if (!m.isConnected) return;
-      if (silent <= 2 && auto) say(silent === 1 ? 'Cú Bon chưa nghe thấy. Con nói to hơn một chút nhé.' : 'Con nói đi, Cú Bon đang nghe đây.');
+      if (silent <= 2 && auto) say(silent === 1 ? 'Cú Uyên Bác chưa nghe thấy. Con nói to hơn một chút nhé.' : 'Con nói đi, Cú Uyên Bác đang nghe đây.');
       else { auto = false; cap.textContent = 'Khi nào con sẵn sàng thì bấm nút micro màu tím rồi nói nhé.'; }
     };
-    try { rec.start(); listening = true; micBtn.classList.add('on'); status('Cú Bon đang nghe... con nói đi.'); } catch (x) { listening = false; }
+    try { rec.start(); listening = true; micBtn.classList.add('on'); status('Cú Uyên Bác đang nghe... con nói đi.'); } catch (x) { listening = false; }
   };
   const begin = () => {
     started = true; auto = true; $('#ck-start', m).hidden = true; micBtn.hidden = !voiceOK; $('#ck-rep', m).hidden = false;
-    if (!e.turns.length) botSay('Chào ' + TL.kid() + '! Hôm nay con thấy thế nào? Con kể Cú Bon nghe nhé.');
-    else { const lastB = [...e.turns].reverse().find(t => t.r === 'b'); say(lastB ? lastB.t : 'Mình nói chuyện tiếp nhé. Con kể tiếp cho Cú Bon nghe đi.'); }
+    if (!e.turns.length) botSay('Chào ' + TL.kid() + '! Hôm nay con thấy thế nào? Con kể Cú Uyên Bác nghe nhé.');
+    else { const lastB = [...e.turns].reverse().find(t => t.r === 'b'); say(lastB ? lastB.t : 'Mình nói chuyện tiếp nhé. Con kể tiếp cho Cú Uyên Bác nghe đi.'); }
   };
   $('#ck-start', m).onclick = begin;
-  stage.addEventListener('click', () => { if (!started) begin(); });
   micBtn.onclick = () => { if (listening) { try { rec.stop(); } catch (x) { } return; } auto = true; silent = 0; hear(); };
   $('#ck-rep', m).onclick = () => { const lastB = [...e.turns].reverse().find(t => t.r === 'b'); if (lastB) { auto = true; say(lastB.t); } };
   const ty = $('#ck-type', m); if (ty) ty.onclick = () => { $('#ck-typ', m).hidden = false; $('#ck-in', m).focus(); ty.hidden = true; };
@@ -3918,7 +3921,7 @@ TL.SCREENS.checkin = function (m) {
     busy = true; e.turns.push({ r: 'u', t: text.slice(0, 600), v: voice ? 1 : 0 });
     if (!e.mood) { const md = moodOf(text); if (md) { e.mood = md; $$('[data-mood]', m).forEach(x => x.classList.toggle('on', x.dataset.mood === md)); } }
     scan(text).forEach(f => { if (!e.flags.some(x => x.name === f.name)) e.flags.push(f); });
-    e.level = levelOf(e); TL.save(); draw(''); status('Cú Bon đang nghĩ...'); TL.owlStageAct(stage, 'hop');
+    e.level = levelOf(e); TL.save(); draw(''); status('Cú Uyên Bác đang nghĩ...'); TL.owlStageAct(stage, 'hop');
     const wantsEnd = /\b(ke xong|noi xong|het roi|khong con gi|khong co gi nua|vao hoc|di hoc bai|hoc thoi|hoc bai thoi|tam biet)\b/.test(plainVi(text).replace(/[^a-z0-9]+/g, ' '));
     const flags = scan(text); const danger = flags.some(f => f.k === 'cao'); const care = flags.map(f => CARE[f.name]).find(Boolean); const nU = e.turns.filter(t => t.r === 'u').length;
     let reply = '';
@@ -3952,7 +3955,7 @@ function finish(m, e, stage) {
   if (!e.mood) e.mood = 'binhthuong';
   TL.addXP(5); TL.owlStageAct(stage, 'cheer'); e.level = levelOf(e); TL.save();
   summarize(e);
-  const t = 'Cảm ơn ' + TL.kid() + ' đã kể cho Cú Bon nghe. Giờ mình vào học nhé!';
+  const t = 'Cảm ơn ' + TL.kid() + ' đã kể cho Cú Uyên Bác nghe. Giờ mình vào học nhé!';
   const cap = $('#ck-cap', m); if (cap) cap.textContent = t;
   const go = () => { if (TL.screen().name === 'checkin') goLearn(); };
   const lastB = e.turns[e.turns.length - 1];
@@ -3964,9 +3967,9 @@ async function summarize(e) {
   if (!(await useAI())) return;
   const said = e.turns.filter(t => t.r === 'u').map(t => t.t).join(' | ');
   if (said.length < 6) return;
-  const prompt = 'Bạn là chuyên gia tâm lý trẻ em, viết cho bố mẹ của bé ' + TL.kid() + ' (lớp 3). Dưới đây là cuộc trò chuyện buổi tối giữa bé và nhân vật Cú Bon trong ứng dụng học. Chỉ dựa vào lời bé, không suy đoán thêm; nếu bé kể ít thì nói rõ.\n' +
+  const prompt = 'Bạn là chuyên gia tâm lý trẻ em, viết cho bố mẹ của bé ' + TL.kid() + ' (lớp 3). Dưới đây là cuộc trò chuyện buổi tối giữa bé và nhân vật Cú Uyên Bác trong ứng dụng học. Chỉ dựa vào lời bé, không suy đoán thêm; nếu bé kể ít thì nói rõ.\n' +
     'Trả về đúng một đối tượng JSON, không thêm chữ nào khác, các khoá: "tom_tat" (2-3 câu), "cam_xuc" (vài từ), "dieu_vui" (chuỗi, có thể rỗng), "dieu_lo" (chuỗi, có thể rỗng), "muc" ("on" nếu bình thường, "chu_y" nếu có chuyện buồn, lo, bạn bè, thầy cô cần bố mẹ hỏi thêm, "cao" nếu có dấu hiệu bị bạo lực, bắt nạt nặng, bị đụng chạm, bị dọa, hoặc ý nghĩ làm hại bản thân), "goi_y" (1-2 câu gợi ý cách bố mẹ mở lời với con, nhẹ nhàng, không tra hỏi), "tam_trang" (một trong: ratvui, vui, binhthuong, met, buon, lo, buc).\n' +
-    'Cảm xúc bé chọn: ' + ((MOODS.find(x => x.id === e.mood) || {}).name || 'chưa chọn') + '.\nCuộc trò chuyện:\n' + e.turns.map(t => (t.r === 'u' ? 'Bé: ' : 'Cú Bon: ') + t.t).join('\n').slice(0, 5000);
+    'Cảm xúc bé chọn: ' + ((MOODS.find(x => x.id === e.mood) || {}).name || 'chưa chọn') + '.\nCuộc trò chuyện:\n' + e.turns.map(t => (t.r === 'u' ? 'Bé: ' : 'Cú Uyên Bác: ') + t.t).join('\n').slice(0, 5000);
   try {
     const r = await TL.AI.ask(prompt, 'default');
     const j = JSON.parse(String(r).replace(/^[^{]*/, '').replace(/[^}]*$/, ''));
@@ -3992,7 +3995,7 @@ TL.diaryParent = function (b) {
   const cnt = {}; S().diary.filter(e => e.d >= days30[0] && e.mood).forEach(e => cnt[e.mood] = (cnt[e.mood] || 0) + 1);
   const legend = MOODS.filter(md => cnt[md.id]).map(md => '<span class="row" style="gap:4px">' + face(md, 20) + md.name + ' ' + cnt[md.id] + '</span>').join('');
   b.innerHTML =
-    '<div class="card"><h2>Tâm trạng 30 ngày gần đây</h2><p class="muted small" style="margin:6px 0">Mỗi tối, trước khi học, Cú Bon hỏi con hôm nay thấy thế nào, ở lớp có chuyện gì. Ô viền đỏ: cần nói chuyện ngay; viền cam: nên hỏi thêm.</p>' + strip +
+    '<div class="card"><h2>Tâm trạng 30 ngày gần đây</h2><p class="muted small" style="margin:6px 0">Mỗi tối, trước khi học, Cú Uyên Bác hỏi con hôm nay thấy thế nào, ở lớp có chuyện gì. Ô viền đỏ: cần nói chuyện ngay; viền cam: nên hỏi thêm.</p>' + strip +
     '<div class="row small" style="gap:14px;margin-top:8px;flex-wrap:wrap">' + (legend || '<span class="muted">Chưa có buổi trò chuyện nào.</span>') + '</div></div>' +
     '<div class="card" style="margin-top:12px"><h2>Nhật ký từng ngày</h2>' + (D.length ? D.slice(0, 40).map(e => {
       const md = MOODS.find(x => x.id === e.mood); const lv = levelOf(e); const said = (e.turns || []).filter(t => t.r === 'u').length;
@@ -4002,15 +4005,15 @@ TL.diaryParent = function (b) {
         (e.turns && e.turns.length ? '<details><summary class="small">Xem nguyên văn cuộc trò chuyện</summary><div class="msgs" style="max-height:none">' + e.turns.map(t => '<div class="msg ' + (t.r === 'u' ? 'me' : 'bot') + '">' + esc(t.t) + '</div>').join('') + '</div></details>' : e.trimmed ? '<p class="small muted">Nguyên văn đã được xoá sau 60 ngày, chỉ giữ tóm tắt.</p>' : '') +
         '<button class="linkbtn small" data-deld="' + e.d + '" style="margin-top:6px">Xoá buổi này (bố mẹ nói thử)</button> ' +
         (lv !== 'on' ? '<label class="row small" style="margin-top:6px"><input type="checkbox" data-seen="' + e.d + '"' + (e.seen ? ' checked' : '') + '> Bố mẹ đã nói chuyện với con về việc này</label>' : '') + '</div>';
-    }).join('') : '<p class="muted">Chưa có buổi trò chuyện nào. Cú Bon sẽ hỏi thăm con ở đầu mỗi buổi học.</p>') + '</div>' +
+    }).join('') : '<p class="muted">Chưa có buổi trò chuyện nào. Cú Uyên Bác sẽ hỏi thăm con ở đầu mỗi buổi học.</p>') + '</div>' +
     '<div class="grid2" style="margin-top:12px"><div class="card"><h2>Cách mở lời với con</h2><ul class="guide">' +
     '<li>Hỏi cụ thể thay vì "Hôm nay thế nào?": "Hôm nay ở lớp có gì làm con cười?", "Giờ ra chơi con chơi với ai?".</li>' +
     '<li>Nghe hết rồi mới nói. Nói lại cảm xúc của con: "Con buồn vì bạn không cho chơi cùng, đúng không?".</li>' +
-    '<li>Không trách con vì đã kể. Không đọc to nguyên văn nhật ký trước mặt con, để con vẫn muốn tâm sự với Cú Bon.</li>' +
+    '<li>Không trách con vì đã kể. Không đọc to nguyên văn nhật ký trước mặt con, để con vẫn muốn tâm sự với Cú Uyên Bác.</li>' +
     '<li>Khi con kể bị đánh, bị bắt nạt hoặc bị người khác đụng chạm làm con sợ: giữ bình tĩnh, tin con, cảm ơn con đã kể, liên hệ cô giáo chủ nhiệm. Trường hợp nghiêm trọng, gọi Tổng đài quốc gia bảo vệ trẻ em 111 (miễn phí).</li></ul></div>' +
-    '<div class="card"><h2>Riêng tư</h2><p class="small">Nhật ký lưu trong trình duyệt và trên máy chủ Apps Script của bố mẹ, không đưa lên trang GitHub. ' + (S().settings.diaryAI !== false ? 'Đang bật AI: lời con kể được gửi tới Gemini để Cú Bon trả lời và tóm tắt (không kèm họ tên đầy đủ, trường lớp). Gói Gemini miễn phí cho phép Google dùng nội dung để cải thiện sản phẩm; muốn chặt chẽ hơn, bật thanh toán cho dự án Gemini hoặc tắt AI khi tâm sự ở mục Dữ liệu và cài đặt.' : 'Đang tắt AI khi tâm sự: Cú Bon trả lời bằng câu soạn sẵn, nội dung không gửi ra ngoài.') + ' Sau 60 ngày nguyên văn tự xoá, chỉ giữ tóm tắt.</p>' +
-    '<p class="small" style="margin-top:8px">Cú Bon không hứa giữ bí mật với con. Khi con xin giữ bí mật, Cú Bon khuyên con kể cho bố mẹ.</p></div></div>';
-  $$('[data-deld]', b).forEach(x => x.onclick = () => { if (!confirm('Xoá buổi trò chuyện ngày ' + TL.viDate(x.dataset.deld) + '? Nếu là hôm nay, con sẽ được Cú Bon hỏi lại từ đầu.')) return; S().diary = S().diary.filter(q => q.d !== x.dataset.deld); TL.save(); TL.toast('Đã xoá buổi trò chuyện.'); TL.diaryParent(b); });
+    '<div class="card"><h2>Riêng tư</h2><p class="small">Nhật ký lưu trong trình duyệt và trên máy chủ Apps Script của bố mẹ, không đưa lên trang GitHub. ' + (S().settings.diaryAI !== false ? 'Đang bật AI: lời con kể được gửi tới Gemini để Cú Uyên Bác trả lời và tóm tắt (không kèm họ tên đầy đủ, trường lớp). Gói Gemini miễn phí cho phép Google dùng nội dung để cải thiện sản phẩm; muốn chặt chẽ hơn, bật thanh toán cho dự án Gemini hoặc tắt AI khi tâm sự ở mục Dữ liệu và cài đặt.' : 'Đang tắt AI khi tâm sự: Cú Uyên Bác trả lời bằng câu soạn sẵn, nội dung không gửi ra ngoài.') + ' Sau 60 ngày nguyên văn tự xoá, chỉ giữ tóm tắt.</p>' +
+    '<p class="small" style="margin-top:8px">Cú Uyên Bác không hứa giữ bí mật với con. Khi con xin giữ bí mật, Cú Uyên Bác khuyên con kể cho bố mẹ.</p></div></div>';
+  $$('[data-deld]', b).forEach(x => x.onclick = () => { if (!confirm('Xoá buổi trò chuyện ngày ' + TL.viDate(x.dataset.deld) + '? Nếu là hôm nay, con sẽ được Cú Uyên Bác hỏi lại từ đầu.')) return; S().diary = S().diary.filter(q => q.d !== x.dataset.deld); TL.save(); TL.toast('Đã xoá buổi trò chuyện.'); TL.diaryParent(b); });
   $$('[data-seen]', b).forEach(x => x.onchange = () => { const e = S().diary.find(q => q.d === x.dataset.seen); if (e) { e.seen = x.checked; TL.save(); } });
   $$('[data-sum]', b).forEach(x => x.onclick = async () => { const e = S().diary.find(q => q.d === x.dataset.sum); x.disabled = true; x.textContent = 'Đang tóm tắt...'; await summarize(e); TL.diaryParent(b); });
 };
@@ -4064,7 +4067,7 @@ setTimeout(() => { const day = () => TL.restorePoint('Đầu ngày ' + TL.viDate
 })();
 
 /* ---- src/engine/chat.js ---- */
-/* ===== Hỏi Cú Bon: chatbot gia sư, gõ chữ hoặc nói bằng giọng nói (dùng tầng dịch vụ AI trong ai.js) ===== */
+/* ===== Hỏi Cú Uyên Bác: chatbot gia sư, gõ chữ hoặc nói bằng giọng nói (dùng tầng dịch vụ AI trong ai.js) ===== */
 (function () {
 'use strict';
 const { esc, $, el } = TL;
@@ -4080,12 +4083,12 @@ const MIC = '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
 function plain(t) { return String(t).replace(/[*_#`>]/g, '').replace(/\s+/g, ' ').trim(); }
 function setMic(on, label) {
   listening = on; const b = $('#cubon-mic'); if (b) { b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
-  const st = $('#cubon-status'); if (st) st.textContent = label || (on ? 'Cú Bon đang nghe... Con nói đi.' : talkMode ? 'Bấm micro hoặc chờ Cú Bon nói xong.' : '');
+  const st = $('#cubon-status'); if (st) st.textContent = label || (on ? 'Cú Uyên Bác đang nghe... Con nói đi.' : talkMode ? 'Bấm micro hoặc chờ Cú Uyên Bác nói xong.' : '');
 }
 const micBlocked = () => { try { return document.featurePolicy && !document.featurePolicy.allowsFeature('microphone'); } catch (e) { return false; } };
 function dictateTip() {
   const st = $('#cubon-status'); const inp = $('#cubon-in'); if (inp) inp.focus();
-  if (st) st.textContent = 'Trang này chưa được dùng micro trực tiếp. Con nói bằng bàn phím nhé: trên máy tính bảng, điện thoại thì bấm nút micro trên bàn phím; trên máy tính Windows thì bấm phím Windows + H. Nói xong bấm Gửi, Cú Bon vẫn đọc to câu trả lời.';
+  if (st) st.textContent = 'Trang này chưa được dùng micro trực tiếp. Con nói bằng bàn phím nhé: trên máy tính bảng, điện thoại thì bấm nút micro trên bàn phím; trên máy tính Windows thì bấm phím Windows + H. Nói xong bấm Gửi, Cú Uyên Bác vẫn đọc to câu trả lời.';
 }
 function listen() {
   if (micBlocked()) { talkMode = false; const tk = $('[data-talk]'); if (tk) tk.checked = false; dictateTip(); return; }
@@ -4097,7 +4100,7 @@ function listen() {
   let finalText = '';
   rec.onresult = ev => { let interim = ''; for (let i = ev.resultIndex; i < ev.results.length; i++) { const r = ev.results[i]; if (r.isFinal) finalText += r[0].transcript; else interim += r[0].transcript; } const inp = $('#cubon-in'); if (inp) inp.value = (finalText + ' ' + interim).trim(); };
   rec.onerror = ev => {
-    const m = ev.error === 'not-allowed' || ev.error === 'service-not-allowed' ? 'Máy chưa cho phép dùng micro. Bố mẹ bấm vào biểu tượng ổ khoá trên thanh địa chỉ, chọn Cho phép micro.' : ev.error === 'no-speech' ? 'Cú Bon chưa nghe thấy gì. Con bấm micro rồi nói to hơn nhé.' : ev.error === 'network' ? 'Mạng yếu nên Cú Bon chưa nghe được. Con thử lại nhé.' : '';
+    const m = ev.error === 'not-allowed' || ev.error === 'service-not-allowed' ? 'Máy chưa cho phép dùng micro. Bố mẹ bấm vào biểu tượng ổ khoá trên thanh địa chỉ, chọn Cho phép micro.' : ev.error === 'no-speech' ? 'Cú Uyên Bác chưa nghe thấy gì. Con bấm micro rồi nói to hơn nhé.' : ev.error === 'network' ? 'Mạng yếu nên Cú Uyên Bác chưa nghe được. Con thử lại nhé.' : '';
     if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') { talkMode = false; dictateTip(); } else if (m) TL.toast(m);
   };
   rec.onend = () => { setMic(false); const inp = $('#cubon-in'); const v = (finalText || '').trim(); if (v) { if (inp) inp.value = ''; send(v, true); } };
@@ -4109,8 +4112,8 @@ function sayReply(text) {
   if (!ok && talkMode) setTimeout(listen, 400);
 }
 
-const RULES = 'Bạn là Cú Bon, gia sư trò chuyện của bé ' + TL.kid() + ', học sinh lớp 3 ở Việt Nam. Bé học Toán 3, Tiếng Việt 3, Tin học 3 (bộ Kết nối tri thức với cuộc sống) và Tiếng Anh 3 Global Success. Khi dạy tiếng Anh thì giải thích bằng tiếng Việt, ví dụ tiếng Anh ngắn, đúng từ vựng lớp 3. ' +
-  'Cách nói: xưng "Cú Bon", gọi bé là "con" hoặc "' + TL.kid() + '"; tiếng Việt có dấu; câu ngắn, từ ngữ lớp 3; tối đa 5 câu mỗi lần; vui vẻ, kiên nhẫn, không chê. Không dùng biểu tượng cảm xúc, không dùng dấu gạch ngang dài, không dùng định dạng markdown, không dùng kí hiệu công thức như $ hay \\times, viết phép tính bằng chữ số và dấu × : + - như trong sách.\n' +
+const RULES = 'Bạn là Cú Uyên Bác, gia sư trò chuyện của bé ' + TL.kid() + ', học sinh lớp 3 ở Việt Nam. Bé học Toán 3, Tiếng Việt 3, Tin học 3 (bộ Kết nối tri thức với cuộc sống) và Tiếng Anh 3 Global Success. Khi dạy tiếng Anh thì giải thích bằng tiếng Việt, ví dụ tiếng Anh ngắn, đúng từ vựng lớp 3. ' +
+  'Cách nói: xưng "Cú Uyên Bác", gọi bé là "con" hoặc "' + TL.kid() + '"; tiếng Việt có dấu; câu ngắn, từ ngữ lớp 3; tối đa 5 câu mỗi lần; vui vẻ, kiên nhẫn, không chê. Không dùng biểu tượng cảm xúc, không dùng dấu gạch ngang dài, không dùng định dạng markdown, không dùng kí hiệu công thức như $ hay \\times, viết phép tính bằng chữ số và dấu × : + - như trong sách.\n' +
   'Nguyên tắc dạy: không làm bài thay bé; khi bé chưa thử thì KHÔNG nói đáp án, chỉ gợi ý từng bước và hỏi lại để bé tự nghĩ; khi bé đã thử 2 lần hoặc đã xem cách giải thì được giải thích đầy đủ bằng ví dụ khác, gần gũi đời sống; khuyến khích bé tự nói lại cách làm. ' +
   'Không viết hộ bài văn; chỉ gợi ý ý và hỏi câu dẫn dắt. Không chép nguyên văn bài đọc trong sách. Nếu không chắc một kiến thức có trong sách lớp 3 thì nói bé hỏi thầy cô hoặc bố mẹ.\n' +
   'An toàn: chỉ nói chuyện về học tập, sách vở, thói quen học tốt. Nếu bé hỏi chuyện khác, trả lời một câu ngắn thân thiện rồi mời bé quay lại bài học. Không hỏi họ tên đầy đủ, địa chỉ, trường lớp, số điện thoại. Nếu bé nói đang buồn, sợ, bị đau hoặc gặp chuyện không vui, hãy dịu dàng bảo bé nói ngay với bố mẹ hoặc thầy cô. Không khuyên bé học thêm khi bé nói mệt; khuyên bé nghỉ ngơi.';
@@ -4137,7 +4140,7 @@ function todayCount() { const d = TL.today(); return S().chat.filter(m => m.d ==
 
 function button() {
   let b = $('#cubon-btn'); if (b) return b;
-  b = el('<button id="cubon-btn" class="chatfab" aria-label="Hỏi Cú Bon">' + TL.owl(44) + '<span>Hỏi Cú Bon</span></button>');
+  b = el('<button id="cubon-btn" class="chatfab" aria-label="Hỏi Cú Uyên Bác">' + TL.owl(44) + '<span>Hỏi Cú Uyên Bác</span></button>');
   b.onclick = toggle; document.body.appendChild(b); return b;
 }
 TL.chatRefresh = function () {
@@ -4148,7 +4151,7 @@ TL.chatRefresh = function () {
 function toggle() {
   open = !open; let p = $('#cubon-panel');
   if (!open) { if (p) p.remove(); if (ctl) ctl.abort(); talkMode = false; try { rec && rec.stop(); } catch (e) { } try { speechSynthesis.cancel(); } catch (e) { } return; }
-  p = el('<section id="cubon-panel" class="chatpanel" role="dialog" aria-label="Trò chuyện với Cú Bon"><header class="row"><span>' + TL.owl(40) + '</span><b>Hỏi Cú Bon</b><div class="spacer"></div><button class="iconbtn" data-x aria-label="Đóng">Đóng</button></header><div class="msgs" aria-live="polite"></div><div class="quick row"></div><form class="row"><button type="button" id="cubon-mic" class="micbtn" aria-label="Nói với Cú Bon" aria-pressed="false">' + MIC + '</button><input id="cubon-in" autocomplete="off" placeholder="Bấm micro để nói, hoặc gõ vào đây" maxlength="300"><button class="btn small" type="submit">Gửi</button></form><p id="cubon-status" class="small muted" aria-live="polite"></p><div class="row small voiceopts"><label><input type="checkbox" data-vo> Cú Bon đọc trả lời</label><label><input type="checkbox" data-talk> Nói chuyện liên tục</label></div><p class="small muted note-ai"></p></section>');
+  p = el('<section id="cubon-panel" class="chatpanel" role="dialog" aria-label="Trò chuyện với Cú Uyên Bác"><header class="row"><span>' + TL.owl(40) + '</span><b>Hỏi Cú Uyên Bác</b><div class="spacer"></div><button class="iconbtn" data-x aria-label="Đóng">Đóng</button></header><div class="msgs" aria-live="polite"></div><div class="quick row"></div><form class="row"><button type="button" id="cubon-mic" class="micbtn" aria-label="Nói với Cú Uyên Bác" aria-pressed="false">' + MIC + '</button><input id="cubon-in" autocomplete="off" placeholder="Bấm micro để nói, hoặc gõ vào đây" maxlength="300"><button class="btn small" type="submit">Gửi</button></form><p id="cubon-status" class="small muted" aria-live="polite"></p><div class="row small voiceopts"><label><input type="checkbox" data-vo> Cú Uyên Bác đọc trả lời</label><label><input type="checkbox" data-talk> Nói chuyện liên tục</label></div><p class="small muted note-ai"></p></section>');
   document.body.appendChild(p);
   $('[data-x]', p).onclick = toggle;
   $('#cubon-mic', p).onclick = listen;
@@ -4160,20 +4163,20 @@ function toggle() {
   ['Con chưa hiểu bài này', 'Gợi ý cho con câu này', 'Giảng lại bằng ví dụ khác', 'Con nên ôn gì hôm nay?'].forEach(t => { const b = el('<button class="tok small"></button>'); b.textContent = t; b.onclick = () => send(t); q.appendChild(b); });
   $('form', p).onsubmit = e => { e.preventDefault(); const i = $('#cubon-in', p); const v = i.value.trim(); if (v) { i.value = ''; send(v); } };
   draw();
-  TL.AI.ready.then(ok => { if (!ok) $('.note-ai', p).textContent = 'Cú Bon chưa trò chuyện được: ' + TL.AI.reason + ' Con nhờ bố mẹ giúp nhé.'; });
+  TL.AI.ready.then(ok => { if (!ok) $('.note-ai', p).textContent = 'Cú Uyên Bác chưa trò chuyện được: ' + TL.AI.reason + ' Con nhờ bố mẹ giúp nhé.'; });
   setTimeout(() => $('#cubon-in', p).focus(), 50);
 }
 function recent() { return S().chat.filter(m => m.d === TL.today()).slice(-12); }
 function draw(streaming) {
   const box = $('#cubon-panel .msgs'); if (!box) return;
   const msgs = recent();
-  box.innerHTML = (msgs.length ? '' : '<div class="msg bot">Chào ' + TL.kid() + '! Cú Bon ở đây. Con chưa hiểu chỗ nào thì hỏi Cú Bon nhé. Cú Bon sẽ gợi ý để con tự làm.</div>') +
-    msgs.map(m => '<div class="msg ' + (m.r === 'u' ? 'me' : 'bot') + '">' + esc(m.t) + '</div>').join('') + (streaming != null ? '<div class="msg bot">' + esc(streaming || 'Cú Bon đang nghĩ...') + '</div>' : '');
+  box.innerHTML = (msgs.length ? '' : '<div class="msg bot">Chào ' + TL.kid() + '! Cú Uyên Bác ở đây. Con chưa hiểu chỗ nào thì hỏi Cú Uyên Bác nhé. Cú Uyên Bác sẽ gợi ý để con tự làm.</div>') +
+    msgs.map(m => '<div class="msg ' + (m.r === 'u' ? 'me' : 'bot') + '">' + esc(m.t) + '</div>').join('') + (streaming != null ? '<div class="msg bot">' + esc(streaming || 'Cú Uyên Bác đang nghĩ...') + '</div>' : '');
   box.scrollTop = box.scrollHeight;
 }
 async function send(text, byVoice) {
   if (busy) return;
-  if (!(await TL.AI.ready)) { TL.toast('Cú Bon chưa trò chuyện được. ' + TL.AI.reason); return; }
+  if (!(await TL.AI.ready)) { TL.toast('Cú Uyên Bác chưa trò chuyện được. ' + TL.AI.reason); return; }
   if (todayCount() >= MAXDAY()) { S().chat.push({ d: TL.today(), r: 'b', t: 'Hôm nay con đã hỏi nhiều rồi. Con thử tự nghĩ, hoặc hỏi bố mẹ nhé. Mai mình nói chuyện tiếp.' }); TL.save(); draw(); return; }
   busy = true; const ctx = context();
   S().chat.push({ d: TL.today(), r: 'u', t: text, ctx: ctx.slice(0, 160), v: byVoice ? 1 : 0 }); TL.save(); draw('');
@@ -4191,7 +4194,7 @@ async function send(text, byVoice) {
     const r = await TL.AI.chat(merged, t => draw(t), ctl.signal);
     S().chat.push({ d: TL.today(), r: 'b', t: r.trim() });
     if (byVoice || talkMode || S().settings.chatVoice) sayReply(r.trim());
-  } catch (e) { if (e && e.code !== 'cancelled') S().chat.push({ d: TL.today(), r: 'b', t: e.message || 'Cú Bon chưa trả lời được. Con thử lại sau nhé.' }); }
+  } catch (e) { if (e && e.code !== 'cancelled') S().chat.push({ d: TL.today(), r: 'b', t: e.message || 'Cú Uyên Bác chưa trả lời được. Con thử lại sau nhé.' }); }
   if (S().chat.length > 200) S().chat.splice(0, S().chat.length - 200);
   TL.save(); busy = false; draw();
 }
@@ -4226,6 +4229,7 @@ document.addEventListener('visibilitychange', () => { if (document.visibilitySta
 function markSynced(upd) { TL.S.syncedAt = upd || TL.S.updatedAt || Date.now(); try { localStorage.setItem(TL.KEY, JSON.stringify(TL.S)); } catch (e) { } }
 function adopt(remote) {
   TL.S = remote; TL.normalize && TL.normalize();
+  if (!TL.S.settings.kidName && window.TL_KID) TL.S.settings.kidName = window.TL_KID;
   TL.S.syncedAt = TL.S.updatedAt;
   try { localStorage.setItem(TL.KEY, JSON.stringify(TL.S)); } catch (e) { }
   (TL.S.packs || []).forEach(pk => { try { TL.loadPack(pk); } catch (e) { } });
@@ -4259,9 +4263,9 @@ document.documentElement.classList.toggle('calm', TL.calm());
 try { if (localStorage.getItem('tulinh.theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch (e) { }
 (TL.S.packs || []).forEach(pk => { try { TL.loadPack(pk); } catch (e) { console.warn('Gói lỗi', e); } });
 TL.ensureDaily(); TL.ensureWeekly(); TL.ensurePlan();
-/* bản có máy chủ: chờ tải tiến độ (tối đa 5 giây) rồi mới mở, để cuộc trò chuyện với Cú Bon không bị ghi đè khi tải xong */
+/* bản có máy chủ: chờ tải tiến độ (tối đa 5 giây) rồi mới mở, để cuộc trò chuyện với Cú Uyên Bác không bị ghi đè khi tải xong */
 if (TL.gas && TL.syncReady) {
-  TL.SCREENS.boot = m => { m.innerHTML = '<div class="col" style="align-items:center;gap:14px;padding:40px 0">' + TL.owlStage(170) + '<h2>Cú Bon đang thức dậy...</h2></div>'; };
+  TL.SCREENS.boot = m => { m.innerHTML = '<div class="col" style="align-items:center;gap:14px;padding:40px 0">' + TL.owlStage(170) + '<h2>Cú Uyên Bác đang thức dậy...</h2></div>'; };
   TL.go('boot');
   let opened = false; const open = () => { if (opened) return; opened = true; if (TL.screen().name === 'boot') TL.go('home'); };
   Promise.race([TL.syncReady, new Promise(r => setTimeout(r, 5000))]).then(open, open);

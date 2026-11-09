@@ -3250,12 +3250,13 @@ async function send(text, byVoice) {
 (function () {
 'use strict';
 if (!TL.gas) return;
-let timer = null, pushing = false, again = false, lastOk = 0, lastErr = '';
+let timer = null, pushing = false, again = false, lastOk = 0, lastErr = '', ready = false;
 function push() {
   if (TL.trialOn && TL.trialOn()) return;
+  if (!ready) return; // chưa đọc xong bản trên máy chủ thì không được đẩy lên, tránh ghi đè tiến độ bằng dữ liệu trống
   if (pushing) { again = true; return; }
   pushing = true;
-  TL.gasCall('saveState', JSON.stringify(TL.S)).then(r => { lastOk = Date.now(); lastErr = r && r.error ? r.error : ''; }).catch(e => { lastErr = e.message || 'lỗi mạng'; })
+  TL.gasCall('saveState', JSON.stringify(TL.S)).then(r => { lastOk = Date.now(); lastErr = r && r.error ? r.error : ''; if (!lastErr) markSynced(); }).catch(e => { lastErr = e.message || 'lỗi mạng'; })
     .then(() => { pushing = false; if (again) { again = false; push(); } });
 }
 TL.onSave = function () { clearTimeout(timer); timer = setTimeout(push, 4000); };
@@ -3263,17 +3264,27 @@ TL.syncNow = function () { clearTimeout(timer); push(); };
 TL.syncInfo = function () { return lastOk ? 'Lần đồng bộ gần nhất: ' + new Date(lastOk).toLocaleTimeString('vi-VN') + '.' : lastErr ? 'Chưa đồng bộ được: ' + lastErr + '.' : 'Đang chờ đồng bộ lần đầu.'; };
 addEventListener('pagehide', () => TL.syncNow());
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') TL.syncNow(); });
+function markSynced() { TL.S.syncedAt = TL.S.updatedAt || Date.now(); try { localStorage.setItem(TL.KEY, JSON.stringify(TL.S)); } catch (e) { } }
+function adopt(remote) {
+  TL.S = remote; TL.normalize && TL.normalize();
+  TL.S.syncedAt = TL.S.updatedAt;
+  try { localStorage.setItem(TL.KEY, JSON.stringify(TL.S)); } catch (e) { }
+  (TL.S.packs || []).forEach(pk => { try { TL.loadPack(pk); } catch (e) { } });
+  TL.ensureDaily(); TL.ensureWeekly(); TL.ensurePlan();
+  const sc = TL.screen(); if (sc.name === 'home' || sc.name === 'kingdom') TL.go(sc.name, sc.arg ? { arg: sc.arg } : undefined);
+  TL.toast('Đã tải tiến độ học mới nhất.');
+}
+/* Quy tắc gộp:
+   - Máy chưa từng đồng bộ (mới mở lần đầu, hoặc trình duyệt bị xoá dữ liệu): luôn lấy bản trên máy chủ.
+   - Máy đã từng đồng bộ: bản máy chủ được cập nhật sau lần đồng bộ cuối của máy này thì lấy bản máy chủ;
+     ngược lại, máy này có thay đổi mới thì đẩy lên. */
 TL.syncReady = TL.gasCall('loadState').then(raw => {
-  if (!raw) { push(); return; }
-  let remote; try { remote = JSON.parse(raw); } catch (e) { return; }
-  if (remote && (remote.updatedAt || 0) > (TL.S.updatedAt || 0)) {
-    TL.S = remote; TL.normalize && TL.normalize();
-    try { localStorage.setItem(TL.KEY, JSON.stringify(TL.S)); } catch (e) { }
-    (TL.S.packs || []).forEach(pk => { try { TL.loadPack(pk); } catch (e) { } });
-    TL.ensureDaily(); TL.ensureWeekly(); TL.ensurePlan();
-    const sc = TL.screen(); if (sc.name === 'home' || sc.name === 'kingdom') TL.go(sc.name, sc.arg ? { arg: sc.arg } : undefined);
-    TL.toast('Đã tải tiến độ học mới nhất.');
-  } else if ((TL.S.updatedAt || 0) > (remote.updatedAt || 0)) push();
+  let remote = null; if (raw) { try { remote = JSON.parse(raw); } catch (e) { remote = null; } }
+  ready = true;
+  if (!remote) { push(); return; }
+  const synced = TL.S.syncedAt || 0;
+  if (!synced || (remote.updatedAt || 0) > synced) adopt(remote);
+  else if ((TL.S.updatedAt || 0) > synced) push();
 }).catch(e => { lastErr = e.message || 'lỗi mạng'; });
 })();
 

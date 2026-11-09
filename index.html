@@ -488,7 +488,7 @@ html.calm .owlstage *, html.calm .owlstage { animation: none !important; }
 @media (max-width: 640px) { .mood-strip { grid-template-columns: repeat(10, 1fr); } .ck-mood { width: 78px; } }
 .hello .owlstage { margin-top: 40px; }
 .hello .owlstage .owlsay { left: 30%; }
-.ck-hero .owlsay { display: none; }
+.ck-hero .owlsay { left: 0; max-width: 200px; z-index: 50; }
 /* ghi chú: chữ nhỏ, nghiêng, có màu để tách khỏi nội dung chính */
 .src { font-size: .8rem !important; font-style: italic; color: #C2410C !important; font-weight: 600; }
 p.small.muted, p.muted.small, .card > p.muted, .card p.muted.small { font-style: italic; color: #1D4ED8 !important; }
@@ -520,10 +520,12 @@ html[data-theme="dark"] .howto { color: #93C5FD; } html[data-theme="dark"] .howt
 .in-ck #cubon-btn, .in-ck #cubon-panel { display: none !important; }
 .hello { position: relative; z-index: 30; } .hello .owlstage .owlsay { z-index: 40; }
 /* lời của Cú nằm bên trái Cú khi bên trái còn chỗ trống (owl3d.js gắn lớp say-left), không che nút và ô môn học */
-.owlstage.say-left .owlsay { left: auto; right: calc(100% + 10px); top: 8%; width: 170px; max-width: 170px; font-size: .88rem; }
-.owlstage.say-left .owlsay::after { left: auto; right: -14px; top: 22px; bottom: auto; border-color: transparent; border-left-color: #A78BFA; }
+.hello .owlstage.say-left .owlsay { left: auto; right: calc(100% + 10px); top: 8%; width: 170px; max-width: 170px; font-size: .88rem; }
+.hello .owlstage.say-left .owlsay::after { left: auto; right: -14px; top: 22px; bottom: auto; border-color: transparent; border-left-color: #A78BFA; }
 .step.can { cursor: pointer; font-family: inherit; }
 .step.can:hover { background: #EDE9FE; color: #6D28D9; border-color: #C4B5FD; }
+.owlfloat { position: fixed; z-index: 9999; max-width: 220px; background: #fff; color: #1F2A44; font-weight: 700; font-size: .92rem; line-height: 1.35; padding: 10px 14px; border-radius: 16px; border: 3px solid #A78BFA; box-shadow: 0 6px 0 #DDD6FE; pointer-events: none; animation: osPop .35s cubic-bezier(.3,1.6,.5,1); }
+.ck-hero { position: relative; z-index: 5; }
 </style>
 <header class="top" id="top"></header>
 <main class="wrap" id="main" aria-live="polite"></main>
@@ -2873,12 +2875,24 @@ document.addEventListener('pointermove', e => {
     st._o.px = dx / d * m; st._o.py = dy / d * m;
   });
 }, { passive: true });
+/* phụ đề cho Cú nhỏ (hình phẳng ở khung gia sư, hộp thoại...): bóng chữ nổi cạnh Cú */
+function floatSay(o, text) {
+  document.querySelectorAll('.owlfloat').forEach(x => x.remove());
+  const r = o.getBoundingClientRect(); const b = document.createElement('div'); b.className = 'owlfloat'; b.textContent = text;
+  document.body.appendChild(b);
+  const w = b.offsetWidth, h = b.offsetHeight; let x = r.right + 8, y = r.top + r.height / 2 - h / 2; let side = 'r';
+  if (x + w > innerWidth - 8) { x = r.left - w - 8; side = 'l'; }
+  if (x < 8) { x = Math.max(8, Math.min(innerWidth - w - 8, r.left + r.width / 2 - w / 2)); y = r.bottom + 8; side = 'b'; }
+  b.style.left = x + 'px'; b.style.top = Math.max(8, y) + 'px'; b.classList.add('s-' + side);
+  setTimeout(() => b.remove(), Math.max(2800, text.length * 90));
+}
+TL.owlFloatSay = floatSay;
 /* gắn sự kiện cho mọi Cú Uyên Bác mới xuất hiện; Cú Uyên Bác nhỏ (hình phẳng) cũng biết nhảy khi được bấm hoặc di chuột vào */
 new MutationObserver(() => { document.querySelectorAll('.owlstage').forEach(bind); }).observe(document.documentElement, { childList: true, subtree: true });
 document.addEventListener('click', e => {
   const o = e.target.closest && e.target.closest('svg.owl3d'); if (!o || o.closest('button,a')) return;
   o.classList.remove('dance'); void o.getBoundingClientRect(); o.classList.add('dance'); setTimeout(() => o.classList.remove('dance'), 1900);
-  TL.speak(TL.pick(lines()), 'vi', { quiet: true });
+  const t = TL.pick(lines()); floatSay(o, t); TL.speak(t, 'vi', { quiet: true });
 });
 document.addEventListener('pointerover', e => {
   const o = e.target.closest && e.target.closest('svg.owl3d'); if (!o || o.classList.contains('hop')) return;

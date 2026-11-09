@@ -3071,7 +3071,7 @@ P.guide = function (b) {
 (function () {
 'use strict';
 const PK = 'tulinh.points', TK = 'tulinh.trial', MAX = 12;
-const KEEP = ['settings', 'chat', 'packs', 'readings'];
+const KEEP = ['settings', 'chat', 'packs', 'readings', 'syncedAt'];
 function load() { try { return JSON.parse(localStorage.getItem(PK) || '[]'); } catch (e) { return []; } }
 function store(arr) { while (arr.length) { try { localStorage.setItem(PK, JSON.stringify(arr)); return true; } catch (e) { arr.shift(); } } return false; }
 function snap() { const o = {}; Object.keys(TL.S).forEach(k => { if (!KEEP.includes(k)) o[k] = TL.S[k]; }); return JSON.stringify(o); }
@@ -3086,7 +3086,7 @@ TL.restoreTo = function (t) {
   const p = load().find(x => x.t === t); if (!p) return false;
   const keep = {}; KEEP.forEach(k => keep[k] = TL.S[k]);
   TL.S = Object.assign(JSON.parse(p.data), keep); TL.normalize();
-  TL.ensureDaily(); TL.ensureWeekly(); TL.ensurePlan(); TL.save(); if (TL.syncNow) TL.syncNow();
+  TL.forcePush = true; TL.ensureDaily(); TL.ensureWeekly(); TL.ensurePlan(); TL.save(); if (TL.syncNow) TL.syncNow();
   return true;
 };
 TL.trialOn = () => { try { return !!localStorage.getItem(TK); } catch (e) { return false; } };
@@ -3282,6 +3282,7 @@ TL.syncReady = TL.gasCall('loadState').then(raw => {
   let remote = null; if (raw) { try { remote = JSON.parse(raw); } catch (e) { remote = null; } }
   ready = true;
   if (!remote) { push(); return; }
+  if (TL.forcePush) { TL.forcePush = false; push(); return; } // bố mẹ vừa quay lại điểm cũ: bản trên máy này là bản đúng
   const synced = TL.S.syncedAt || 0;
   if (!synced || (remote.updatedAt || 0) > synced) adopt(remote);
   else if ((TL.S.updatedAt || 0) > synced) push();

@@ -371,6 +371,45 @@ body::after { display: none; }
 :root[data-theme="light"] .node.done { background: linear-gradient(180deg, #E9FFF1, #C8F5D8); }
 :root[data-theme="light"] .step.past { background: #E9E2FF; }
 @media (prefers-reduced-motion: reduce) { .sky3d .sun { animation: none; } }
+
+/* ===== Cú Bon 3D chuyển động ===== */
+.owl3d { overflow: visible; }
+.owl3d g, .owl3d ellipse.o-shadow { transform-box: view-box; }
+.owl3d .o-all { transform-origin: 60px 108px; animation: owlIdle 3.2s ease-in-out infinite; }
+.owl3d .o-shadow { transform-origin: 60px 112px; animation: owlShadow 3.2s ease-in-out infinite; }
+.owl3d .o-eyes { transform-origin: 60px 47px; animation: owlBlink 4.5s infinite; }
+.owl3d .o-wingL { transform-origin: 26px 60px; animation: wingL 3.2s ease-in-out infinite; }
+.owl3d .o-wingR { transform-origin: 94px 60px; animation: wingR 3.2s ease-in-out infinite; }
+@keyframes owlIdle { 0%, 100% { transform: translateY(0) rotate(0); } 25% { transform: translateY(-3px) rotate(-2deg); } 50% { transform: translateY(0) rotate(0); } 75% { transform: translateY(-3px) rotate(2deg); } }
+@keyframes owlShadow { 0%, 100% { transform: scaleX(1); opacity: 1; } 25%, 75% { transform: scaleX(.9); opacity: .8; } }
+@keyframes owlBlink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
+@keyframes wingL { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(10deg); } }
+@keyframes wingR { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-10deg); } }
+/* nhảy múa khi đúng */
+.owl3d.dance .o-all { animation: owlDance .9s ease-in-out 2; }
+.owl3d.dance .o-shadow { animation: owlShadowJump .9s ease-in-out 2; }
+.owl3d.dance .o-wingL { animation: flapL .18s ease-in-out infinite; }
+.owl3d.dance .o-wingR { animation: flapR .18s ease-in-out infinite; }
+@keyframes owlDance { 0% { transform: translateY(0) rotate(0) scale(1); } 20% { transform: translateY(-18px) rotate(-10deg) scale(1.05, .95); } 40% { transform: translateY(0) rotate(0) scale(1.08, .9); } 60% { transform: translateY(-18px) rotate(10deg) scale(.95, 1.05); } 80% { transform: translateY(0) rotate(0) scale(1.06, .94); } 100% { transform: translateY(0) rotate(0) scale(1); } }
+@keyframes owlShadowJump { 20%, 60% { transform: scaleX(.6); opacity: .5; } 0%, 40%, 80%, 100% { transform: scaleX(1); opacity: 1; } }
+@keyframes flapL { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(45deg); } }
+@keyframes flapR { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-45deg); } }
+/* ăn mừng cuối bài: xoay một vòng */
+.owl3d.cheer .o-all { animation: owlCheer 1.8s ease-in-out 1; }
+.owl3d.cheer .o-wingL { animation: flapL .2s ease-in-out infinite; } .owl3d.cheer .o-wingR { animation: flapR .2s ease-in-out infinite; }
+@keyframes owlCheer { 0% { transform: translateY(0) rotate(0); } 30% { transform: translateY(-24px) rotate(0); } 60% { transform: translateY(-24px) rotate(360deg); } 100% { transform: translateY(0) rotate(360deg); } }
+/* lắc đầu nhẹ khi sai */
+.owl3d.oops .o-all { animation: owlShake .6s ease-in-out 1; }
+@keyframes owlShake { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-8deg); } 40% { transform: rotate(8deg); } 60% { transform: rotate(-5deg); } 80% { transform: rotate(5deg); } }
+.hello svg.owl3d { filter: drop-shadow(0 12px 10px rgba(80, 60, 160, .35)); animation: none; }
+.tutor-side .owl3d { width: 84px; height: 84px; }
+@media (prefers-reduced-motion: reduce) { .owl3d *, .owl3d { animation: none !important; } }
+/* hình minh hoạ tự động */
+.vis{display:flex;justify-content:center;margin:10px 0 4px}
+.vis .vis3d{background:linear-gradient(180deg,#fff,#F0F7FF);border-radius:18px;padding:6px;box-shadow:0 6px 0 #D6E4F5,0 10px 24px rgba(30,60,120,.12);animation:visPop .45s cubic-bezier(.3,1.6,.5,1)}
+.vis .row .vis3d{max-width:44%}
+@keyframes visPop{from{transform:scale(.85) translateY(8px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.vis .vis3d{animation:none}}
 </style>
 <header class="top" id="top"></header>
 <main class="wrap" id="main" aria-live="polite"></main>
@@ -1948,26 +1987,50 @@ TL.ICON = {
 };
 
 /* ---------- Cú Bon (nhân vật do nhóm vẽ) ---------- */
+let owlN = 0;
+/* Cú Bon 3D: khối tròn có đổ bóng, mắt long lanh, cánh vỗ, chớp mắt. mood: happy | think | sad.
+   Các nhóm o-all, o-wingL, o-wingR, o-eyes, o-feet được CSS làm chuyển động (nhún nhảy, vỗ cánh, chớp mắt). */
 TL.owl = function (size = 96, mood = 'happy') {
-  const w = TL.S.owl.wear || [];
-  const eye = mood === 'think' ? '<path d="M35 46h12M73 46h12" stroke="#1D2939" stroke-width="4" stroke-linecap="round"/>' : '<circle cx="41" cy="46" r="6" fill="#1D2939"/><circle cx="79" cy="46" r="6" fill="#1D2939"/><circle cx="43" cy="44" r="2" fill="#fff"/><circle cx="81" cy="44" r="2" fill="#fff"/>';
-  return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 120 120" role="img" aria-label="Cú Bon">' +
-    '<ellipse cx="60" cy="110" rx="30" ry="5" fill="rgba(0,0,0,.12)"/>' +
-    '<path d="M22 30 L32 8 L46 24 Z M98 30 L88 8 L74 24 Z" fill="#7A5AF8"/>' +
-    '<ellipse cx="60" cy="64" rx="40" ry="44" fill="#8B6CFA"/>' +
-    '<ellipse cx="60" cy="78" rx="26" ry="26" fill="#E9E2FF"/>' +
-    '<circle cx="41" cy="46" r="15" fill="#fff"/><circle cx="79" cy="46" r="15" fill="#fff"/>' + eye +
-    '<path d="M55 58 L65 58 L60 68 Z" fill="#F2B200"/>' +
-    '<path d="M20 64c-6 10-4 24 6 30M100 64c6 10 4 24-6 30" stroke="#6E4FF0" stroke-width="7" fill="none" stroke-linecap="round"/>' +
-    '<path d="M48 104h8M64 104h8" stroke="#F2B200" stroke-width="5" stroke-linecap="round"/>' +
-    (mood === 'happy' ? '<path d="M50 84q10 7 20 0" stroke="#7A5AF8" stroke-width="3" fill="none" stroke-linecap="round"/>' : '') +
-    (w.includes('kinh') ? '<g fill="none" stroke="#1D2939" stroke-width="3"><circle cx="41" cy="46" r="15"/><circle cx="79" cy="46" r="15"/><path d="M56 46h8"/></g>' : '') +
+  const w = TL.S.owl.wear || []; const k = 'ow' + (++owlN);
+  const eyes = mood === 'think'
+    ? '<path d="M33 47q8-6 16 0M71 47q8-6 16 0" stroke="#1D2939" stroke-width="4" fill="none" stroke-linecap="round"/>'
+    : '<circle cx="42" cy="47" r="8" fill="url(#' + k + 'pu)"/><circle cx="78" cy="47" r="8" fill="url(#' + k + 'pu)"/>' +
+      '<circle cx="45" cy="43.5" r="3" fill="#fff"/><circle cx="81" cy="43.5" r="3" fill="#fff"/><circle cx="39.5" cy="50" r="1.4" fill="#fff" opacity=".8"/><circle cx="75.5" cy="50" r="1.4" fill="#fff" opacity=".8"/>';
+  const mouth = mood === 'sad' ? '<path d="M51 88q9-6 18 0" stroke="#5B3FD9" stroke-width="3" fill="none" stroke-linecap="round"/>'
+    : mood === 'happy' ? '<path d="M50 84q10 8 20 0" stroke="#5B3FD9" stroke-width="3" fill="none" stroke-linecap="round"/>' : '';
+  return '<svg class="owl3d" width="' + size + '" height="' + size + '" viewBox="0 0 120 120" role="img" aria-label="Cú Bon">' +
+    '<defs>' +
+    '<radialGradient id="' + k + 'b" cx="38%" cy="30%" r="75%"><stop offset="0" stop-color="#B9A4FF"/><stop offset=".55" stop-color="#8B6CFA"/><stop offset="1" stop-color="#5A3BE0"/></radialGradient>' +
+    '<radialGradient id="' + k + 'y" cx="45%" cy="35%" r="70%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#D9CEFF"/></radialGradient>' +
+    '<radialGradient id="' + k + 'e" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E4E7F0"/></radialGradient>' +
+    '<radialGradient id="' + k + 'pu" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#4B5675"/><stop offset="1" stop-color="#11182A"/></radialGradient>' +
+    '<linearGradient id="' + k + 'w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8064F5"/><stop offset="1" stop-color="#4C2FD0"/></linearGradient>' +
+    '<linearGradient id="' + k + 'k" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD54A"/><stop offset="1" stop-color="#F29A00"/></linearGradient>' +
+    '</defs>' +
+    '<ellipse class="o-shadow" cx="60" cy="112" rx="30" ry="5" fill="rgba(30,20,80,.22)"/>' +
+    '<g class="o-all">' +
+    '<g class="o-feet"><ellipse cx="50" cy="105" rx="7" ry="4" fill="url(#' + k + 'k)"/><ellipse cx="70" cy="105" rx="7" ry="4" fill="url(#' + k + 'k)"/></g>' +
+    '<g class="o-wingL"><path d="M24 58c-12 10-12 30 2 40c4-12 6-26-2-40z" fill="url(#' + k + 'w)"/></g>' +
+    '<g class="o-wingR"><path d="M96 58c12 10 12 30-2 40c-4-12-6-26 2-40z" fill="url(#' + k + 'w)"/></g>' +
+    '<path d="M24 30 L32 6 L48 24 Z M96 30 L88 6 L72 24 Z" fill="url(#' + k + 'w)"/>' +
+    '<ellipse cx="60" cy="64" rx="40" ry="44" fill="url(#' + k + 'b)"/>' +
+    '<ellipse cx="46" cy="34" rx="14" ry="7" fill="#fff" opacity=".28" transform="rotate(-20 46 34)"/>' +
+    '<ellipse cx="60" cy="80" rx="26" ry="25" fill="url(#' + k + 'y)"/>' +
+    '<path d="M50 74q5 3 10 0q5 3 10 0M48 84q6 3 12 0q6 3 12 0" stroke="#C7B8FF" stroke-width="2" fill="none" stroke-linecap="round"/>' +
+    '<g class="o-eyes"><circle cx="42" cy="47" r="16" fill="url(#' + k + 'e)" stroke="#6E4FF0" stroke-width="2"/><circle cx="78" cy="47" r="16" fill="url(#' + k + 'e)" stroke="#6E4FF0" stroke-width="2"/>' + eyes + '</g>' +
+    '<ellipse cx="30" cy="62" rx="6" ry="3.5" fill="#FF8FB1" opacity=".55"/><ellipse cx="90" cy="62" rx="6" ry="3.5" fill="#FF8FB1" opacity=".55"/>' +
+    '<path d="M54 58 L66 58 L60 69 Z" fill="url(#' + k + 'k)" stroke="#D98200" stroke-width="1"/>' + mouth +
+    (w.includes('kinh') ? '<g fill="none" stroke="#1D2939" stroke-width="3"><circle cx="42" cy="47" r="16"/><circle cx="78" cy="47" r="16"/><path d="M58 47h4"/></g>' : '') +
     (w.includes('khan') ? '<path d="M30 92q30 14 60 0l-4 8q-26 10-52 0z" fill="#E03131"/><path d="M78 98l8 14 6-4-6-12z" fill="#C92A2A"/>' : '') +
     (w.includes('no') ? '<path d="M84 18l10-8 2 12zM84 18l-4 12 12-2z" fill="#F06595"/><circle cx="86" cy="18" r="4" fill="#E64980"/>' : '') +
     (w.includes('mu') ? '<path d="M30 22l30-12 30 12-30 12z" fill="#1D2939"/><path d="M84 24v14" stroke="#F2B200" stroke-width="3"/>' : '') +
     (w.includes('vuongmien') ? '<path d="M38 22l8-14 7 10 7-12 7 12 7-10 8 14z" fill="#F2B200" stroke="#B8860B" stroke-width="2"/>' : '') +
     (w.includes('sach') ? '<rect x="70" y="84" width="26" height="18" rx="2" fill="#12B886" transform="rotate(-12 83 93)"/>' : '') +
-    '</svg>';
+    '</g></svg>';
+};
+/* Cú Bon phản ứng: nhảy múa khi con làm đúng, lắc đầu nhẹ khi sai */
+TL.owlReact = function (kind) {
+  document.querySelectorAll('.owl3d').forEach(o => { o.classList.remove('dance', 'oops', 'cheer'); void o.getBoundingClientRect(); o.classList.add(kind); setTimeout(() => o.classList.remove(kind), kind === 'oops' ? 700 : 1900); });
 };
 
 /* ---------- hình minh hoạ (SVG) ---------- */
@@ -2038,7 +2101,7 @@ function renderItem(host, it, idx, total, opts, done) {
   box.innerHTML = '<div class="qhead"><span class="eyebrow">' + esc(opts.title || 'Câu hỏi') + ' · ' + (idx + 1) + '/' + total + '</span>' +
     '<button class="iconbtn" data-act="say" title="Nghe đọc câu hỏi">' + TL.ICON.spk + '<span class="small">Nghe</span></button></div>' +
     (it._reteach ? '<div class="fb info">Cú Bon giảng lại nhé: ' + esc(skill.tip || it.hint || '') + ' Giờ con thử câu dễ hơn này.</div>' : '') +
-    '<div class="q">' + esc(it.q) + '</div>' + (it.vis ? '<div class="vis">' + TL.vis(it.vis) + '</div>' : '') +
+    '<div class="q">' + esc(it.q) + '</div>' + ((v => v ? '<div class="vis">' + TL.vis(v) + '</div>' : '')(it.vis || (TL.autoVis && opts.mode !== 'placement' && TL.autoVis(it)))) +
     '<div class="ans"></div><div class="fbx"></div>' + itemSource(opts);
   host.appendChild(box);
   const ans = $('.ans', box), fbx = $('.fbx', box);
@@ -2050,9 +2113,9 @@ function renderItem(host, it, idx, total, opts, done) {
     if (finished) return; attempts++; TL._curAttempts = attempts; lastGiven = given; S.counters.tries++;
     const ok = TL.check(it, given);
     if (opts.neutral) { finish(ok, given); fbx.innerHTML = '<div class="fb info">Cú Bon đã ghi lại. Mình sang câu tiếp nhé.</div>'; nextBtn(); return; }
-    if (ok) { TL.sfx.ok(); markAns(true, given); const first = attempts === 1; finish(first ? true : 'after', given);
+    if (ok) { TL.sfx.ok(); TL.owlReact('dance'); markAns(true, given); const first = attempts === 1; finish(first ? true : 'after', given);
       fbx.innerHTML = '<div class="fb ok">' + esc(first ? pick(PRAISE) : pick(PRAISE2)) + (first ? ' +1 sao' : '') + '</div>'; nextBtn(); return; }
-    TL.sfx.oops(); markAns(false, given);
+    TL.sfx.oops(); TL.owlReact('oops'); markAns(false, given);
     const diag = it.diag && it.diag(given);
     if (attempts === 1) {
       fbx.innerHTML = '<div class="fb oops">' + esc(diag || pick(NUDGE)) + '</div><div class="fb hint">Gợi ý: ' + esc(it.hint) + '</div>';
@@ -2137,6 +2200,7 @@ async function aiExplain(fbx, it, given, btn) {
 
 /* ---------- pháo hoa nhỏ ---------- */
 TL.celebrate = function () {
+  TL.owlReact('cheer');
   if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const c = el('<canvas class="confetti"></canvas>'); document.body.appendChild(c); const x = c.getContext('2d'); c.width = innerWidth; c.height = innerHeight;
   const cols = ['#F2B200', '#EC6A35', '#0E9F7A', '#6A55D6', '#3B82F6']; const ps = Array.from({ length: 90 }, () => ({ x: innerWidth / 2, y: innerHeight / 3, vx: (Math.random() - .5) * 12, vy: Math.random() * -10 - 2, c: pick(cols), s: 4 + Math.random() * 6 }));
@@ -2221,6 +2285,216 @@ function gameQuiz(body, data, opts, setScore, getScore, end) {
     nextP();
   }
 }
+})();
+
+/* ---- src/engine/visual.js ---- */
+/* ===== Hình minh hoạ tự động cho bài tập Toán =====
+   Mỗi câu hỏi chưa có hình sẽ được gắn một hình trực quan theo dạng bài: khối trăm chục đơn vị, tia số, sơ đồ đoạn thẳng,
+   chia kẹo vào đĩa, thước mm, ca đo ml, cân, nhiệt kế, hình tròn, trung điểm, hình phẳng, khối hộp.
+   Hình không bao giờ ghi sẵn đáp án: chỗ cần tìm luôn là dấu "?". */
+(function () {
+'use strict';
+const C = { blue: '#3B82F6', green: '#22C55E', orange: '#F97316', purple: '#8B5CF6', pink: '#EC4899', yellow: '#FACC15', red: '#EF4444', teal: '#14B8A6', ink: '#1F2A44' };
+const svg = (w, h, body) => '<svg class="vis3d" viewBox="0 0 ' + w + ' ' + h + '" width="' + w + '" style="max-width:100%;height:auto" font-family="Baloo 2, Nunito, sans-serif">' +
+  '<defs><filter id="vsh" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="3" stdDeviation="2" flood-opacity=".25"/></filter></defs>' + body + '</svg>';
+const T = (x, y, s, size, fill, anchor) => '<text x="' + x + '" y="' + y + '" font-size="' + (size || 16) + '" font-weight="800" fill="' + (fill || C.ink) + '" text-anchor="' + (anchor || 'middle') + '">' + s + '</text>';
+const cube = (x, y, s, col) => '<g filter="url(#vsh)"><rect x="' + x + '" y="' + y + '" width="' + s + '" height="' + s + '" rx="2" fill="' + col + '"/><rect x="' + x + '" y="' + y + '" width="' + s + '" height="' + (s * .35) + '" rx="2" fill="#fff" opacity=".3"/></g>';
+
+const V = {};
+/* khối trăm (tấm vuông), chục (thanh), đơn vị (khối nhỏ) */
+V.blocks = v => {
+  const n = v.n, h = Math.floor(n / 100), t = Math.floor(n % 100 / 10), u = n % 10; let s = '', x = 10;
+  for (let i = 0; i < h; i++) { s += '<g filter="url(#vsh)"><rect x="' + x + '" y="20" width="60" height="60" rx="4" fill="' + C.blue + '"/>'; for (let k = 1; k < 10; k++) s += '<path d="M' + (x + k * 6) + ' 20v60M' + x + ' ' + (20 + k * 6) + 'h60" stroke="#fff" stroke-opacity=".35"/>'; s += '</g>'; x += 66; }
+  if (h) x += 8;
+  for (let i = 0; i < t; i++) { s += '<g filter="url(#vsh)"><rect x="' + x + '" y="20" width="10" height="60" rx="3" fill="' + C.green + '"/></g>'; x += 14; }
+  if (t) x += 8;
+  for (let i = 0; i < u; i++) { s += cube(x + (i % 3) * 13, 50 + Math.floor(i / 3) * 0 - (Math.floor(i / 3) * 13) + 17, 11, C.orange); if (i % 3 === 2) { } }
+  x += u ? 44 : 0;
+  const legend = T(10, 106, 'Tấm xanh = 100', 13, C.blue, 'start') + T(130, 106, 'Thanh xanh lá = 10', 13, '#15803D', 'start') + T(275, 106, 'Khối cam = 1', 13, '#C2410C', 'start');
+  return svg(Math.max(x + 10, 380), 116, s + legend);
+};
+/* tia số, ô cần tìm có dấu ? */
+V.nline = v => {
+  const nums = v.nums, W = 80 * nums.length + 20; let s = '<path d="M10 50H' + (W - 10) + '" stroke="' + C.ink + '" stroke-width="3"/><path d="M' + (W - 18) + ' 44l8 6-8 6" fill="none" stroke="' + C.ink + '" stroke-width="3"/>';
+  nums.forEach((n, i) => { const x = 50 + i * 80; s += '<path d="M' + x + ' 42v16" stroke="' + C.ink + '" stroke-width="3"/>';
+    s += n === '?' ? '<g filter="url(#vsh)"><circle cx="' + x + '" cy="20" r="16" fill="' + C.yellow + '"/></g>' + T(x, 26, '?', 20) : T(x, 84, n, 18); });
+  if (v.hop) nums.slice(1).forEach((_, i) => { const x = 50 + i * 80; s += '<path d="M' + (x + 6) + ' 38q34-26 68 0" fill="none" stroke="' + C.purple + '" stroke-width="2.5" stroke-dasharray="4 3"/>' + T(x + 40, 22, v.hop, 13, C.purple); });
+  return svg(W, 96, s);
+};
+/* phép tính đặt tính, kết quả để trống */
+V.colq = v => {
+  const a = String(v.a), b = String(v.b), L = Math.max(a.length, b.length) + 1, cw = 30, W = L * cw + 70; let s = '';
+  const row = (str, y, col) => str.split('').reverse().forEach((d, i) => { s += T(W - 30 - i * cw, y, d, 30, col); });
+  s += '<rect x="20" y="6" width="' + (W - 30) + '" height="124" rx="14" fill="#fff" stroke="#DCE6F2" stroke-width="2"/>';
+  row(a, 44, C.ink); row(b, 84, C.ink); s += T(36, 68, v.op, 30, C.purple);
+  s += '<path d="M40 96H' + (W - 18) + '" stroke="' + C.ink + '" stroke-width="3"/>';
+  for (let i = 0; i < L; i++) s += '<rect x="' + (W - 44 - i * cw) + '" y="102" width="26" height="24" rx="5" fill="' + C.yellow + '" opacity=".55"/>';
+  return svg(W, 136, s);
+};
+/* khung chia (đặt tính chia) */
+V.divq = v => {
+  const a = String(v.a), b = String(v.b), cw = 26, W = a.length * cw + 160; let s = '<rect x="6" y="6" width="' + (W - 12) + '" height="110" rx="14" fill="#fff" stroke="#DCE6F2" stroke-width="2"/>';
+  a.split('').forEach((d, i) => { s += T(30 + i * cw, 44, d, 30); });
+  const x0 = 30 + a.length * cw; s += '<path d="M' + x0 + ' 18V108M' + x0 + ' 56H' + (W - 20) + '" stroke="' + C.ink + '" stroke-width="3"/>' + T(x0 + 34, 44, b, 30, C.purple);
+  s += '<rect x="' + (x0 + 10) + '" y="64" width="70" height="28" rx="6" fill="' + C.yellow + '" opacity=".55"/>' + T(x0 + 45, 86, '?', 22);
+  return svg(W, 122, s);
+};
+/* sơ đồ đoạn thẳng: các đoạn [{v, label, col}] trên cùng một hàng, ngoặc tổng */
+V.bars = v => {
+  const W = 420; let s = '', y = 16;
+  v.rows.forEach(r => {
+    const tot = r.parts.reduce((a, p) => a + p.w, 0), scale = (W - 140) / v.max; let x = 120;
+    s += T(10, y + 22, r.name, 15, C.ink, 'start');
+    r.parts.forEach(p => { const w = Math.max(18, p.w * scale); s += '<g filter="url(#vsh)"><rect x="' + x + '" y="' + y + '" width="' + w + '" height="30" rx="6" fill="' + (p.col || C.blue) + '"/></g>' + T(x + w / 2, y + 21, p.label, 15, '#fff'); x += w + 2; });
+    if (r.total) s += '<path d="M120 ' + (y + 38) + 'q0 8 8 8H' + (x - 10) + 'q8 0 8-8" fill="none" stroke="' + C.ink + '" stroke-width="2"/>' + T((120 + x) / 2, y + 62, r.total, 15);
+    y += r.total ? 76 : 46;
+  });
+  return svg(W, y + 4, s);
+};
+/* chia đều kẹo vào đĩa */
+V.share = v => {
+  const n = v.n, d = v.d, W = 440; let s = '';
+  for (let i = 0; i < n; i++) { const x = 18 + (i % 15) * 27, y = 18 + Math.floor(i / 15) * 26; s += '<g filter="url(#vsh)"><circle cx="' + x + '" cy="' + y + '" r="10" fill="' + [C.pink, C.orange, C.yellow, C.green][i % 4] + '"/><circle cx="' + (x - 3) + '" cy="' + (y - 3) + '" r="3" fill="#fff" opacity=".6"/></g>'; }
+  const rows = Math.ceil(n / 15), py = 30 + rows * 26;
+  const gap = Math.min(100, (W - 40) / d), rx = Math.min(36, gap / 2 - 3);
+  for (let k = 0; k < d; k++) { const cx = 20 + k * gap + gap / 2; s += '<ellipse cx="' + cx + '" cy="' + (py + 22) + '" rx="' + rx + '" ry="12" fill="#E2E8F0" stroke="#94A3B8" stroke-width="2"/>' + T(cx, py + 27, '?', 16); }
+  s += T(W / 2, py + 58, n + ' cái kẹo chia đều vào ' + d + ' đĩa', 14, C.purple);
+  return svg(W, py + 66, s);
+};
+/* thước kẻ cm và mm */
+V.ruler = v => {
+  const cm = v.cm || 6, W = cm * 60 + 40; let s = '<g filter="url(#vsh)"><rect x="10" y="10" width="' + (W - 20) + '" height="56" rx="6" fill="#FDE68A"/></g>';
+  for (let i = 0; i <= cm * 10; i++) { const x = 20 + i * 6, h = i % 10 === 0 ? 24 : i % 5 === 0 ? 16 : 10; s += '<path d="M' + x + ' 10v' + h + '" stroke="' + C.ink + '" stroke-width="' + (i % 10 ? 1 : 2) + '"/>'; if (i % 10 === 0) s += T(x, 54, i / 10, 13); }
+  s += T(W - 26, 54, 'cm', 12) + T(W / 2, 88, '1 cm = 10 mm (mỗi vạch nhỏ là 1 mm)', 14, C.purple);
+  return svg(W, 96, s);
+};
+/* ca đo mi-li-lít */
+V.jug = v => {
+  const list = v.levels, W = list.length * 120 + 20; let s = '';
+  list.forEach((lv, i) => { const x = 20 + i * 120, H = 120, f = lv.ml == null ? .5 : Math.min(1, lv.ml / (lv.max || 1000));
+    s += '<g filter="url(#vsh)"><path d="M' + x + ' 20h80l-6 ' + H + 'h-68z" fill="#E0F2FE" stroke="#60A5FA" stroke-width="3"/></g>';
+    s += '<path d="M' + (x + 6 + 6 * (1 - f)) + ' ' + (20 + H * (1 - f)) + 'h' + (68 + 0) + 'l' + (-6 * f) + ' ' + (H * f) + 'h-62z" fill="#3B82F6" opacity=".7"/>';
+    for (let k = 1; k < 5; k++) s += '<path d="M' + (x + 60) + ' ' + (20 + H * k / 5) + 'h14" stroke="#1E3A8A" stroke-width="2"/>';
+    s += T(x + 40, H + 44, lv.label, 15); });
+  return svg(W, 172, s);
+};
+/* cân đĩa */
+V.scale = v => {
+  let s = '<path d="M60 120h180M150 120V40M70 40h160" stroke="' + C.ink + '" stroke-width="5" stroke-linecap="round"/><path d="M150 40l-8-14h16z" fill="' + C.ink + '"/>';
+  [[70, v.left], [230, v.right]].forEach(([x, lab]) => { s += '<path d="M' + x + ' 40l-26 36h52z" fill="none" stroke="#94A3B8" stroke-width="2"/><g filter="url(#vsh)"><ellipse cx="' + x + '" cy="80" rx="40" ry="8" fill="#CBD5E1"/></g>';
+    s += '<g filter="url(#vsh)"><rect x="' + (x - 26) + '" y="52" width="52" height="24" rx="6" fill="' + C.orange + '"/></g>' + T(x, 70, lab, 15, '#fff'); });
+  return svg(300, 136, s);
+};
+/* nhiệt kế */
+V.thermo = v => {
+  const list = v.temps, W = list.length * 110 + 20; let s = '';
+  list.forEach((t, i) => { const x = 40 + i * 110, f = t.c == null ? .5 : Math.max(.05, Math.min(1, t.c / 50));
+    s += '<g filter="url(#vsh)"><rect x="' + x + '" y="14" width="22" height="130" rx="11" fill="#fff" stroke="#94A3B8" stroke-width="2"/><circle cx="' + (x + 11) + '" cy="150" r="18" fill="' + C.red + '"/></g>';
+    if (t.c != null) s += '<rect x="' + (x + 6) + '" y="' + (20 + 120 * (1 - f)) + '" width="10" height="' + (120 * f + 14) + '" rx="5" fill="' + C.red + '"/>';
+    for (let k = 0; k <= 5; k++) s += '<path d="M' + (x + 22) + ' ' + (140 - k * 24) + 'h8" stroke="' + C.ink + '"/>' + T(x + 44, 144 - k * 24, k * 10, 11);
+    s += T(x + 11, 188, t.label, 14); });
+  return svg(W, 196, s);
+};
+/* đoạn thẳng và trung điểm */
+V.seg = v => svg(420, 96, '<path d="M30 50H390" stroke="' + C.ink + '" stroke-width="4" stroke-linecap="round"/>' +
+  [[30, 'A'], [210, 'M'], [390, 'B']].map(([x, n]) => '<g filter="url(#vsh)"><circle cx="' + x + '" cy="50" r="8" fill="' + (n === 'M' ? C.orange : C.blue) + '"/></g>' + T(x, 30, n, 18)).join('') +
+  '<path d="M30 70q90 22 180 0M210 70q90 22 180 0" fill="none" stroke="' + C.purple + '" stroke-width="2.5"/>' + T(120, 92, v.am, 15, C.purple) + T(300, 92, v.mb, 15, C.purple));
+/* hình tròn tâm O */
+V.circle = v => svg(260, 230, '<g filter="url(#vsh)"><circle cx="130" cy="112" r="90" fill="#E0F2FE" stroke="' + C.blue + '" stroke-width="4"/></g>' +
+  '<path d="M40 112H220" stroke="' + C.orange + '" stroke-width="4"/><path d="M130 112L194 48" stroke="' + C.green + '" stroke-width="4"/>' +
+  '<circle cx="130" cy="112" r="6" fill="' + C.ink + '"/>' + T(122, 132, 'O', 16) + T(34, 106, 'A', 16) + T(228, 106, 'B', 16) + T(200, 42, 'M', 16) +
+  T(130, 214, v.text || 'Bán kính OM, đường kính AB', 14, C.purple));
+/* hình phẳng */
+V.shape = v => {
+  const k = v.k; let b = '';
+  if (k === 'tamgiac') b = '<polygon points="130,20 40,150 220,150" fill="#FDE68A" stroke="' + C.orange + '" stroke-width="4"/>' + T(130, 14, 'A', 16) + T(30, 166, 'B', 16) + T(230, 166, 'C', 16);
+  else if (k === 'vuong') b = '<rect x="60" y="20" width="130" height="130" fill="#BBF7D0" stroke="' + C.green + '" stroke-width="4"/>' + [[60, 20], [176, 20], [176, 136], [60, 136]].map(([x, y]) => '<path d="M' + (x + (x > 100 ? 0 : 0)) + ' ' + y + 'h14v14h-14z" fill="none" stroke="' + C.ink + '" stroke-width="2"/>').join('');
+  else if (k === 'tugiac') b = '<polygon points="50,40 200,20 230,150 30,140" fill="#DDD6FE" stroke="' + C.purple + '" stroke-width="4"/>' + T(44, 34, 'M', 16) + T(206, 16, 'N', 16) + T(240, 160, 'P', 16) + T(20, 156, 'Q', 16);
+  else b = '<rect x="20" y="40" width="220" height="110" fill="#BFDBFE" stroke="' + C.blue + '" stroke-width="4"/>' + T(14, 36, 'A', 16) + T(248, 36, 'B', 16) + T(248, 166, 'C', 16) + T(14, 166, 'D', 16);
+  return svg(260, 172, '<g filter="url(#vsh)">' + b + '</g>');
+};
+/* khối hộp chữ nhật, khối lập phương */
+V.solid = v => {
+  const cubeK = v.k === 'lapphuong', w = cubeK ? 100 : 160, h = 100, d = 40, x = 40, y = 50;
+  return svg(280, 190, '<g filter="url(#vsh)"><polygon points="' + x + ',' + y + ' ' + (x + d) + ',' + (y - d) + ' ' + (x + w + d) + ',' + (y - d) + ' ' + (x + w) + ',' + y + '" fill="#FDBA74"/>' +
+    '<polygon points="' + (x + w) + ',' + y + ' ' + (x + w + d) + ',' + (y - d) + ' ' + (x + w + d) + ',' + (y + h - d) + ' ' + (x + w) + ',' + (y + h) + '" fill="#F97316"/>' +
+    '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="#FB923C"/></g>' +
+    T(140, 182, cubeK ? 'Khối lập phương' : 'Khối hộp chữ nhật', 15, C.purple));
+};
+/* hai nhóm chấm tròn cho phép cộng, trừ nhỏ */
+V.dots = v => {
+  let s = '', x = 14; const grp = (n, col, cross) => { for (let i = 0; i < n; i++) { const cx = x + (i % 5) * 22 + 10, cy = 22 + Math.floor(i / 5) * 22; s += '<g filter="url(#vsh)"><circle cx="' + cx + '" cy="' + cy + '" r="9" fill="' + col + '"/></g>'; if (cross && i >= n - cross) s += '<path d="M' + (cx - 8) + ' ' + (cy - 8) + 'l16 16" stroke="' + C.ink + '" stroke-width="3"/>'; } x += 5 * 22 + 24; };
+  if (v.op === '+') { grp(v.a, C.blue); s += T(x - 12, 44, '+', 28, C.purple); x += 10; grp(v.b, C.orange); }
+  else grp(v.a, C.green, v.b);
+  const rows = Math.ceil(Math.max(v.a, v.op === '+' ? v.b : 0) / 5);
+  return svg(x, rows * 22 + 22, s);
+};
+/* đường gấp khúc */
+V.poly2 = v => {
+  const n = v.seg.length, W = n * 90 + 40; let pts = [], s = '';
+  for (let i = 0; i <= n; i++) pts.push([20 + i * 90, i % 2 ? 30 : 100]);
+  s += '<polyline points="' + pts.map(p => p.join(',')).join(' ') + '" fill="none" stroke="' + C.blue + '" stroke-width="5" stroke-linejoin="round"/>';
+  pts.forEach((p, i) => { s += '<g filter="url(#vsh)"><circle cx="' + p[0] + '" cy="' + p[1] + '" r="7" fill="' + C.orange + '"/></g>' + T(p[0], p[1] + (i % 2 ? -14 : 26), 'ABCDEFG'[i], 15); });
+  v.seg.forEach((L, i) => { const a = pts[i], b = pts[i + 1]; s += T((a[0] + b[0]) / 2 + 18, (a[1] + b[1]) / 2 + 4, L, 13, C.purple, 'start'); });
+  return svg(W, 136, s);
+};
+/* hai số so sánh bằng khối */
+V.two = v => '<div class="row" style="gap:18px;align-items:center">' + V.blocks({ n: v.a }) + '<b style="font-size:2rem">?</b>' + V.blocks({ n: v.b }) + '</div>';
+
+const oldVis = TL.vis;
+TL.vis = function (v) { if (v && V[v.kind]) return V[v.kind](v); return oldVis(v); };
+
+const N = s => Number(String(s).replace(/\s/g, ''));
+const nums = q => (q.match(/\d[\d ]*\d|\d/g) || []).map(N);
+/* gắn hình cho một câu hỏi Toán chưa có hình */
+TL.autoVis = function (it) {
+  if (!it || it.vis || !it.skill || !/^m\./.test(it.skill) || it.type === 'order' && it.skill !== 'm.cmp') return null;
+  const q = it.q || '', n = nums(q), sk = it.skill; let m;
+  try {
+    if ((sk === 'm.read' || sk === 'm.place') && (m = q.match(/Số (\d{3})/))) return { kind: 'blocks', n: +m[1] };
+    if (sk === 'm.place' && (m = q.match(/Viết số (\d{3})/))) return { kind: 'blocks', n: +m[1] };
+    if (sk === 'm.seq') {
+      if ((m = q.match(/liền sau của (\d+)/))) { const a = +m[1]; return { kind: 'nline', nums: [a - 1, a, '?'], hop: '+1' }; }
+      if ((m = q.match(/liền trước của (\d+)/))) { const a = +m[1]; return { kind: 'nline', nums: ['?', a, a + 1], hop: '+1' }; }
+      if ((m = q.match(/:\s*([\d?, ]+)$/))) return { kind: 'nline', nums: m[1].split(',').map(x => x.trim()).map(x => x === '?' ? '?' : +x) };
+    }
+    if (sk === 'm.cmp' && (m = q.match(/^(\d{3})\s+\?\s+(\d{3})$/))) return { kind: 'two', a: +m[1], b: +m[2] };
+    if ((m = q.match(/Đặt tính rồi tính: (\d+) ([+\-×]) (\d+)/))) return { kind: 'colq', a: +m[1], b: +m[3], op: m[2] };
+    if ((m = q.match(/Đặt tính rồi tính: (\d+) : (\d+)/))) return { kind: 'divq', a: +m[1], b: +m[2] };
+    if (sk === 'm.divrem' && (m = q.match(/^(\d+) : (\d)/)) && +m[1] <= 60) return { kind: 'share', n: +m[1], d: +m[2] };
+    if (sk === 'm.t2' || sk === 'm.t3' || sk === 'm.t4' || sk === 'm.t5' || sk === 'm.t6' || sk === 'm.t7' || sk === 'm.t8' || sk === 'm.t9') {
+      if ((m = q.match(/^(\d+) : (\d)/)) && +m[1] <= 60) return { kind: 'share', n: +m[1], d: +m[2] };
+      if ((m = q.match(/Đếm thêm (\d+)\. Tìm số còn thiếu: (.+)$/))) return { kind: 'nline', nums: m[2].split(',').map(x => x.trim()).map(x => x === '?' ? '?' : +x), hop: '+' + m[1] };
+    }
+    if (sk === 'm.logic' && (m = q.match(/còn thiếu: (.+)$/))) return { kind: 'nline', nums: m[1].split(',').map(x => x.trim()).map(x => x === '?' ? '?' : +x) };
+    if (sk === 'm.findadd' && (m = q.match(/^(\?|\d+) \+ (\?|\d+) = (\d+)/))) { const tot = +m[3], known = m[1] === '?' ? +m[2] : +m[1]; return { kind: 'bars', max: tot, rows: [{ name: 'Tổng', total: String(tot), parts: [{ w: known, label: known, col: C.blue }, { w: Math.max(tot - known, tot * .15), label: '?', col: C.orange }] }] }; }
+    if (sk === 'm.findadd' && (m = q.match(/tất cả (\d+).*?thứ nhất có (\d+)/))) { const tot = +m[1], a = +m[2]; return { kind: 'bars', max: tot, rows: [{ name: 'Cả hai', total: String(tot), parts: [{ w: a, label: a, col: C.blue }, { w: tot - a, label: '?', col: C.orange }] }] }; }
+    if (sk === 'm.findsub' && (m = q.match(/^(\?|\d+) - (\?|\d+) = (\d+)/))) { const a = m[1], b = m[2], h = +m[3]; const tot = a === '?' ? +b + h : +a; return { kind: 'bars', max: tot, rows: [{ name: 'Số bị trừ', total: a === '?' ? '?' : String(tot), parts: [{ w: a === '?' ? +b : (b === '?' ? tot - h : +b), label: b === '?' ? '?' : b, col: C.red }, { w: h, label: h, col: C.green }] }] }; }
+    if (sk === 'm.findmul' && (m = q.match(/^(\?|\d+) × (\?|\d+) = (\d+)/))) { const k = m[1] === '?' ? +m[2] : +m[1]; return { kind: 'share', n: Math.min(+m[3], 60), d: k }; }
+    if (sk === 'm.word1' && (m = q.match(/(nhiều hơn|ít hơn|nặng hơn)/)) && n.length >= 2) { const a = n[0], d = n[1]; const more = m[1] === 'nhiều hơn'; if (m[1] === 'nặng hơn') return { kind: 'bars', max: Math.max(a, d), rows: [{ name: 'Thứ nhất', parts: [{ w: a, label: a, col: C.blue }] }, { name: 'Thứ hai', parts: [{ w: d, label: d, col: C.green }] }] };
+      const b = more ? a + d : a - d; return { kind: 'bars', max: Math.max(a, b), rows: [{ name: 'Thứ nhất', parts: [{ w: a, label: a, col: C.blue }] }, { name: 'Thứ hai', parts: more ? [{ w: a, label: a, col: C.green }, { w: d, label: '+' + d, col: C.orange }] : [{ w: b, label: '?', col: C.green }] }] }; }
+    if (sk === 'm.gaplen' && n.length >= 2) { const a = n[n.length >= 3 ? n.length - 2 : 0], k = n[n.length - 1] <= 10 ? n[n.length - 1] : n[1]; if (k >= 2 && k <= 10) return { kind: 'bars', max: a * k, rows: [{ name: 'Số đã cho', parts: [{ w: a, label: a, col: C.blue }] }, { name: 'Gấp ' + k + ' lần', total: '?', parts: Array.from({ length: k }, () => ({ w: a, label: a, col: C.green })) }] }; }
+    if (sk === 'm.giam' && n.length >= 2) { const a = n[0], k = n[1]; if (k >= 2 && k <= 10 && a % k === 0) return { kind: 'bars', max: a, rows: [{ name: 'Lúc đầu', total: String(a), parts: Array.from({ length: k }, (_, i) => ({ w: a / k, label: i ? '' : '?', col: i ? '#93C5FD' : C.orange })) }] }; }
+    if (sk === 'm.gapmay' && n.length >= 2) { const a = n[0], b = n[1]; return { kind: 'bars', max: a, rows: [{ name: 'Số lớn', parts: [{ w: a, label: a, col: C.blue }] }, { name: 'Số bé', parts: [{ w: b, label: b, col: C.orange }] }] }; }
+    if (sk === 'm.mul21' && (m = q.match(/Mỗi (.+?) có (\d+) (.+?)\. Hỏi (\d+)/))) { const a = +m[2], k = +m[4]; return { kind: 'bars', max: a * k, rows: [{ name: k + ' ' + m[1], total: '?', parts: Array.from({ length: k }, () => ({ w: a, label: a, col: C.teal })) }] }; }
+    if (sk === 'm.trungdiem') { if ((m = q.match(/AB dài (\d+)/))) return { kind: 'seg', am: '?', mb: '?' }; if ((m = q.match(/AM dài (\d+)/))) return { kind: 'seg', am: m[1] + ' cm', mb: '?' }; return { kind: 'seg', am: '', mb: '' }; }
+    if (sk === 'm.mental' && (m = q.match(/^(\d+) ([+-]) (\d+) = \?$/)) && +m[1] <= 20 && +m[3] <= 10) return { kind: 'dots', a: +m[1], b: +m[3], op: m[2] };
+    if (sk === 'm.frac' && (m = q.match(/^Chia (\d+) (.+?) thành (\d+) phần/)) && +m[1] <= 60) return { kind: 'share', n: +m[1], d: +m[3] };
+    if (sk === 'm.geo' && (m = q.match(/lần lượt (.+?)\. Tính/))) return { kind: 'poly2', seg: m[1].split(', ') };
+    if (sk === 'm.geo' && (m = q.match(/gồm (\d+) đoạn thẳng, mỗi đoạn dài (\d+) cm/)) && +m[1] <= 6) return { kind: 'poly2', seg: Array.from({ length: +m[1] }, () => m[2] + ' cm') };
+    if ((sk === 'm.phieu24' || sk === 'm.gaplen') && (m = q.match(/Gấp số (\d+) lên (\d+) lần/))) { const a = +m[1], k = +m[2]; return { kind: 'bars', max: a * k, rows: [{ name: 'Số ' + a, parts: [{ w: a, label: a, col: C.blue }] }, { name: 'Gấp ' + k + ' lần', total: '?', parts: Array.from({ length: k }, () => ({ w: a, label: a, col: C.green })) }] }; }
+    if (sk === 'm.twostep' && (m = q.match(/^\D*?(\d+)\D*?(nhiều hơn|ít hơn|nhẹ hơn|nặng hơn)\D*?(\d+)/))) { const a = +m[1], d = +m[3], more = /nhiều|nặng/.test(m[2]); if (!more && d >= a) return null; const b = more ? a + d : a - d; return { kind: 'bars', max: Math.max(a, b), rows: [{ name: 'Thứ nhất', parts: [{ w: a, label: a, col: C.blue }] }, { name: 'Thứ hai', parts: more ? [{ w: a, label: a, col: C.green }, { w: d, label: '+' + d, col: C.orange }] : [{ w: b, label: '?', col: C.green }, { w: d, label: d, col: '#CBD5E1' }] }] }; }
+    if (sk === 'm.hinhtron') return { kind: 'circle' };
+    if (sk === 'm.goc' && (m = q.match(/Lúc (\d+) giờ/))) return { kind: 'clock', h: +m[1], m: 0 };
+    if (sk === 'm.hinhphang') { const k = /tam giác/.test(q) ? 'tamgiac' : /vuông/.test(q) && !/chữ nhật/.test(q) ? 'vuong' : /tứ giác/.test(q) ? 'tugiac' : 'chunhat'; return { kind: 'shape', k }; }
+    if (sk === 'm.khoi') return { kind: 'solid', k: /lập phương/.test(q) ? 'lapphuong' : 'hop' };
+    if (sk === 'm.mm') return { kind: 'ruler', cm: 6 };
+    if (sk === 'm.ml') { if ((m = q.match(/Rót đều (\d+) ml nước vào (\d)/))) return { kind: 'jug', levels: Array.from({ length: +m[2] }, () => ({ ml: null, label: '? ml' })) }; if ((m = q.match(/(\d+) ml ([+-]) (\d+) ml/))) return { kind: 'jug', levels: [{ ml: +m[1], label: m[1] + ' ml' }, { ml: +m[3], label: m[3] + ' ml' }] }; return { kind: 'jug', levels: [{ ml: 1000, label: '1 l' }] }; }
+    if (sk === 'm.gam' && (m = q.match(/(\d+) g ([+-]) (\d+) g/))) return { kind: 'scale', left: m[1] + ' g', right: m[3] + ' g' };
+    if (sk === 'm.nhietdo' && (m = q.match(/sáng (\d+) °C, buổi trưa (\d+) °C/))) return { kind: 'thermo', temps: [{ c: null, label: 'Sáng ' + m[1] + ' °C' }, { c: null, label: 'Trưa ' + m[2] + ' °C' }] };
+  } catch (e) { return null; }
+  return null;
+};
 })();
 
 /* ---- src/engine/fx3d.js ---- */

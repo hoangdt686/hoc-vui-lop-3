@@ -422,8 +422,8 @@ html.calm .vis .vis3d {animation:none}
 .owlstage .ol svg, .owlstage .ow svg { display: block; overflow: visible; }
 .owlstage .o-pupil { transform: translate(var(--px, 0), var(--py, 0)); transition: transform .12s; }
 .owlstage .o-blink { transform-box: view-box; transform-origin: 60px 47px; animation: owlBlink 4.5s infinite; }
-.owlstage .owL svg { transform-origin: 22% 50%; animation: osWingL 3.2s ease-in-out infinite; }
-.owlstage .owR svg { transform-origin: 78% 50%; animation: osWingR 3.2s ease-in-out infinite; }
+.owlstage .owL svg { transform-origin: 80% 5%; animation: osWingL 3.2s ease-in-out infinite; }
+.owlstage .owR svg { transform-origin: 20% 5%; animation: osWingR 3.2s ease-in-out infinite; }
 .owlstage .owlshadow { position: absolute; left: 22%; right: 22%; bottom: 1%; height: 7%; border-radius: 50%; background: radial-gradient(closest-side, rgba(40,20,110,.35), transparent); animation: osShadow 3.2s ease-in-out infinite; }
 .owlstage .owlsay { position: absolute; left: 70%; bottom: 92%; width: max-content; max-width: 230px; background: #fff; color: #1F2A44; font-weight: 700; font-size: .95rem; line-height: 1.35; padding: 10px 14px; border-radius: 16px; border: 3px solid #A78BFA; box-shadow: 0 6px 0 #DDD6FE; z-index: 5; pointer-events: none; }
 .owlstage .owlsay::after { content: ''; position: absolute; left: 14px; bottom: -12px; border: 8px solid transparent; border-top-color: #A78BFA; }
@@ -448,8 +448,8 @@ html.calm .vis .vis3d {animation:none}
 .owlstage.hop .owlbob { animation: osHop .6s ease-out 1; }
 .owlstage.oops .owlbob { animation: owlShake .6s ease-in-out 1; }
 .owlstage.dance .owlshadow, .owlstage.spin .owlshadow, .owlstage.flip .owlshadow, .owlstage.hop .owlshadow { animation: osShadowJump .6s ease-in-out 3; }
-@keyframes osDance { 0% { transform: translateY(0) rotateZ(0) rotateY(0); } 20% { transform: translateY(-16%) rotateZ(-12deg) rotateY(-30deg); } 40% { transform: translateY(0) scale(1.08, .92); } 60% { transform: translateY(-16%) rotateZ(12deg) rotateY(30deg); } 80% { transform: translateY(0) scale(1.06, .94); } 100% { transform: translateY(0) rotateZ(0) rotateY(0); } }
-@keyframes osSpin { 0% { transform: translateY(0) rotateY(0); } 30% { transform: translateY(-20%) rotateY(180deg); } 70% { transform: translateY(-20%) rotateY(540deg); } 100% { transform: translateY(0) rotateY(720deg); } }
+@keyframes osDance { 0% { transform: translateY(0) rotate(0); } 20% { transform: translateY(-16%) rotate(-12deg); } 40% { transform: translateY(0) scale(1.08, .92); } 60% { transform: translateY(-16%) rotate(12deg); } 80% { transform: translateY(0) scale(1.06, .94); } 100% { transform: translateY(0) rotate(0); } }
+@keyframes osSpin { 0% { transform: translateY(0); } 30% { transform: translateY(-20%); } 70% { transform: translateY(-20%); } 100% { transform: translateY(0); } }
 @keyframes osFlip { 0% { transform: translateY(0) rotateX(0); } 40% { transform: translateY(-28%) rotateX(-180deg); } 80% { transform: translateY(-6%) rotateX(-360deg); } 100% { transform: translateY(0) rotateX(-360deg); } }
 @keyframes osWave { 0%, 100% { transform: rotateZ(0); } 25% { transform: rotateZ(-8deg); } 50% { transform: rotateZ(6deg); } 75% { transform: rotateZ(-4deg); } }
 @keyframes osHop { 0% { transform: translateY(0) scale(1); } 30% { transform: translateY(0) scale(1.08, .9); } 60% { transform: translateY(-12%) scale(.96, 1.05); } 100% { transform: translateY(0) scale(1); } }
@@ -497,6 +497,27 @@ html[data-theme="dark"] p.small.muted, html[data-theme="dark"] p.muted.small, ht
 .howto { margin-top: 8px; font-size: .85rem; font-style: italic; color: #1D4ED8; }
 .howto b { color: #C2410C; font-style: normal; }
 html[data-theme="dark"] .howto { color: #93C5FD; } html[data-theme="dark"] .howto b { color: #FDBA74; }
+.owlstage .ol.front { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.owlstage .owlsay { left: 0; bottom: auto; top: 100%; margin-top: 6px; }
+.owlstage .owlsay::after { top: -12px; bottom: auto; border-top-color: transparent; border-bottom-color: #A78BFA; }
+.hello .owlstage { margin-top: 0; }
+.hello .owlstage .owlsay { left: 0; }
+
+.owlstage .owlbob svg.owl25 { display: block; overflow: visible; }
+/* trò chuyện bằng giọng nói */
+.ck-voice { align-items: flex-start; }
+.ck-voice .ck-owl { padding-top: 0; }
+.ck-caption { font-size: clamp(1.15rem, 2.6vw, 1.45rem); font-weight: 800; line-height: 1.45; color: var(--ink); background: #fff; border: 3px solid #A78BFA; border-radius: 22px; padding: 14px 18px; box-shadow: 0 6px 0 #DDD6FE; min-height: 3.2em; }
+.ck-ctl { align-items: center; gap: 16px; }
+.ck-mic { width: 84px; height: 84px; border-radius: 50%; border: 0; background: linear-gradient(180deg, #A78BFA, #7C3AED); color: #fff; display: grid; place-items: center; cursor: pointer; box-shadow: 0 6px 0 #5B21B6, 0 10px 24px rgba(124, 58, 237, .35); flex: none; }
+.ck-mic.on { background: linear-gradient(180deg, #F87171, #DC2626); box-shadow: 0 6px 0 #991B1B, 0 0 0 0 rgba(220, 38, 38, .5); animation: ckRing 1.2s ease-out infinite; }
+@keyframes ckRing { 0% { box-shadow: 0 6px 0 #991B1B, 0 0 0 0 rgba(220, 38, 38, .55); } 100% { box-shadow: 0 6px 0 #991B1B, 0 0 0 26px rgba(220, 38, 38, 0); } }
+.ck-st { font-size: 1.05rem; color: #7C3AED; min-height: 1.4em; }
+.linkbtn { background: none; border: 0; padding: 0; color: #1D4ED8; text-decoration: underline; cursor: pointer; font-style: italic; }
+.small-moods .ck-mood { width: 74px; padding: 6px 4px; box-shadow: 0 3px 0 #E2E8F0; }
+.small-moods .ck-mood span { font-size: .75rem; }
+.ck-chat .msgs { max-height: 260px; }
+.in-ck #cubon-btn, .in-ck #cubon-panel { display: none !important; }
 </style>
 <header class="top" id="top"></header>
 <main class="wrap" id="main" aria-live="polite"></main>
@@ -1995,6 +2016,11 @@ AI.chat = async function (turns, onText, signal) {
   try { const r = await sampleFn(turns, { modelTier: 'quick', cache: false, signal, onText: onText ? ({ text }) => onText(text) : undefined }); return r.text; }
   catch (e) { throw { code: e && e.code, message: errMsg(e) }; }
 };
+AI.ask = async function (prompt, tier) {
+  if (!(await AI.ready)) throw { code: 'off', message: AI.reason };
+  try { const r = await sampleFn(prompt, { modelTier: tier || 'default', cache: false }); return r.text; }
+  catch (e) { throw { code: e && e.code, message: errMsg(e) }; }
+};
 AI.weekly = async function (data, onText) {
   if (!(await AI.ready)) throw { code: 'off', message: AI.reason };
   const prompt = 'Bạn là chuyên gia giáo dục tiểu học, viết cho phụ huynh của bé ' + TL.kid() + ' (lớp 3). Chỉ dùng dữ liệu JSON dưới đây do ứng dụng ghi lại, không suy đoán thêm; nếu dữ liệu ít thì nói rõ "chưa đủ dữ liệu". Không so sánh với trẻ khác. Giọng tích cực, cụ thể, không phán xét. Không dùng dấu gạch ngang dài, không dùng biểu tượng cảm xúc.\n' +
@@ -2595,61 +2621,112 @@ TL.autoVis = function (it) {
 
 /* ---- src/engine/owl3d.js ---- */
 /* ===== Cú Bon 3D tương tác =====
-   Cú Bon được ghép từ nhiều lớp đặt ở các độ sâu khác nhau (lưng, thân, bụng, mắt, mỏ), nên khi xoay sẽ thấy khối như thật.
+   Cú Bon được vẽ lại liên tục theo góc quay (cách dựng hình 2,5D): thân là khối bầu dục, mắt, mỏ, bụng nằm trên bề mặt thân,
+   khi quay thì dịch sang bên và co lại như vật thật, quay hẳn ra sau thì thấy lưng và đuôi. Cách này không dùng các tấm 3D chồng nhau
+   nên hình không bị vỡ thành vệt khi xoay.
    Con có thể:
    - di chuột (hoặc chạm) vào Cú Bon: Cú Bon nhún chào, mắt nhìn theo con trỏ;
-   - bấm vào Cú Bon: Cú Bon nhảy múa, xoay vòng hoặc vẫy cánh và nói một câu;
+   - bấm vào Cú Bon: Cú Bon nhảy múa, xoay vòng, vẫy cánh và nói một câu;
    - kéo Cú Bon sang trái, phải, lên, xuống: Cú Bon xoay theo tay con. */
 (function () {
 'use strict';
 const S = () => TL.S;
-let n = 0, defsDone = false;
-function defs() {
-  if (defsDone || document.getElementById('owl-defs')) { defsDone = true; return; }
-  const d = document.createElement('div');
-  d.innerHTML = '<svg id="owl-defs" width="0" height="0" style="position:absolute;width:0;height:0" aria-hidden="true"><defs>' +
-    '<radialGradient id="og-b" cx="38%" cy="30%" r="75%"><stop offset="0" stop-color="#C2B0FF"/><stop offset=".55" stop-color="#8B6CFA"/><stop offset="1" stop-color="#5A3BE0"/></radialGradient>' +
-    '<radialGradient id="og-y" cx="45%" cy="35%" r="70%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#D9CEFF"/></radialGradient>' +
-    '<radialGradient id="og-e" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E4E7F0"/></radialGradient>' +
-    '<radialGradient id="og-p" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#4B5675"/><stop offset="1" stop-color="#11182A"/></radialGradient>' +
-    '<linearGradient id="og-w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8064F5"/><stop offset="1" stop-color="#4C2FD0"/></linearGradient>' +
-    '<linearGradient id="og-k" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD54A"/><stop offset="1" stop-color="#F29A00"/></linearGradient>' +
-    '</defs></svg>';
-  document.body.appendChild(d.firstChild); defsDone = true;
+let n = 0;
+const RX = 40, RY = 44, RZ = 27, CX = 60, CY = 64; // bán kính thân: ngang, đứng, sâu
+const rad = d => d * Math.PI / 180;
+const f1 = v => Math.round(v * 10) / 10;
+
+function defsSVG(k) {
+  return '<defs>' +
+    '<radialGradient id="' + k + 'b" cx="36%" cy="28%" r="80%"><stop offset="0" stop-color="#C2B0FF"/><stop offset=".5" stop-color="#8462F7"/><stop offset="1" stop-color="#4B2CCF"/></radialGradient>' +
+    '<radialGradient id="' + k + 'y" cx="45%" cy="35%" r="70%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#D9CEFF"/></radialGradient>' +
+    '<radialGradient id="' + k + 'e" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E4E7F0"/></radialGradient>' +
+    '<radialGradient id="' + k + 'p" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#4B5675"/><stop offset="1" stop-color="#11182A"/></radialGradient>' +
+    '<linearGradient id="' + k + 'w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8064F5"/><stop offset="1" stop-color="#4C2FD0"/></linearGradient>' +
+    '<linearGradient id="' + k + 'k" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD54A"/><stop offset="1" stop-color="#F29A00"/></linearGradient>' +
+    '<clipPath id="' + k + 'c"><ellipse class="clipE" cx="60" cy="64" rx="40" ry="44"/></clipPath>' +
+    '</defs>';
 }
-const L = (z, body, cls) => '<div class="ol' + (cls ? ' ' + cls : '') + '" style="transform:translateZ(calc(var(--u) * ' + z + '))"><svg viewBox="0 0 120 120" width="100%" height="100%">' + body + '</svg></div>';
+/* điểm trên bề mặt thân ở toạ độ mặt trước (x, y) tính từ tâm; trả về độ sâu z */
+const surfZ = (x, y) => RZ * Math.sqrt(Math.max(0, 1 - (x / RX) ** 2 - (y / RY) ** 2));
+/* chiếu một điểm 3D (x, y, z) sau khi quay góc yaw (quanh trục đứng) và pitch (cúi, ngửa) */
+function proj(x, y, z, yaw, pitch) {
+  const cy = Math.cos(yaw), sy = Math.sin(yaw);
+  const x1 = x * cy + z * sy, z1 = -x * sy + z * cy;
+  const cp = Math.cos(pitch), sp = Math.sin(pitch);
+  const y1 = y * cp - z1 * sp, z2 = y * sp + z1 * cp;
+  return { x: CX + x1, y: CY + y1, z: z2 };
+}
+/* vẽ một chi tiết (đã vẽ quanh gốc 0,0) đặt trên bề mặt thân tại (x, y), co ngang theo góc nhìn */
+function onSurface(x, y, body, yaw, pitch, extraZ) {
+  const z = surfZ(x, y) + (extraZ || 0); const p = proj(x, y, z, yaw, pitch);
+  const az = Math.atan2(x / RX, z / RZ) + yaw; const sx = Math.cos(az); // mặt chi tiết hướng về người xem bao nhiêu
+  const el = Math.atan2(y / RY, z / RZ) - pitch; const syv = Math.max(.35, Math.cos(el));
+  if (sx <= .04 || p.z < -2) return '';
+  return '<g transform="translate(' + f1(p.x) + ' ' + f1(p.y) + ') scale(' + f1(sx * 100) / 100 + ' ' + f1(syv * 100) / 100 + ')">' + body + '</g>';
+}
+
+function render(st) {
+  const s = st._o, k = s.k, yaw = rad(s.yaw), pitch = rad(s.pitch), t = performance.now() / 1000;
+  const cyw = Math.cos(yaw), syw = Math.sin(yaw);
+  const bw = Math.sqrt((RX * cyw) ** 2 + (RZ * syw) ** 2); // bề ngang thân nhìn thấy
+  const bh = Math.sqrt((RY * Math.cos(pitch)) ** 2 + (RZ * Math.sin(pitch)) ** 2);
+  const blink = (t % 4.6) < .14 ? .1 : 1;
+  const fast = /dance|cheer|wave/.test(st.className);
+  const flap = fast ? Math.sin(t * 28) * 32 : Math.sin(t * 2) * 8;
+  const w = S().owl.wear || [];
+  let back = '', front = '';
+  // tai và đồ đội đầu: luôn nhìn thấy, co lại một phần khi quay ngang
+  const earS = Math.max(.45, Math.abs(cyw));
+  [[-24, 1], [24, -1]].forEach(([x, dir]) => {
+    const p = proj(x, -40, 0, yaw, pitch);
+    back += '<path transform="translate(' + f1(p.x) + ' ' + f1(p.y) + ') scale(' + f1(earS * 100) / 100 + ' 1)" d="M' + (dir * -12) + ' 8 L' + (dir * -4) + ' -18 L' + (dir * 12) + ' 2 Z" fill="url(#' + k + 'w)"/>';
+  });
+  // cánh: hai bên sườn, cánh nào quay ra sau thân thì vẽ phía sau
+  [[-1, 'M0 0c-12 10-12 30 2 40c4-12 6-26-2-40z'], [1, 'M0 0c12 10 12 30-2 40c-4-12-6-26 2-40z']].forEach(([side, d]) => {
+    const p = proj(side * (RX - 4), -6, 0, yaw, pitch); const vis = 1;
+    const g = '<path transform="translate(' + f1(p.x) + ' ' + f1(p.y) + ') rotate(' + f1(side * -flap) + ') scale(' + f1(vis * 100) / 100 + ' 1)" d="' + d + '" fill="url(#' + k + 'w)"/>';
+    if (p.z < 0) back += g; else front += g;
+  });
+  // chân
+  let feetBack = '';
+  const feet = [-10, 10].map(x => { const p = proj(x, 41, 12, yaw, pitch); const e = '<ellipse cx="' + f1(p.x) + '" cy="' + f1(p.y) + '" rx="' + f1(7 * Math.max(.6, Math.abs(cyw))) + '" ry="4" fill="url(#' + k + 'k)"/>'; if (p.z < 0) { feetBack += e; return ''; } return e; }).join('');
+  // thân
+  let body = '<ellipse cx="60" cy="64" rx="' + f1(bw) + '" ry="' + f1(bh) + '" fill="url(#' + k + 'b)"/>';
+  // chi tiết trên thân (cắt theo viền thân)
+  let surf = '';
+  surf += onSurface(-14, -28, '<ellipse rx="12" ry="6" fill="#fff" opacity=".3" transform="rotate(-20)"/>', yaw, pitch);
+  // lưng và đuôi: các chi tiết ở mặt sau (x, y trên mặt sau, nhìn khi quay quá 90 độ)
+  surf += onSurface(0, -10, '<path d="M-20 -14q20-10 40 0M-24 2q24-12 48 0M-22 18q22-10 44 0" stroke="#3E22B5" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/>', yaw + Math.PI, -pitch);
+  surf += onSurface(0, 34, '<path d="M-12 -4l12 16 12-16z" fill="#3E22B5"/>', yaw + Math.PI, -pitch);
+  surf += onSurface(0, 18, '<ellipse rx="24" ry="23" fill="url(#' + k + 'y)"/><path d="M-10 -6q5 3 10 0q5 3 10 0M-12 4q6 3 12 0q6 3 12 0" stroke="#C7B8FF" stroke-width="2" fill="none" stroke-linecap="round"/>', yaw, pitch);
+  surf += onSurface(-29, 0, '<ellipse rx="6" ry="3.5" fill="#FF8FB1" opacity=".65"/>', yaw, pitch);
+  surf += onSurface(29, 0, '<ellipse rx="6" ry="3.5" fill="#FF8FB1" opacity=".65"/>', yaw, pitch);
+  const px = s.px || 0, py = s.py || 0;
+  [-18, 18].forEach(x => {
+    surf += onSurface(x, -17, '<g transform="scale(1 ' + blink + ')"><circle r="15" fill="url(#' + k + 'e)" stroke="#6E4FF0" stroke-width="2"/><g transform="translate(' + f1(px) + ' ' + f1(py) + ')"><circle r="7.5" fill="url(#' + k + 'p)"/><circle cx="3" cy="-3.5" r="2.8" fill="#fff"/></g></g>' +
+      (w.includes('kinh') ? '<circle r="16" fill="none" stroke="#1D2939" stroke-width="3"/>' : ''), yaw, pitch, 2);
+  });
+  if (w.includes('kinh')) surf += onSurface(0, -17, '<path d="M-3 0h6" stroke="#1D2939" stroke-width="3"/>', yaw, pitch, 2);
+  surf += onSurface(0, -4, '<path d="M-6 -2 L6 -2 L0 9 Z" fill="url(#' + k + 'k)" stroke="#D98200" stroke-width="1"/>', yaw, pitch, 4);
+  const talk = s.talk && Math.sin(t * 18) > -.2; // đang nói: miệng mấp máy
+  surf += onSurface(0, 18, talk ? '<ellipse cy="2" rx="7" ry="' + f1(3 + 3 * Math.abs(Math.sin(t * 9))) + '" fill="#5B3FD9"/><ellipse cy="4" rx="4" ry="2" fill="#FF8FB1"/>' : '<path d="M-9 0q9 7 18 0" stroke="#5B3FD9" stroke-width="3" fill="none" stroke-linecap="round"/>', yaw, pitch, 1);
+  if (w.includes('khan')) surf += onSurface(0, 30, '<path d="M-30 -2q30 14 60 0l-4 8q-26 10-52 0z" fill="#E03131"/>', yaw, pitch, 1);
+  if (w.includes('sach')) surf += onSurface(22, 30, '<rect x="-13" y="-9" width="26" height="18" rx="2" fill="#12B886" transform="rotate(-12)"/>', yaw, pitch, 3);
+  let top = '';
+  const hp = proj(0, -46, 0, yaw, pitch);
+  if (w.includes('mu')) top += '<g transform="translate(' + f1(hp.x) + ' ' + f1(hp.y) + ') scale(' + f1(earS * 100) / 100 + ' 1)"><path d="M-30 0l30-12 30 12-30 12z" fill="#1D2939"/><path d="M24 2v14" stroke="#F2B200" stroke-width="3"/></g>';
+  if (w.includes('vuongmien')) top += '<g transform="translate(' + f1(hp.x) + ' ' + f1(hp.y + 4) + ') scale(' + f1(earS * 100) / 100 + ' 1)"><path d="M-22 0l8-14 7 10 7-12 7 12 7-10 8 14z" fill="#F2B200" stroke="#B8860B" stroke-width="2"/></g>';
+  if (w.includes('no')) { const bp = proj(26, -42, 0, yaw, pitch); top += '<g transform="translate(' + f1(bp.x) + ' ' + f1(bp.y) + ')"><path d="M0 0l10-8 2 12zM0 0l-4 12 12-2z" fill="#F06595"/><circle r="4" fill="#E64980"/></g>'; }
+  const svg = st._svg;
+  svg.innerHTML = defsSVG(k).replace('rx="40" ry="44"', 'rx="' + f1(bw) + '" ry="' + f1(bh) + '"') + back + feetBack + body + '<g clip-path="url(#' + k + 'c)">' + surf + '</g>' + feet + front + top;
+}
+
 /* size: chiều rộng (px) */
 TL.owlStage = function (size) {
-  defs(); const w = S().owl.wear || []; const id = 'os' + (++n);
-  let h = '';
-  // tai, đuôi phía sau
-  h += L(-16, '<path d="M24 30 L32 6 L48 24 Z M96 30 L88 6 L72 24 Z" fill="#4C2FD0"/><path d="M48 104q12 10 24 0z" fill="#4C2FD0"/>');
-  // các lát thân: phía sau nhỏ và sẫm hơn để thành khối tròn
-  [[-14, .8, '#4A2CC8'], [-10, .9, '#5233D6'], [-6, .96, '#5B3BE0'], [-2, .99, '#6646EA']].forEach(([z, k, c]) => {
-    h += L(z, '<ellipse cx="60" cy="64" rx="' + 40 * k + '" ry="' + 44 * k + '" fill="' + c + '"/>');
-  });
-  h += L(-4, '<path d="M24 30 L32 6 L48 24 Z M96 30 L88 6 L72 24 Z" fill="url(#og-w)"/>');
-  h += L(2, '<ellipse cx="60" cy="64" rx="40" ry="44" fill="url(#og-b)"/><ellipse cx="46" cy="34" rx="14" ry="7" fill="#fff" opacity=".28" transform="rotate(-20 46 34)"/>');
-  h += L(5, '<ellipse cx="50" cy="105" rx="7" ry="4" fill="url(#og-k)"/><ellipse cx="70" cy="105" rx="7" ry="4" fill="url(#og-k)"/>');
-  h += L(8, '<ellipse cx="60" cy="80" rx="26" ry="25" fill="url(#og-y)"/><path d="M50 74q5 3 10 0q5 3 10 0M48 84q6 3 12 0q6 3 12 0" stroke="#C7B8FF" stroke-width="2" fill="none" stroke-linecap="round"/>');
-  h += L(11, '<ellipse cx="30" cy="62" rx="6" ry="3.5" fill="#FF8FB1" opacity=".6"/><ellipse cx="90" cy="62" rx="6" ry="3.5" fill="#FF8FB1" opacity=".6"/>');
-  h += L(13, '<g class="o-blink"><circle cx="42" cy="47" r="16" fill="url(#og-e)" stroke="#6E4FF0" stroke-width="2"/><circle cx="78" cy="47" r="16" fill="url(#og-e)" stroke="#6E4FF0" stroke-width="2"/></g>');
-  h += L(17, '<g class="o-blink"><g class="o-pupil"><circle cx="42" cy="47" r="8" fill="url(#og-p)"/><circle cx="78" cy="47" r="8" fill="url(#og-p)"/><circle cx="45" cy="43.5" r="3" fill="#fff"/><circle cx="81" cy="43.5" r="3" fill="#fff"/></g></g>');
-  h += L(15, '<path class="o-mouth" d="M50 84q10 8 20 0" stroke="#5B3FD9" stroke-width="3" fill="none" stroke-linecap="round"/>');
-  h += L(20, '<path d="M54 58 L66 58 L60 69 Z" fill="url(#og-k)" stroke="#D98200" stroke-width="1"/>');
-  let acc = '';
-  if (w.includes('kinh')) acc += '<g fill="none" stroke="#1D2939" stroke-width="3"><circle cx="42" cy="47" r="16"/><circle cx="78" cy="47" r="16"/><path d="M58 47h4"/></g>';
-  if (w.includes('khan')) acc += '<path d="M30 92q30 14 60 0l-4 8q-26 10-52 0z" fill="#E03131"/><path d="M78 98l8 14 6-4-6-12z" fill="#C92A2A"/>';
-  if (w.includes('no')) acc += '<path d="M84 18l10-8 2 12zM84 18l-4 12 12-2z" fill="#F06595"/><circle cx="86" cy="18" r="4" fill="#E64980"/>';
-  if (w.includes('mu')) acc += '<path d="M30 22l30-12 30 12-30 12z" fill="#1D2939"/><path d="M84 24v14" stroke="#F2B200" stroke-width="3"/>';
-  if (w.includes('vuongmien')) acc += '<path d="M38 22l8-14 7 10 7-12 7 12 7-10 8 14z" fill="#F2B200" stroke="#B8860B" stroke-width="2"/>';
-  if (w.includes('sach')) acc += '<rect x="70" y="84" width="26" height="18" rx="2" fill="#12B886" transform="rotate(-12 83 93)"/>';
-  if (acc) h += L(22, acc);
-  // hai cánh: xoay quanh vai
-  h += '<div class="ow owL" style="transform:translateZ(calc(var(--u) * 0))"><svg viewBox="0 0 120 120" width="100%" height="100%"><path d="M24 58c-12 10-12 30 2 40c4-12 6-26-2-40z" fill="url(#og-w)"/></svg></div>';
-  h += '<div class="ow owR" style="transform:translateZ(calc(var(--u) * 0))"><svg viewBox="0 0 120 120" width="100%" height="100%"><path d="M96 58c12 10 12 30-2 40c-4-12-6-26 2-40z" fill="url(#og-w)"/></svg></div>';
-  return '<div class="owlstage" id="' + id + '" style="--s:' + size + 'px;--u:' + (size / 120).toFixed(3) + 'px" role="button" tabindex="0" aria-label="Cú Bon. Bấm để Cú Bon nhảy múa, kéo để xoay Cú Bon.">' +
-    '<div class="owlsay" hidden></div><div class="owlshadow"></div><div class="owlbob"><div class="owlrig">' + h + '</div></div></div>';
+  const id = 'os' + (++n);
+  return '<div class="owlstage" id="' + id + '" style="--s:' + size + 'px" role="button" tabindex="0" aria-label="Cú Bon. Bấm để Cú Bon nhảy múa, kéo để xoay Cú Bon.">' +
+    '<div class="owlsay" hidden></div><div class="owlshadow"></div><div class="owlbob"><svg class="owl25" viewBox="-6 -8 132 132" width="100%" height="100%" aria-hidden="true"></svg></div></div>';
 };
 
 /* lời Cú Bon nói khi con bấm */
@@ -2666,9 +2743,11 @@ TL.owlSay = function (stage, text, speak) {
   clearTimeout(b._t); b._t = setTimeout(() => { b.hidden = true; }, Math.max(2600, text.length * 90));
   if (speak) TL.speak(text, 'vi', { quiet: true });
 };
-const ACTS = ['dance', 'spin', 'wave', 'hop', 'dance', 'flip'];
+const ACTS = ['dance', 'spin', 'wave', 'hop', 'dance', 'spin'];
 function act(stage, kind) {
-  stage.classList.remove('dance', 'spin', 'wave', 'hop', 'oops', 'cheer', 'flip'); void stage.offsetWidth; stage.classList.add(kind);
+  if (!stage) return;
+  stage.classList.remove('dance', 'spin', 'wave', 'hop', 'oops', 'cheer'); void stage.offsetWidth; stage.classList.add(kind);
+  if ((kind === 'spin' || kind === 'cheer') && stage._o) { const o = stage._o; o.tween = { from: o.yaw, to: o.yaw + (kind === 'spin' ? 720 : 360), t0: performance.now(), dur: kind === 'spin' ? 1500 : 1700 }; }
   clearTimeout(stage._a); stage._a = setTimeout(() => stage.classList.remove(kind), kind === 'hop' ? 650 : kind === 'oops' ? 700 : 1900);
 }
 TL.owlStageAct = act;
@@ -2676,35 +2755,50 @@ function tap(stage) {
   const k = TL.pick(ACTS); act(stage, k); if (S().settings.sound && TL.sfx && TL.sfx.star) try { TL.sfx.star(); } catch (e) { }
   TL.owlSay(stage, TL.pick(lines()), true);
 }
+const ease = x => x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+/* vòng vẽ: chỉ chạy khi Cú Bon còn trên trang */
+function loop(stage) {
+  const o = stage._o; if (!stage.isConnected) { o.run = false; return; }
+  const now = performance.now();
+  if (o.tween) { const p = Math.min(1, (now - o.tween.t0) / o.tween.dur); o.yaw = o.tween.from + (o.tween.to - o.tween.from) * ease(p); if (p >= 1) { o.yaw = o.tween.to % 360; o.tween = null; } }
+  else if (!o.down && !o.hold && !TL.calm()) { // tự lắc nhẹ, rồi quay dần về hướng chính diện
+    const target = Math.sin(now / 1400) * 16; let d = ((o.yaw - target) % 360 + 540) % 360 - 180; o.yaw = target + d * .9;
+    o.pitch *= .9;
+  }
+  render(stage);
+  requestAnimationFrame(() => loop(stage));
+}
 /* kéo để xoay */
 function bind(stage) {
   if (stage._bound) return; stage._bound = true;
-  const rig = stage.querySelector('.owlrig'); let rx = 0, ry = 0, sx = 0, sy = 0, moved = 0, down = false, spunSaid = false, back = null, total = 0;
-  const apply = () => { rig.style.transform = 'rotateX(' + rx + 'deg) rotateY(' + ry + 'deg)'; };
-  stage.addEventListener('pointerdown', e => { down = true; moved = 0; sx = e.clientX; sy = e.clientY; total = 0; rig.style.transition = 'none'; clearTimeout(back); try { stage.setPointerCapture(e.pointerId); } catch (x) { } });
+  stage._svg = stage.querySelector('svg.owl25');
+  stage._o = { k: stage.id + 'g', yaw: 0, pitch: 0, px: 0, py: 0, down: false, hold: false, run: true };
+  const o = stage._o; let sx = 0, sy = 0, moved = 0, spunSaid = false, total = 0, holdT = null;
+  stage.addEventListener('pointerdown', e => { o.down = true; o.tween = null; moved = 0; sx = e.clientX; sy = e.clientY; total = 0; clearTimeout(holdT); try { stage.setPointerCapture(e.pointerId); } catch (x) { } });
   stage.addEventListener('pointermove', e => {
-    if (!down) return; const dx = e.clientX - sx, dy = e.clientY - sy; sx = e.clientX; sy = e.clientY; moved += Math.abs(dx) + Math.abs(dy);
-    ry += dx * .9; total += dx * .9; rx = Math.max(-35, Math.min(35, rx - dy * .5)); apply();
+    if (!o.down) return; const dx = e.clientX - sx, dy = e.clientY - sy; sx = e.clientX; sy = e.clientY; moved += Math.abs(dx) + Math.abs(dy);
+    o.yaw += dx * .9; total += dx * .9; o.pitch = Math.max(-30, Math.min(30, o.pitch - dy * .5));
     if (!spunSaid && Math.abs(total) > 600) { spunSaid = true; TL.owlSay(stage, 'Ối, Cú Bon chóng mặt quá! Hi hi.', true); }
   });
   const up = () => {
-    if (!down) return; down = false;
+    if (!o.down) return; o.down = false;
     if (moved < 8) { tap(stage); return; }
-    back = setTimeout(() => { rig.style.transition = 'transform 1.2s cubic-bezier(.3,1.4,.5,1)'; ry = Math.round(ry / 360) * 360; rx = 0; apply(); spunSaid = false; back = setTimeout(() => { rig.style.transition = ''; rig.style.transform = ''; ry = 0; }, 1300); }, 2200);
+    o.hold = true; holdT = setTimeout(() => { o.hold = false; spunSaid = false; }, 1800); // giữ nguyên hướng một lúc rồi mới quay về
   };
   stage.addEventListener('pointerup', up); stage.addEventListener('pointercancel', up);
-  stage.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tap(stage); } if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { ry += e.key === 'ArrowLeft' ? -30 : 30; rig.style.transition = 'transform .3s'; apply(); } });
+  stage.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tap(stage); } if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { o.tween = { from: o.yaw, to: o.yaw + (e.key === 'ArrowLeft' ? -45 : 45), t0: performance.now(), dur: 300 }; } });
   stage.addEventListener('pointerenter', e => {
     if (e.pointerType !== 'mouse') return; act(stage, 'hop');
     if (Date.now() - lastSay > 20000) { lastSay = Date.now(); TL.owlSay(stage, 'Chào ' + TL.kid() + '! Bấm vào Cú Bon đi, hoặc kéo Cú Bon xoay vòng nhé.', false); }
   });
+  render(stage); requestAnimationFrame(() => loop(stage));
 }
 /* mắt nhìn theo con trỏ */
 document.addEventListener('pointermove', e => {
   document.querySelectorAll('.owlstage').forEach(st => {
-    const r = st.getBoundingClientRect(); const cx = r.left + r.width / 2, cy = r.top + r.height * .4;
-    const dx = e.clientX - cx, dy = e.clientY - cy, d = Math.hypot(dx, dy) || 1, m = Math.min(1, d / 300) * 3.2;
-    st.style.setProperty('--px', (dx / d * m).toFixed(2) + 'px'); st.style.setProperty('--py', (dy / d * m).toFixed(2) + 'px');
+    if (!st._o) return; const r = st.getBoundingClientRect(); const cx = r.left + r.width / 2, cy = r.top + r.height * .35;
+    const dx = e.clientX - cx, dy = e.clientY - cy, d = Math.hypot(dx, dy) || 1, m = Math.min(1, d / 300) * 4.5;
+    st._o.px = dx / d * m; st._o.py = dy / d * m;
   });
 }, { passive: true });
 /* gắn sự kiện cho mọi Cú Bon mới xuất hiện; Cú Bon nhỏ (hình phẳng) cũng biết nhảy khi được bấm hoặc di chuột vào */
@@ -2798,9 +2892,10 @@ document.addEventListener('click', e => {
 
 /* ---------- định tuyến ---------- */
 TL.go = function (name, params = {}) {
+  if (!['checkin', 'parent', 'boot'].includes(name) && TL.needCheckin && TL.needCheckin()) { name = 'checkin'; params = {}; } // mỗi ngày phải trò chuyện với Cú Bon trước khi học
   if (TL.speechStop) TL.speechStop();
   try { speechSynthesis.cancel(); } catch (e) { }
-  screen = Object.assign({ name }, params);
+  screen = Object.assign({ name }, params); document.body.classList.toggle('in-ck', name === 'checkin' || name === 'boot');
   if (LEARN.includes(name) && overLimit() && !TL.extraOK) return showLimit();
   window.scrollTo(0, 0);
   const fn = SCREENS[name] || SCREENS.home; main().innerHTML = ''; fn(main(), params); TL.refreshTop(); if (TL.chatRefresh) TL.chatRefresh();
@@ -3524,7 +3619,7 @@ P.data = function (b) {
     (pts.length ? '<div class="tablewrap"><table><tr><th>Thời điểm</th><th>Điểm quay lại</th><th>Tiến độ lúc đó</th><th></th></tr>' + pts.map(p => { let d = {}; try { d = JSON.parse(p.data) || {}; } catch (e) { } return '<tr><td>' + new Date(p.t).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }) + '</td><td>' + esc(p.label) + '</td><td>' + (d.xp || 0) + ' XP, ' + (d.stars || 0) + ' sao, ' + Object.keys(d.lessons || {}).length + ' bài</td><td><button class="btn small ghost" data-back="' + p.t + '">Quay lại</button></td></tr>'; }).join('') + '</table></div>' : empty('Chưa có điểm quay lại nào trên máy này.')) + '</div>' +
     '<div class="grid2"><div class="card"><h2>Sao lưu và khôi phục</h2><p class="muted small" style="margin:6px 0">' + (TL.gas ? 'Tiến độ lưu trong trình duyệt và tự đồng bộ lên máy chủ Apps Script của bố mẹ, nên con đổi máy vẫn học tiếp được. ' + (TL.syncInfo ? TL.syncInfo() : '') + ' Vẫn nên tải tệp sao lưu mỗi tháng.' : 'Tiến độ lưu trong trình duyệt của máy này. Nên sao lưu mỗi tuần, và trước khi xoá dữ liệu trình duyệt hoặc đổi máy.') + '</p><div class="row"><button class="btn" data-exp>Tải tệp sao lưu</button><button class="btn ghost" data-show>Hiện mã sao lưu</button></div><textarea id="bk" class="write" rows="4" style="margin-top:8px;font-size:.8rem" hidden readonly></textarea>' +
     '<h3 style="margin-top:14px">Khôi phục từ tệp</h3><input type="file" id="imp" accept=".json,application/json"><p class="small muted">Khôi phục sẽ thay toàn bộ dữ liệu hiện tại.</p></div>' +
-    '<div class="card"><h2>Cài đặt</h2><div class="col"><label class="row"><input type="checkbox" id="st-sound"' + (s.settings.sound ? ' checked' : '') + '> Âm thanh hiệu ứng</label><label class="row"><input type="checkbox" id="st-voice"' + (s.settings.voice ? ' checked' : '') + '> Giọng đọc</label><label class="row"><input type="checkbox" id="st-calm"' + (s.settings.calm ? ' checked' : '') + '> Giảm hiệu ứng chuyển động (Cú Bon đứng yên)</label><label class="row"><input type="checkbox" id="st-diaryai"' + (s.settings.diaryAI !== false ? ' checked' : '') + '> Cú Bon dùng AI khi con tâm sự (tắt thì Cú Bon trả lời theo câu soạn sẵn, nội dung không gửi ra ngoài)</label>' +
+    '<div class="card"><h2>Cài đặt</h2><div class="col"><label class="row"><input type="checkbox" id="st-sound"' + (s.settings.sound ? ' checked' : '') + '> Âm thanh hiệu ứng</label><label class="row"><input type="checkbox" id="st-voice"' + (s.settings.voice ? ' checked' : '') + '> Giọng đọc</label><label class="row"><input type="checkbox" id="st-calm"' + (s.settings.calm ? ' checked' : '') + '> Giảm hiệu ứng chuyển động (Cú Bon đứng yên)</label><label class="row"><input type="checkbox" id="st-ckreq"' + (s.settings.checkinRequired !== false ? ' checked' : '') + '> Bắt buộc con trò chuyện với Cú Bon (bằng giọng nói) trước khi học mỗi ngày</label><label class="row"><input type="checkbox" id="st-diaryai"' + (s.settings.diaryAI !== false ? ' checked' : '') + '> Cú Bon dùng AI khi con tâm sự (tắt thì Cú Bon trả lời theo câu soạn sẵn, nội dung không gửi ra ngoài)</label>' +
     '<div class="field">Tốc độ đọc<input type="range" id="st-rate" min="0.6" max="1.2" step="0.05" value="' + s.settings.rate + '"></div><p class="small muted">' + (TL.viVoice ? 'Giọng tiếng Việt: ' + esc(TL.viVoice.name) : 'Máy chưa có giọng tiếng Việt. Xem mục Hướng dẫn.') + '</p>' +
     '<div class="field">Tên gọi của con<input id="st-kid" maxlength="30" value="' + esc(s.settings.kidName || window.TL_KID || '') + '" style="padding:10px;border-radius:12px;border:2px solid var(--line);background:var(--surface)"></div>' +
     '<div class="field">Giao diện<select id="st-theme"><option value="light"' + (theme !== 'dark' ? ' selected' : '') + '>Sáng, tươi vui (khuyên dùng)</option><option value="dark"' + (theme === 'dark' ? ' selected' : '') + '>Tối (dùng buổi tối, khi cần dịu mắt)</select></div>' +
@@ -3544,6 +3639,7 @@ P.data = function (b) {
   $('#st-sound', b).onchange = e => { s.settings.sound = e.target.checked; TL.save(); };
   $('#st-voice', b).onchange = e => { s.settings.voice = e.target.checked; TL.save(); };
   $('#st-calm', b).onchange = e => { s.settings.calm = e.target.checked; document.documentElement.classList.toggle('calm', s.settings.calm); TL.save(); };
+  $('#st-ckreq', b).onchange = e => { s.settings.checkinRequired = e.target.checked; TL.save(); };
   $('#st-diaryai', b).onchange = e => { s.settings.diaryAI = e.target.checked; TL.save(); };
   $('#st-kid', b).onchange = e => { s.settings.kidName = e.target.value.trim(); TL.save(); TL.toast('Đã lưu tên gọi của con.'); };
   $('#st-rate', b).onchange = e => { s.settings.rate = +e.target.value; TL.save(); TL.speak('Xin chào ' + TL.kid() + ''); };
@@ -3676,88 +3772,136 @@ const useAI = async () => S().settings.diaryAI !== false && (await TL.AI.ready);
 
 /* ---------- màn hình trò chuyện ---------- */
 let busy = false, rec = null, listening = false;
+/* Bắt buộc mỗi ngày: chưa trò chuyện xong thì mọi màn hình học đều đưa về màn hình trò chuyện (bố mẹ tắt được trong Khu phụ huynh) */
+TL.needCheckin = function () {
+  if (S().settings.checkinRequired === false) return false;
+  if (TL.trialOn && TL.trialOn()) return false;
+  const e = entry(false); return !(e && e.done);
+};
+/* nhận ra cảm xúc trong câu con nói */
+const MOOD_WORDS = [['ratvui', ['rat vui', 'vui lam', 'vui qua', 'sieu vui', 'hanh phuc', 'tuyet voi']], ['buon', ['buon', 'khoc', 'tui than']], ['lo', ['lo lang', 'lo qua', 'so', 'hoi hop', 'cang thang']],
+  ['buc', ['buc', 'tuc', 'gian', 'cau']], ['met', ['met', 'buon ngu', 'uể oải', 'ue oai', 'đuối', 'duoi']], ['vui', ['vui', 'thich', 'hay', 'tot']], ['binhthuong', ['binh thuong', 'thuong thuong', 'tam tam', 'cung duoc']]];
+function moodOf(text) { const t = ' ' + plainVi(text).replace(/[^a-z0-9]+/g, ' ') + ' '; for (const [id, ws] of MOOD_WORDS) if (ws.some(w => t.includes(' ' + plainVi(w) + ' '))) return id; return null; }
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const micBlocked = () => { try { return !!(document.featurePolicy && !document.featurePolicy.allowsFeature('microphone')); } catch (e) { return false; } };
 TL.SCREENS.checkin = function (m) {
-  const e = entry(true);
+  const e = entry(true); const voiceOK = !!SR && !micBlocked();
   const hr = TL.nowDate().getHours(), mi = TL.nowDate().getMinutes(); const late = hr >= 23 || (hr === 22 && mi >= 30) || hr < 5;
+  let silent = 0, auto = false, started = false, sayId = 0;
   m.innerHTML = '<div class="checkin col" style="gap:16px">' +
-    '<div class="row"><button class="btn small ghost" data-go="home">Về trang chủ</button><span class="eyebrow">Trò chuyện với Cú Bon</span></div>' +
-    '<section class="ck-hero"><div class="ck-owl">' + TL.owlStage(170) + '</div><div class="col" style="gap:10px;flex:1;min-width:240px"><h1>Hôm nay ' + esc(TL.kid()) + ' thấy thế nào?</h1>' +
-    (late ? '<div class="note">Đã muộn rồi. Mình nói chuyện ngắn thôi rồi con đi ngủ sớm để mai đến lớp thật khoẻ nhé.</div>' : '') +
-    '<div class="ck-moods">' + MOODS.map(md => '<button class="ck-mood' + (e.mood === md.id ? ' on' : '') + '" data-mood="' + md.id + '">' + face(md, 58) + '<span>' + md.name + '</span></button>').join('') + '</div></div></section>' +
-    '<section class="card ck-chat" ' + (e.mood ? '' : 'hidden') + '><div class="msgs" id="ck-msgs" aria-live="polite"></div>' +
-    '<div class="ck-chips">' + CHIPS.map(c => '<button class="chip" data-chip="' + esc(c) + '">' + esc(c) + '</button>').join('') + '</div>' +
-    '<div class="row ck-input"><button class="micbtn" id="ck-mic" title="Bấm rồi nói" aria-label="Nói với Cú Bon"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg></button>' +
-    '<input id="ck-in" placeholder="Con gõ hoặc bấm micro để kể..." autocomplete="off"><button class="btn" id="ck-send">Gửi</button></div><p class="small muted" id="ck-status"></p>' +
-    '<div class="row" style="margin-top:8px"><button class="btn ok big" id="ck-done">' + (e.done ? 'Vào học thôi' : 'Con kể xong rồi') + '</button></div></section></div>';
-  const msgs = $('#ck-msgs', m), chat = $('.ck-chat', m), stage = $('.owlstage', m);
+    '<section class="ck-hero ck-voice"><div class="ck-owl">' + TL.owlStage(190) + '</div><div class="col" style="gap:12px;flex:1;min-width:260px">' +
+    '<span class="eyebrow">Trò chuyện với Cú Bon' + (e.done ? '' : ' trước khi học') + '</span>' +
+    '<div class="ck-caption" id="ck-cap" aria-live="polite">' + esc(e.done ? 'Hôm nay con đã kể cho Cú Bon nghe rồi. Cảm ơn con!' : 'Chào ' + TL.kid() + '! Cú Bon nhớ con quá. Con chạm vào nút bên dưới để mình nói chuyện nhé.') + '</div>' +
+    (late ? '<div class="note">Đã muộn rồi. Mình nói chuyện ngắn thôi rồi con học nhanh và đi ngủ sớm nhé.</div>' : '') +
+    '<div class="row ck-ctl">' +
+    (e.done ? '<button class="btn big ok" id="ck-go">Vào học thôi</button>' :
+      '<button class="btn big ok" id="ck-start">' + (e.turns.length ? 'Nói chuyện tiếp với Cú Bon' : 'Bắt đầu nói chuyện') + '</button>' +
+      '<button class="ck-mic" id="ck-mic" hidden aria-label="Bấm để nói"><svg width="42" height="42" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg></button>' +
+      '<div class="col" style="gap:4px"><b id="ck-st" class="ck-st"></b><button class="linkbtn small" id="ck-rep" hidden>Cú Bon nói lại</button></div>') + '</div>' +
+    '<div class="ck-moods small-moods" title="Con cũng có thể chạm vào khuôn mặt">' + MOODS.map(md => '<button class="ck-mood' + (e.mood === md.id ? ' on' : '') + '" data-mood="' + md.id + '">' + face(md, 40) + '<span>' + md.name + '</span></button>').join('') + '</div>' +
+    '</div></section>' +
+    '<section class="card ck-chat"><div class="row"><span class="eyebrow">Cuộc trò chuyện hôm nay</span><div class="spacer"></div>' + (e.done ? '' : '<button class="btn ghost small" id="ck-done" disabled>Con kể xong rồi</button>') + '</div>' +
+    '<div class="msgs" id="ck-msgs" aria-live="polite"></div>' +
+    '<p class="howto" id="ck-tip">' + (voiceOK ? '<b>Hướng dẫn làm bài:</b> Cú Bon hỏi xong thì micro tự bật, con nói to, rõ. Nói xong con chờ một chút, Cú Bon sẽ trả lời.' : '<b>Hướng dẫn làm bài:</b> Máy này chưa nghe được giọng nói trực tiếp. Con bấm vào ô bên dưới rồi nói bằng micro trên bàn phím (máy tính bảng, điện thoại), hoặc bấm phím Windows + H trên máy tính.') + '</p>' +
+    '<div class="row ck-input" id="ck-typ"' + (voiceOK ? ' hidden' : '') + '><input id="ck-in" placeholder="Con nói hoặc gõ vào đây..." autocomplete="off"><button class="btn" id="ck-send">Gửi</button></div>' +
+    (voiceOK && !e.done ? '<button class="linkbtn small" id="ck-type">Micro không nghe được? Bấm vào đây để gõ chữ</button>' : '') + '</section></div>';
+  const msgs = $('#ck-msgs', m), stage = $('.owlstage', m), cap = $('#ck-cap', m), st = $('#ck-st', m);
+  const status = t => { if (st) st.textContent = t || ''; };
   const draw = (stream) => {
-    msgs.innerHTML = e.turns.map(t => '<div class="msg ' + (t.r === 'u' ? 'me' : 'bot') + '">' + esc(t.t) + '</div>').join('') + (stream != null ? '<div class="msg bot">' + esc(stream || 'Cú Bon đang nghe...') + '</div>' : '');
+    msgs.innerHTML = e.turns.map(t => '<div class="msg ' + (t.r === 'u' ? 'me' : 'bot') + '">' + esc(t.t) + '</div>').join('') + (stream != null ? '<div class="msg bot">' + esc(stream || 'Cú Bon đang nghĩ...') + '</div>' : '');
     msgs.scrollTop = msgs.scrollHeight;
+    const nU = e.turns.filter(t => t.r === 'u').length; const d = $('#ck-done', m); if (d) { d.disabled = nU < 3; d.classList.toggle('ok', nU >= 3); d.classList.toggle('ghost', nU < 3); }
   };
-  const botSay = (t) => { e.turns.push({ r: 'b', t }); TL.save(); draw(); TL.owlSay(stage, t.length > 120 ? t.slice(0, 117) + '...' : t, false); TL.speak(t, 'vi', { quiet: true }); };
   draw();
-  if (!e.turns.length) setTimeout(() => { TL.owlSay(stage, 'Chào ' + TL.kid() + '! Hôm nay con thấy thế nào? Con chọn một khuôn mặt nhé.', true); TL.owlStageAct(stage, 'wave'); }, 400);
+  if (e.done) { $('#ck-go', m).onclick = () => goLearn(); TL.owlStageAct(stage, 'dance'); return; }
+  /* Cú Bon nói (đọc to), nói xong thì tự bật micro */
+  const say = (t, then) => {
+    cap.textContent = t; TL.owlStageAct(stage, 'wave'); status('Cú Bon đang nói...'); if (stage._o) stage._o.talk = true;
+    let fired = false; const sid = ++sayId;
+    const done = () => { if (fired || sid !== sayId) return; fired = true; status(''); if (stage._o) stage._o.talk = false; if (then) then(); else if (auto && voiceOK) setTimeout(hear, 250); };
+    const ok = TL.speak(t, 'vi', { quiet: true, onend: done });
+    setTimeout(done, ok ? 2500 + t.length * 95 : Math.min(6000, 600 + t.length * 45)); // máy không có giọng đọc hoặc không báo đọc xong
+  };
+  const botSay = (t, then) => { e.turns.push({ r: 'b', t }); TL.save(); draw(); say(t, then); };
+  const micBtn = $('#ck-mic', m);
+  const hear = () => {
+    if (!voiceOK || busy || listening || !m.isConnected) return;
+    try { speechSynthesis.cancel(); } catch (x) { }
+    rec = new SR(); rec.lang = 'vi-VN'; rec.interimResults = true; rec.continuous = false; let fin = '', tmp = '';
+    rec.onresult = ev => { tmp = ''; for (let i = ev.resultIndex; i < ev.results.length; i++) { if (ev.results[i].isFinal) fin += ev.results[i][0].transcript; else tmp += ev.results[i][0].transcript; } status('Con nói: ' + (fin + tmp)); };
+    rec.onerror = ev => {
+      if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') { auto = false; status(''); cap.textContent = 'Máy chưa cho Cú Bon nghe. Bố mẹ bấm biểu tượng ổ khoá trên thanh địa chỉ, chọn Cho phép micro, rồi con bấm nút micro nhé.'; $('#ck-typ', m).hidden = false; }
+    };
+    rec.onend = () => {
+      listening = false; micBtn.classList.remove('on'); const v = fin.trim();
+      if (v) { silent = 0; send(v, true); return; }
+      silent++; status('');
+      if (!m.isConnected) return;
+      if (silent <= 2 && auto) say(silent === 1 ? 'Cú Bon chưa nghe thấy. Con nói to hơn một chút nhé.' : 'Con nói đi, Cú Bon đang nghe đây.');
+      else { auto = false; cap.textContent = 'Khi nào con sẵn sàng thì bấm nút micro màu tím rồi nói nhé.'; }
+    };
+    try { rec.start(); listening = true; micBtn.classList.add('on'); status('Cú Bon đang nghe... con nói đi.'); } catch (x) { listening = false; }
+  };
+  const begin = () => {
+    started = true; auto = true; $('#ck-start', m).hidden = true; micBtn.hidden = !voiceOK; $('#ck-rep', m).hidden = false;
+    if (!e.turns.length) botSay('Chào ' + TL.kid() + '! Hôm nay con thấy thế nào? Con kể Cú Bon nghe nhé.');
+    else { const lastB = [...e.turns].reverse().find(t => t.r === 'b'); say(lastB ? lastB.t : 'Mình nói chuyện tiếp nhé. Con kể tiếp cho Cú Bon nghe đi.'); }
+  };
+  $('#ck-start', m).onclick = begin;
+  stage.addEventListener('click', () => { if (!started) begin(); });
+  micBtn.onclick = () => { if (listening) { try { rec.stop(); } catch (x) { } return; } auto = true; silent = 0; hear(); };
+  $('#ck-rep', m).onclick = () => { const lastB = [...e.turns].reverse().find(t => t.r === 'b'); if (lastB) { auto = true; say(lastB.t); } };
+  const ty = $('#ck-type', m); if (ty) ty.onclick = () => { $('#ck-typ', m).hidden = false; $('#ck-in', m).focus(); ty.hidden = true; };
   $$('[data-mood]', m).forEach(b => b.onclick = () => {
-    const first = !e.mood; e.mood = b.dataset.mood; $$('[data-mood]', m).forEach(x => x.classList.toggle('on', x === b)); chat.hidden = false;
+    e.mood = b.dataset.mood; $$('[data-mood]', m).forEach(x => x.classList.toggle('on', x === b)); TL.save();
     TL.owlStageAct(stage, ['ratvui', 'vui'].includes(e.mood) ? 'dance' : 'hop');
-    if (first) { e.turns.push({ r: 'u', t: 'Con thấy ' + MOODS.find(x => x.id === e.mood).name.toLowerCase() + '.' }); botSay(FIRST[e.mood]); }
-    else TL.save();
-    $('#ck-in', m).focus();
+    if (!started) begin(); else if (!e.turns.some(t => t.r === 'u')) send('Con thấy ' + MOODS.find(x => x.id === e.mood).name.toLowerCase() + '.', false);
   });
   const send = async (text, voice) => {
     text = String(text || '').trim(); if (!text || busy) return;
-    if (!e.mood) { e.mood = 'binhthuong'; chat.hidden = false; }
-    busy = true; e.turns.push({ r: 'u', t: text.slice(0, 600), v: voice ? 1 : 0 }); scan(text).forEach(f => { if (!e.flags.some(x => x.name === f.name)) e.flags.push(f); });
-    e.level = levelOf(e); TL.save(); draw('');
-    const danger = scan(text).some(f => f.k === 'cao'); const nU = e.turns.filter(t => t.r === 'u').length;
+    if (!started) { started = true; auto = voiceOK; $('#ck-start', m).hidden = true; micBtn.hidden = !voiceOK; $('#ck-rep', m).hidden = false; }
+    busy = true; e.turns.push({ r: 'u', t: text.slice(0, 600), v: voice ? 1 : 0 });
+    if (!e.mood) { const md = moodOf(text); if (md) { e.mood = md; $$('[data-mood]', m).forEach(x => x.classList.toggle('on', x.dataset.mood === md)); } }
+    scan(text).forEach(f => { if (!e.flags.some(x => x.name === f.name)) e.flags.push(f); });
+    e.level = levelOf(e); TL.save(); draw(''); status('Cú Bon đang nghĩ...'); TL.owlStageAct(stage, 'hop');
+    const flags = scan(text); const danger = flags.some(f => f.k === 'cao'); const care = flags.map(f => CARE[f.name]).find(Boolean); const nU = e.turns.filter(t => t.r === 'u').length;
     let reply = '';
     if (await useAI()) {
       const hist = e.turns.slice(-14).map(t => ({ role: t.r === 'u' ? 'user' : 'assistant', content: t.t }));
       while (hist.length && hist[0].role !== 'user') hist.shift();
-      if (hist.length) hist[0] = { role: 'user', content: rules() + '\n\n[Bé chọn cảm xúc hôm nay: ' + MOODS.find(x => x.id === e.mood).name + '. Bé đã kể ' + nU + ' lượt.]\n' + hist[0].content };
+      const md = MOODS.find(x => x.id === e.mood);
+      if (hist.length) hist[0] = { role: 'user', content: rules() + '\n\n[Cảm xúc bé chọn: ' + (md ? md.name : 'chưa rõ') + '. Bé đã kể ' + nU + ' lượt' + (nU >= 4 ? '; đây là lượt cuối: hãy cảm ơn, động viên và mời bé vào học, không hỏi thêm' : '') + '. Bé đang nói bằng giọng nói nên câu có thể thiếu dấu hoặc sai chính tả.]\n' + hist[0].content };
       const merged = []; hist.forEach(t => { const p = merged[merged.length - 1]; if (p && p.role === t.role) p.content += '\n' + t.content; else merged.push(Object.assign({}, t)); });
       try { reply = (await TL.AI.chat(merged, t => draw(t))).trim(); } catch (err) { reply = ''; }
     }
-    const care = scan(text).map(f => CARE[f.name]).find(Boolean);
-    if (!reply) reply = danger ? SAFE : care ? care : nU >= 4 ? CLOSE[e.mood] : NEXT[(nU - 2 + NEXT.length) % NEXT.length];
     if (reply && !/[.?!…]["”)]?\s*$/.test(reply)) { const cut = reply.search(/[.?!…][^.?!…]*$/); reply = cut > 0 ? reply.slice(0, cut + 1) : ''; } // câu bị cắt dở thì bỏ phần dở
-    if (!reply) reply = danger ? SAFE : care ? care : nU >= 4 ? CLOSE[e.mood] : NEXT[(nU - 2 + NEXT.length) % NEXT.length];
+    if (!reply) reply = danger ? SAFE : care ? care : nU >= 4 ? CLOSE[e.mood || 'binhthuong'] : (nU === 1 && e.mood ? FIRST[e.mood] : NEXT[(nU - 2 + NEXT.length) % NEXT.length]);
     if (danger && !/bố mẹ|cô giáo/.test(reply)) reply += ' ' + SAFE;
     else if (care && !/bố mẹ|cô giáo/.test(reply)) reply += ' Con kể với bố mẹ nữa nhé, bố mẹ luôn thương con.';
-    busy = false; botSay(reply);
-    if (nU >= 4) $('#ck-done', m).classList.add('pulse');
+    busy = false; status('');
+    if (nU >= 4) botSay(reply, () => finish(m, e, stage)); else botSay(reply);
   };
-  $('#ck-send', m).onclick = () => { const i = $('#ck-in', m); send(i.value); i.value = ''; };
+  $('#ck-send', m).onclick = () => { const i = $('#ck-in', m); send(i.value, false); i.value = ''; };
   $('#ck-in', m).onkeydown = ev => { if (ev.key === 'Enter') { ev.preventDefault(); $('#ck-send', m).click(); } };
-  $$('[data-chip]', m).forEach(c => c.onclick = () => send(c.dataset.chip));
-  $('#ck-mic', m).onclick = () => listen(m, t => send(t, true));
-  $('#ck-done', m).onclick = () => finish(m, e, stage);
+  const dn = $('#ck-done', m); if (dn) dn.onclick = () => { auto = false; try { rec && rec.abort(); } catch (x) { } finish(m, e, stage); };
 };
-function listen(m, cb) {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition; const st = $('#ck-status', m);
-  let blocked = false; try { blocked = document.featurePolicy && !document.featurePolicy.allowsFeature('microphone'); } catch (e) { }
-  if (blocked || !SR) { st.textContent = 'Con nói bằng bàn phím nhé: máy tính bảng, điện thoại bấm nút micro trên bàn phím; máy tính Windows bấm phím Windows + H.'; $('#ck-in', m).focus(); return; }
-  if (listening) { try { rec.stop(); } catch (e) { } return; }
-  try { speechSynthesis.cancel(); } catch (e) { }
-  rec = new SR(); rec.lang = 'vi-VN'; rec.interimResults = true; let fin = '';
-  rec.onresult = ev => { let tmp = ''; for (let i = ev.resultIndex; i < ev.results.length; i++) { if (ev.results[i].isFinal) fin += ev.results[i][0].transcript; else tmp += ev.results[i][0].transcript; } $('#ck-in', m).value = fin + tmp; };
-  rec.onerror = ev => { st.textContent = ev.error === 'not-allowed' ? 'Máy chưa cho dùng micro. Bố mẹ bấm biểu tượng ổ khoá trên thanh địa chỉ, chọn Cho phép micro.' : ev.error === 'no-speech' ? 'Cú Bon chưa nghe thấy. Con bấm micro và nói lại nhé.' : ''; };
-  rec.onend = () => { listening = false; $('#ck-mic', m).classList.remove('on'); st.textContent = ''; const v = fin.trim(); if (v) { $('#ck-in', m).value = ''; cb(v); } };
-  try { rec.start(); listening = true; $('#ck-mic', m).classList.add('on'); st.textContent = 'Cú Bon đang nghe... Con nói đi.'; } catch (e) { }
+function goLearn() {
+  const p = TL.ensurePlan();
+  if (!p.allDone) { if (!p.running) { p.running = true; p.paused = false; } const seg = p.segs[p.idx]; if (seg && seg.kind === 'talk') TL.planAdvance(); TL.save(); }
+  TL.go('home');
 }
-async function finish(m, e, stage) {
-  if (!e.done) {
-    e.done = true; e.end = Date.now();
-    const said = e.turns.filter(t => t.r === 'u').length;
-    if (said >= 1) { const close = CLOSE[e.mood || 'binhthuong'] || CLOSE.binhthuong; if (!e.turns.length || e.turns[e.turns.length - 1].t !== close) e.turns.push({ r: 'b', t: close }); TL.owlSay(stage, close, true); }
-    TL.addXP(5); TL.owlStageAct(stage, 'cheer'); e.level = levelOf(e); TL.save();
-    summarize(e);
-    const p = TL.ensurePlan(); const seg = p.segs[p.idx];
-    if (p.running && seg && seg.kind === 'talk') setTimeout(() => TL.planAdvance(), 200);
-    setTimeout(() => TL.go('home'), said >= 1 ? 3800 : 300);
-  } else {
-    const p = TL.ensurePlan(); const seg = p.segs[p.idx]; if (p.running && seg && seg.kind === 'talk') TL.planAdvance(); TL.go('home');
-  }
+function finish(m, e, stage) {
+  if (e.done) return goLearn();
+  e.done = true; e.end = Date.now();
+  if (!e.mood) e.mood = 'binhthuong';
+  TL.addXP(5); TL.owlStageAct(stage, 'cheer'); e.level = levelOf(e); TL.save();
+  summarize(e);
+  const t = 'Cảm ơn ' + TL.kid() + ' đã kể cho Cú Bon nghe. Giờ mình vào học nhé!';
+  const cap = $('#ck-cap', m); if (cap) cap.textContent = t;
+  const go = () => { if (TL.screen().name === 'checkin') goLearn(); };
+  const lastB = e.turns[e.turns.length - 1];
+  if (lastB && lastB.r === 'b' && /học/.test(lastB.t)) setTimeout(go, 900);
+  else { const ok = TL.speak(t, 'vi', { quiet: true, onend: () => setTimeout(go, 400) }); if (!ok) setTimeout(go, 2500); }
 }
 /* tóm tắt cho bố mẹ (AI), chạy nền */
 async function summarize(e) {
@@ -3765,12 +3909,12 @@ async function summarize(e) {
   const said = e.turns.filter(t => t.r === 'u').map(t => t.t).join(' | ');
   if (said.length < 6) return;
   const prompt = 'Bạn là chuyên gia tâm lý trẻ em, viết cho bố mẹ của bé ' + TL.kid() + ' (lớp 3). Dưới đây là cuộc trò chuyện buổi tối giữa bé và nhân vật Cú Bon trong ứng dụng học. Chỉ dựa vào lời bé, không suy đoán thêm; nếu bé kể ít thì nói rõ.\n' +
-    'Trả về đúng một đối tượng JSON, không thêm chữ nào khác, các khoá: "tom_tat" (2-3 câu), "cam_xuc" (vài từ), "dieu_vui" (chuỗi, có thể rỗng), "dieu_lo" (chuỗi, có thể rỗng), "muc" ("on" nếu bình thường, "chu_y" nếu có chuyện buồn, lo, bạn bè, thầy cô cần bố mẹ hỏi thêm, "cao" nếu có dấu hiệu bị bạo lực, bắt nạt nặng, bị đụng chạm, bị dọa, hoặc ý nghĩ làm hại bản thân), "goi_y" (1-2 câu gợi ý cách bố mẹ mở lời với con, nhẹ nhàng, không tra hỏi).\n' +
+    'Trả về đúng một đối tượng JSON, không thêm chữ nào khác, các khoá: "tom_tat" (2-3 câu), "cam_xuc" (vài từ), "dieu_vui" (chuỗi, có thể rỗng), "dieu_lo" (chuỗi, có thể rỗng), "muc" ("on" nếu bình thường, "chu_y" nếu có chuyện buồn, lo, bạn bè, thầy cô cần bố mẹ hỏi thêm, "cao" nếu có dấu hiệu bị bạo lực, bắt nạt nặng, bị đụng chạm, bị dọa, hoặc ý nghĩ làm hại bản thân), "goi_y" (1-2 câu gợi ý cách bố mẹ mở lời với con, nhẹ nhàng, không tra hỏi), "tam_trang" (một trong: ratvui, vui, binhthuong, met, buon, lo, buc).\n' +
     'Cảm xúc bé chọn: ' + ((MOODS.find(x => x.id === e.mood) || {}).name || 'chưa chọn') + '.\nCuộc trò chuyện:\n' + e.turns.map(t => (t.r === 'u' ? 'Bé: ' : 'Cú Bon: ') + t.t).join('\n').slice(0, 5000);
   try {
-    const r = await TL.AI.chat([{ role: 'user', content: prompt }]);
+    const r = await TL.AI.ask(prompt, 'default');
     const j = JSON.parse(String(r).replace(/^[^{]*/, '').replace(/[^}]*$/, ''));
-    if (j && j.tom_tat) { e.ai = { tom_tat: String(j.tom_tat), cam_xuc: String(j.cam_xuc || ''), dieu_vui: String(j.dieu_vui || ''), dieu_lo: String(j.dieu_lo || ''), muc: RANK[j.muc] != null ? j.muc : 'on', goi_y: String(j.goi_y || '') }; e.level = levelOf(e); TL.save(); }
+    if (j && j.tom_tat) { e.ai = { tom_tat: String(j.tom_tat), cam_xuc: String(j.cam_xuc || ''), dieu_vui: String(j.dieu_vui || ''), dieu_lo: String(j.dieu_lo || ''), muc: RANK[j.muc] != null ? j.muc : 'on', goi_y: String(j.goi_y || '') }; if (j.tam_trang && MOODS.some(x => x.id === j.tam_trang) && (!e.mood || e.mood === 'binhthuong')) e.mood = j.tam_trang; e.level = levelOf(e); TL.save(); }
   } catch (err) { }
 }
 TL.diarySummarize = summarize;
@@ -4028,7 +4172,7 @@ function adopt(remote) {
   try { localStorage.setItem(TL.KEY, JSON.stringify(TL.S)); } catch (e) { }
   (TL.S.packs || []).forEach(pk => { try { TL.loadPack(pk); } catch (e) { } });
   TL.ensureDaily(); TL.ensureWeekly(); TL.ensurePlan();
-  const sc = TL.screen(); if (sc.name === 'home' || sc.name === 'kingdom') TL.go(sc.name, sc.arg ? { arg: sc.arg } : undefined);
+  const sc = TL.screen(); if (sc.name === 'home' || sc.name === 'kingdom' || sc.name === 'checkin' || sc.name === 'boot') TL.go(sc.name === 'boot' ? 'home' : sc.name, sc.arg ? { arg: sc.arg } : undefined);
   TL.toast('Đã tải tiến độ học mới nhất.');
 }
 /* Quy tắc gộp:
@@ -4057,7 +4201,13 @@ document.documentElement.classList.toggle('calm', TL.calm());
 try { if (localStorage.getItem('tulinh.theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch (e) { }
 (TL.S.packs || []).forEach(pk => { try { TL.loadPack(pk); } catch (e) { console.warn('Gói lỗi', e); } });
 TL.ensureDaily(); TL.ensureWeekly(); TL.ensurePlan();
-TL.go('home');
+/* bản có máy chủ: chờ tải tiến độ (tối đa 5 giây) rồi mới mở, để cuộc trò chuyện với Cú Bon không bị ghi đè khi tải xong */
+if (TL.gas && TL.syncReady) {
+  TL.SCREENS.boot = m => { m.innerHTML = '<div class="col" style="align-items:center;gap:14px;padding:40px 0">' + TL.owlStage(170) + '<h2>Cú Bon đang thức dậy...</h2></div>'; };
+  TL.go('boot');
+  let opened = false; const open = () => { if (opened) return; opened = true; if (TL.screen().name === 'boot') TL.go('home'); };
+  Promise.race([TL.syncReady, new Promise(r => setTimeout(r, 5000))]).then(open, open);
+} else TL.go('home');
 TL.AI.ready.then(() => { if (TL.screen().name === 'parent') TL.go('parent', { arg: 'data' }); });
 addEventListener('beforeunload', () => TL.save());
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') TL.save(); });

@@ -636,6 +636,7 @@ function load(given) {
     if (t && t.min === 4 && gm && gm.min === 6) { t.min = 5; gm.min = 5; if (s.plan && !s.plan.running) s.plan = null; }
     s.settings.planVer = 3;
   }
+  if (s.items && s.items.length > 1500) s.items.splice(0, s.items.length - 1500);
   const ren = x => { if (x && x.name) x.name = x.name.replace('Cú Bon', 'Cú Uyên Bác'); };
   (s.settings.planSegs || []).forEach(ren); if (s.plan && s.plan.segs) s.plan.segs.forEach(ren);
   s.counters = Object.assign(d.counters, s.counters || {});
@@ -661,7 +662,7 @@ function recordAnswer(it, firstTry, attempts, sec) {
   else { s.bad++; if (wasStrong) s.careless++; s.box = Math.max(1, Math.min(s.box, 1)); s.due = addDays(d, 1); s.streakBad++; }
   s.recent.push(firstTry ? 1 : 0); if (s.recent.length > 10) s.recent.shift();
   TL.S.items.push({ d, s: it.skill, ok: firstTry ? 1 : 0, a: attempts, t: Math.round(sec || 0) });
-  if (TL.S.items.length > 4000) TL.S.items.splice(0, TL.S.items.length - 4000);
+  if (TL.S.items.length > 1500) TL.S.items.splice(0, TL.S.items.length - 1500); // giữ gọn để tiến độ đồng bộ lên máy chủ không vượt giới hạn
   return { careless: !firstTry && wasStrong };
 }
 const LEVELS = ['Chưa hiểu', 'Đang học', 'Cần luyện tập', 'Đã nắm vững', 'Cần ôn tập lại'];
@@ -2103,13 +2104,32 @@ TL.speechVi = function (t) {
     .replace(/\(dư (\d+)\)/g, 'dư $1').replace(/[()]/g, ', ')
     .replace(/\d+/g, m => readNum(m));
 };
+/* Đọc to. Câu dài được tách theo dấu câu và đọc nối tiếp từng đoạn: Chrome, Edge hay tự dừng giữa chừng khi đọc một đoạn dài.
+   opt.rate: tốc độ riêng (Cú Uyên Bác nói nhanh hơn giọng đọc bài). opt.onend gọi một lần khi đọc xong hoặc bị dừng. */
+let spkSeq = 0;
 TL.speak = function (text, lang, opt) {
   opt = opt || {};
   if (!TL.S.settings.voice) { if (!opt.quiet) TL.toast('Giọng đọc đang tắt. Phụ huynh bật lại trong Khu phụ huynh.'); return false; }
   const v = lang === 'en' ? TL.enVoice : TL.viVoice;
   if (!('speechSynthesis' in window) || !v) { if (!opt.quiet) TL.toast(lang === 'en' ? 'Máy này chưa có giọng đọc tiếng Anh.' : 'Máy này chưa có giọng đọc tiếng Việt. Xem Hướng dẫn trong Khu phụ huynh để cài.'); return false; }
-  try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance((lang === 'en' ? String(text) : TL.speechVi(text)).replace(/▢|___/g, lang === 'en' ? ' blank ' : ' chỗ trống ')); u.voice = v; u.lang = v.lang; u.rate = lang === 'en' ? Math.max(.7, TL.S.settings.rate) : TL.S.settings.rate; if (opt.onend) { u.onend = opt.onend; u.onerror = opt.onend; } speechSynthesis.speak(u); return true; } catch (e) { return false; }
+  try {
+    speechSynthesis.cancel(); const my = ++spkSeq;
+    const full = (lang === 'en' ? String(text) : TL.speechVi(text)).replace(/▢|___/g, lang === 'en' ? ' blank ' : ' chỗ trống ');
+    const parts = []; full.split(/(?<=[.!?…;:])\s+/).forEach(seg => { while (seg.length > 180) { const cut = seg.lastIndexOf(',', 180) > 60 ? seg.lastIndexOf(',', 180) + 1 : seg.lastIndexOf(' ', 180); parts.push(seg.slice(0, cut)); seg = seg.slice(cut).trim(); } if (seg.trim()) parts.push(seg); });
+    const rate = opt.rate || (lang === 'en' ? Math.max(.7, TL.S.settings.rate) : TL.S.settings.rate);
+    let i = 0, ended = false; const end = () => { if (ended) return; ended = true; if (opt.onend) opt.onend(); };
+    const next = () => {
+      if (my !== spkSeq) return end();
+      if (i >= parts.length) return end();
+      const u = new SpeechSynthesisUtterance(parts[i++]); u.voice = v; u.lang = v.lang; u.rate = rate;
+      u.onend = () => setTimeout(next, 30); u.onerror = ev => { if (ev && ev.error === 'interrupted' || ev.error === 'canceled') end(); else setTimeout(next, 30); };
+      if (opt.onstart && i === 1) u.onstart = () => opt.onstart(null);
+      speechSynthesis.speak(u);
+    };
+    next(); return true;
+  } catch (e) { return false; }
 };
+TL.owlRate = () => +(TL.S.settings.owlRate || 1.1); // tốc độ nói của Cú Uyên Bác
 const SPK = '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
 TL.ICON = {
   spk: SPK,
@@ -2820,7 +2840,7 @@ TL.owlSay = function (stage, text, speak) {
   stage.classList.toggle('say-left', stage.getBoundingClientRect().left > 195);
   b.textContent = text; b.hidden = false; b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
   clearTimeout(b._t); b._t = setTimeout(() => { b.hidden = true; }, Math.max(2600, text.length * 90));
-  if (speak) TL.speak(text, 'vi', { quiet: true });
+  if (speak) TL.speak(text, 'vi', { quiet: true, rate: TL.owlRate() });
 };
 const ACTS = ['dance', 'spin', 'wave', 'hop', 'dance', 'spin'];
 function act(stage, kind) {
@@ -2897,7 +2917,7 @@ new MutationObserver(() => { document.querySelectorAll('.owlstage').forEach(bind
 document.addEventListener('click', e => {
   const o = e.target.closest && e.target.closest('svg.owl3d'); if (!o || o.closest('button,a')) return;
   o.classList.remove('dance'); void o.getBoundingClientRect(); o.classList.add('dance'); setTimeout(() => o.classList.remove('dance'), 1900);
-  const t = TL.pick(lines()); floatSay(o, t); TL.speak(t, 'vi', { quiet: true });
+  const t = TL.pick(lines()); floatSay(o, t); TL.speak(t, 'vi', { quiet: true, rate: TL.owlRate() });
 });
 document.addEventListener('pointerover', e => {
   const o = e.target.closest && e.target.closest('svg.owl3d'); if (!o || o.classList.contains('hop')) return;
@@ -3015,7 +3035,7 @@ setInterval(() => {
       if (seg.left <= 0) advance();
     }
   }
-  if (Date.now() % 15000 < 1000) TL.save();
+  if (Date.now() % 15000 < 1000 && ((p.running && !p.paused) || LEARN.includes(screen.name))) TL.save(); // chỉ lưu định kỳ khi đang học, tránh đẩy lên máy chủ liên tục
   if (document.visibilityState === 'visible') TL.refreshTop();
 }, 1000);
 function advance() {
@@ -3489,7 +3509,7 @@ const lab = d => { const [, m, dd] = d.split('-'); return +dd + '/' + +m; };
 const empty = t => '<p class="muted">' + (t || 'Chưa có dữ liệu.') + '</p>';
 
 /* ---------- màn hình phụ huynh ---------- */
-const TABS = [['overview', 'Tổng quan'], ['diary', 'Nhật ký tâm sự'], ['subjects', 'Phân tích môn'], ['report', 'Báo cáo'], ['review', 'Đánh giá tuần'], ['schedule', 'Lịch học'], ['rewards', 'Phần thưởng'], ['content', 'Bài học và tài liệu'], ['data', 'Dữ liệu và cài đặt'], ['guide', 'Hướng dẫn']];
+const TABS = [['overview', 'Tổng quan'], ['diary', 'Nhật ký tâm sự'], ['faq', 'Cẩm nang của Cú'], ['subjects', 'Phân tích môn'], ['report', 'Báo cáo'], ['review', 'Đánh giá tuần'], ['schedule', 'Lịch học'], ['rewards', 'Phần thưởng'], ['content', 'Bài học và tài liệu'], ['data', 'Dữ liệu và cài đặt'], ['guide', 'Hướng dẫn']];
 TL.SCREENS.parent = function (m, p) {
   if (Date.now() > parentUntil) { m.innerHTML = '<div class="card"><h2>Khu phụ huynh</h2><p class="muted" style="margin:8px 0">Cần mã PIN để vào.</p><button class="btn" data-pin>Nhập mã PIN</button> <button class="btn ghost" data-go="home">Về trang chủ</button></div>'; $('[data-pin]', m).onclick = () => TL.askPin(() => TL.go('parent', p)); if (!m.dataset.asked) { m.dataset.asked = 1; TL.askPin(() => TL.go('parent', p)); } return; }
   const tab = p.arg || 'overview';
@@ -3521,6 +3541,7 @@ P.overview = function (b) {
 };
 function stat(t, v, sub) { return '<div class="card"><div class="stat"><span class="muted small">' + esc(t) + '</span><b>' + esc(v) + '</b><span class="small muted">' + esc(sub) + '</span></div></div>'; }
 
+P.faq = function (b) { b.innerHTML = '<p class="muted">Đang mở cẩm nang...</p>'; if (TL.faqParent) TL.faqParent(b); };
 P.diary = function (b) { if (TL.diaryParent) TL.diaryParent(b); };
 P.subjects = function (b) {
   const sec = subj => { const cs = catStats(subj); const skills = Object.keys(TL.skills).filter(k => TL.skills[k].subj === subj && S().skills[k] && S().skills[k].seen);
@@ -3938,8 +3959,9 @@ TL.SCREENS.checkin = function (m) {
     let fired = false; const sid = ++sayId;
     const done = () => { if (fired || sid !== sayId) return; fired = true; status(''); if (stage._o) stage._o.talk = false; if (then) then(); else if (auto && voiceOK) setTimeout(hear, 250); };
     const cloud = !TL.viVoice && TL.gas; let safety = null;
-    const ok = TL.speak(t, 'vi', { quiet: true, onend: done, onstart: d => { clearTimeout(safety); safety = setTimeout(done, d * 1000 + 2500); } });
-    safety = setTimeout(done, !ok ? Math.min(6000, 600 + t.length * 45) : cloud ? 25000 : 2500 + t.length * 95); // phòng khi máy không báo đọc xong
+    const ok = TL.speak(t, 'vi', { quiet: true, rate: TL.owlRate(), onend: done, onstart: d => { clearTimeout(safety); safety = setTimeout(done, d ? d * 1000 + 2500 : 6000 + t.length * 160); } });
+    // phòng khi máy không báo đọc xong: chờ rộng tay để không cắt ngang lời Cú
+    safety = setTimeout(done, !ok ? Math.min(6000, 600 + t.length * 45) : cloud ? 25000 : 6000 + t.length * 160);
   };
   const botSay = (t, then) => { e.turns.push({ r: 'b', t }); TL.save(); draw(); say(t, then); };
   const micBtn = $('#ck-mic', m);
@@ -4204,6 +4226,91 @@ TL.quizTurn = function (text) {
 };
 })();
 
+/* ---- src/engine/faq.js ---- */
+/* ===== Cẩm nang của Cú Uyên Bác =====
+   Khi con hỏi ở khung "Hỏi Cú Uyên Bác", Cú tra cẩm nang trước. Có câu giống thì trả lời ngay, không gọi AI (nhanh, không tốn lượt).
+   Không có thì hỏi AI, rồi ghi câu hỏi và câu trả lời mới vào cẩm nang để lần sau dùng lại.
+   Không tra cẩm nang khi con hỏi về câu đang làm trên màn hình (mỗi câu một khác) hay khi đang đố vui.
+   Cẩm nang lưu trên máy này (IndexedDB); bố mẹ xem, sửa, xoá ở Khu phụ huynh, mục Cẩm nang của Cú. */
+(function () {
+'use strict';
+const S = () => TL.S;
+const pv = t => (TL.plainVi ? TL.plainVi(t) : String(t || '').toLowerCase());
+// từ đệm không mang nghĩa câu hỏi
+const FILL = new Set('cu uyen bac oi a a nhe nha nhi the vay ha day do cho con minh to ban va thi ma voi duoc khong co phai nao lai roi kia ay'.split(' '));
+// gom các cách hỏi giống nhau: vì sao, tại sao -> hỏi_vì_sao; làm sao, làm thế nào, cách nào -> hỏi_cách
+const SYN = [[/\b(tai vi sao|tai sao|vi sao|sao lai)\b/g, ' qwhy '], [/\b(lam the nao|lam sao|cach nao|bang cach nao)\b/g, ' qhow '], [/\b(la gi|nghia la gi|co nghia la)\b/g, ' qwhat '], [/\b(bao nhieu)\b/g, ' qhowmany ']];
+const toks = q => { let t = ' ' + pv(q) + ' '; SYN.forEach(([r, w]) => { t = t.replace(r, w); }); return t.split(' ').filter(w => w && !FILL.has(w)); };
+function sim(a, b) { const A = new Set(a), B = new Set(b); if (!A.size || !B.size) return 0; let n = 0; A.forEach(x => { if (B.has(x)) n++; }); return n / (A.size + B.size - n); }
+
+/* câu có sẵn khi mới cài */
+const SEED = [
+  ['Cú Uyên Bác là ai?', 'Tớ là Cú Uyên Bác, bạn học của con đây! Tớ giúp con học Toán, Tiếng Việt, Tiếng Anh, Tin học, nghe con kể chuyện mỗi tối và đố vui cho con nữa.'],
+  ['Cú Uyên Bác bao nhiêu tuổi?', 'Tớ là chú cú sống trong ứng dụng nên không có tuổi như con đâu. Nhưng tớ rất thích học cùng các bạn lớp 3 như con!'],
+  ['Tại sao cú thức đêm?', 'Loài cú thường đi kiếm ăn vào ban đêm. Mắt cú rất to nên nhìn rõ trong bóng tối, tai cú lại thính nữa. Còn con thì phải ngủ sớm để mai đến lớp thật khoẻ nhé!'],
+  ['Cú quay đầu được bao nhiêu?', 'Cú quay đầu được rất xa, gần ba phần tư vòng tròn đấy! Vì mắt cú không đảo qua lại được như mắt người, nên cú phải quay cả đầu để nhìn.'],
+  ['Làm sao để học giỏi?', 'Bí quyết của Cú nè: mỗi ngày học một chút, đọc kĩ đề, làm sai thì xem lại vì sao sai, và ôn bài cũ đúng hẹn. Ngủ đủ giấc cũng giúp đầu óc nhớ bài tốt hơn đó!'],
+  ['Con không muốn học', 'Cú hiểu, có hôm mình thấy mệt và chán. Mình thử học thật ngắn thôi, làm vài câu dễ trước nhé. Xong phần này mình chơi trò chơi củng cố cho vui!'],
+  ['Con mệt quá', 'Con mệt thì mình nghỉ một chút nhé. Đứng dậy vươn vai, uống vài ngụm nước, hít thở thật sâu. Khi nào khoẻ hơn mình học tiếp.'],
+  ['Làm sao để nhớ bảng nhân?', 'Con đọc to bảng nhân mỗi ngày một lần, nhớ mẹo đếm thêm: bảng nhân 3 là đếm thêm 3 (3, 6, 9...). Con làm phần Ôn tập và trò chơi củng cố, Cú sẽ nhắc con ôn đúng lúc để nhớ lâu.'],
+  ['Làm sao để viết chữ đẹp?', 'Con ngồi thẳng lưng, cầm bút nhẹ tay, viết chậm và đúng độ cao các chữ. Mỗi ngày luyện một đoạn ngắn, chữ con sẽ đẹp dần lên đấy!'],
+  ['Làm sao để đọc nhanh hơn?', 'Con đọc to mỗi ngày một bài ngắn, đọc lại bài đó 2, 3 lần cho trôi chảy. Ngón tay dò theo dòng giúp con không bị nhảy dòng nhé.'],
+  ['Sao con hay làm sai?', 'Ai học cũng có lúc sai, sai là để mình học thêm. Con đọc kĩ đề hai lần, gạch chân chỗ quan trọng, làm xong thì kiểm tra lại. Cú tin con sẽ ít sai hơn mỗi ngày!'],
+  ['Học xong được chơi gì?', 'Học xong các phần trong lịch, Khu vui chơi sẽ mở với 6 trò chơi củng cố. Con làm xong nhiệm vụ hôm nay còn được mở rương kho báu nữa!'],
+  ['Sao là gì? XP là gì?', 'Sao và XP là phần thưởng khi con cố gắng. XP tăng mỗi khi con trả lời, sao có khi con làm tốt. Đủ sao con đổi được phần quà bố mẹ đặt trong mục phần thưởng.'],
+  ['Hôm nay học gì?', 'Con bấm "Bắt đầu buổi học" ở trang chủ nhé. Đồng hồ sẽ dẫn con học từng phần: Tiếng Việt, nghỉ giải lao, Toán rồi trò chơi củng cố.'],
+  ['Cú ơi đố vui đi', 'Cú đố con câu đố dân gian nè: Con gì đầu dê mình ốc? Con nghĩ thử nhé. Đáp án là con dốc, vì chữ dê ghép với chữ ốc thành dốc! Muốn Cú đố bài học thì con nói "Cú ơi, đố con đi" nhé.'],
+].map(([q, a]) => ({ q, a, ctx: '', seed: 1 }));
+
+/* ---------- kho lưu (IndexedDB) ---------- */
+let dbp = null;
+function db() { if (dbp) return dbp; dbp = new Promise(res => { try { const r = indexedDB.open('tulinh-faq', 1); r.onupgradeneeded = () => r.result.createObjectStore('f', { keyPath: 'id', autoIncrement: true }); r.onsuccess = () => res(r.result); r.onerror = () => res(null); } catch (e) { res(null); } }); return dbp; }
+async function all() { const d = await db(); if (!d) return []; return new Promise(res => { try { const q = d.transaction('f').objectStore('f').getAll(); q.onsuccess = () => res(q.result || []); q.onerror = () => res([]); } catch (e) { res([]); } }); }
+async function put(o) { const d = await db(); if (!d) return; return new Promise(res => { try { const q = d.transaction('f', 'readwrite').objectStore('f').put(o); q.onsuccess = () => res(q.result); q.onerror = () => res(null); } catch (e) { res(null); } }); }
+async function del(id) { const d = await db(); if (!d) return; try { d.transaction('f', 'readwrite').objectStore('f').delete(id); } catch (e) { } }
+TL.faqAll = async () => { const list = await all(); return SEED.filter(s => !list.some(x => x.seedQ === s.q)).map(s => Object.assign({ id: 's:' + s.q }, s)).concat(list); };
+
+function ctxKey() { const sc = TL.screen(); return sc.name === 'lesson' && sc.arg ? sc.arg : ''; }
+function onItem() { return !!(TL._cur && document.querySelector('#main .ans')); }
+const PERSONAL = /\b(ten con|nha con|bo con|me con|ban con|co giao con|truong con|hom nay con|hom qua con)\b/;
+TL.faqUsable = text => !onItem() && !(TL.quizActive && TL.quizActive()) && !/\b(cau nay)\b/.test(pv(text)) && toks(text).length >= 1;
+
+/* tra cẩm nang; trả về câu trả lời hoặc null */
+TL.faqFind = async function (text) {
+  if (!TL.faqUsable(text)) return null;
+  const t = toks(text), ctx = ctxKey(); if (!t.length) return null;
+  let best = null, bs = 0;
+  (await TL.faqAll()).forEach(f => { if (f.off || (f.ctx && f.ctx !== ctx)) return; const sc = sim(t, toks(f.q)) + (f.ctx && f.ctx === ctx ? .05 : 0); if (sc > bs) { bs = sc; best = f; } });
+  const need = t.length <= 2 ? .99 : .7; // câu ngắn phải khớp hẳn
+  if (!best || bs < need) return null;
+  if (typeof best.id === 'number') { best.n = (best.n || 0) + 1; best.last = Date.now(); put(best); }
+  return best.a;
+};
+/* ghi câu trả lời mới của AI vào cẩm nang */
+TL.faqLearn = async function (text, answer) {
+  if (!TL.faqUsable(text) || PERSONAL.test(pv(text)) || !answer || answer.length > 700 || /chưa trả lời được|đang bận|đã hỏi nhiều/i.test(answer)) return;
+  const ctx = ctxKey(), t = toks(text); if (t.length < 2) return;
+  const list = await all(); if (list.some(f => (f.ctx || '') === ctx && sim(t, toks(f.q)) >= .9)) return;
+  await put({ q: text.slice(0, 200), a: answer, ctx, n: 0, at: Date.now() });
+  if (list.length > 400) { list.sort((a, b) => (a.n || 0) - (b.n || 0) || a.at - b.at).slice(0, list.length - 400).forEach(f => del(f.id)); }
+};
+
+/* ---------- Khu phụ huynh: Cẩm nang của Cú ---------- */
+TL.faqParent = async function (b) {
+  const esc = TL.esc; const list = (await TL.faqAll()).filter(f => !f.off).sort((a, c) => (c.n || 0) - (a.n || 0) || (c.at || 0) - (a.at || 0));
+  const name = c => { const l = c && TL.lessons.find(x => x.id === c); return l ? TL.SUBJ[l.subject].name + ' ' + (l.subject === 'ta' ? '' : 'Bài ' + l.no) : 'Chung'; };
+  b.innerHTML = '<div class="card"><h2>Cẩm nang của Cú Uyên Bác</h2><p class="howto">Khi con hỏi, Cú tra cẩm nang trước, có câu giống thì trả lời ngay, không cần AI. Câu mới do AI trả lời được ghi thêm vào đây. Bố mẹ sửa câu trả lời chưa hay, hoặc xoá câu sai. Cẩm nang lưu trên máy này.</p>' +
+    '<div class="row" style="margin:8px 0"><input id="fq-q" placeholder="Câu hỏi con hay hỏi" style="flex:1;min-width:200px;padding:10px;border-radius:12px;border:2px solid var(--line)"><button class="btn small" data-fqadd>Thêm câu mới</button></div>' +
+    '<div class="tablewrap"><table><tr><th>Câu hỏi</th><th>Bài</th><th>Câu trả lời của Cú</th><th>Đã dùng</th><th></th></tr>' +
+    list.map((f, i) => '<tr><td>' + esc(f.q) + '</td><td class="small">' + esc(name(f.ctx)) + '</td><td><textarea data-fqa="' + i + '" rows="3" style="width:100%;min-width:220px;border-radius:10px;border:2px solid var(--line);padding:6px">' + esc(f.a) + '</textarea></td><td>' + (f.n || 0) + (f.seed ? ' (có sẵn)' : '') + '</td><td><button class="btn small ghost" data-fqs="' + i + '">Lưu</button> <button class="btn small ghost" data-fqd="' + i + '">Xoá</button></td></tr>').join('') +
+    '</table></div><p class="small muted" style="margin-top:8px">Có ' + list.length + ' câu.</p></div>';
+  const $$ = (q) => [...b.querySelectorAll(q)];
+  $$('[data-fqs]').forEach(x => x.onclick = async () => { const f = list[+x.dataset.fqs]; const a = b.querySelector('[data-fqa="' + x.dataset.fqs + '"]').value.trim(); if (!a) return; if (f.seed && typeof f.id !== 'number') await put({ q: f.q, a, ctx: '', n: 0, at: Date.now(), seedQ: f.q }); else { f.a = a; await put(f); } TL.toast('Đã lưu câu trả lời.'); TL.faqParent(b); });
+  $$('[data-fqd]').forEach(x => x.onclick = async () => { const f = list[+x.dataset.fqd]; if (!confirm('Xoá câu này khỏi cẩm nang?')) return; if (typeof f.id === 'number') { if (f.seedQ) await put(Object.assign(f, { off: 1 })); else await del(f.id); } else await put({ q: f.q, a: f.a, ctx: '', n: 0, at: Date.now(), seedQ: f.q, off: 1 }); TL.faqParent(b); });
+  const add = b.querySelector('[data-fqadd]'); add.onclick = async () => { const q = b.querySelector('#fq-q').value.trim(); if (!q) return; await put({ q, a: 'Bố mẹ viết câu trả lời ở đây.', ctx: '', n: 0, at: Date.now() }); TL.faqParent(b); };
+};
+})();
+
 /* ---- src/engine/restore.js ---- */
 /* ===== Điểm quay lại và chế độ bố mẹ học thử =====
    Trước những việc quan trọng (bài khởi hành, bắt đầu một bài mới, đầu mỗi ngày), ứng dụng chụp lại tiến độ học
@@ -4293,7 +4400,7 @@ function listen() {
 }
 function sayReply(text) {
   if (!S().settings.chatVoice) { if (talkMode) setTimeout(listen, 400); return; }
-  const ok = TL.speak(plain(text), 'vi', { quiet: true, onend: () => { if (talkMode && open) setTimeout(listen, 350); } });
+  const ok = TL.speak(plain(text), 'vi', { quiet: true, rate: TL.owlRate(), onend: () => { if (talkMode && open) setTimeout(listen, 350); } });
   if (!ok && talkMode) setTimeout(listen, 400);
 }
 
@@ -4366,6 +4473,8 @@ async function send(text, byVoice) {
   if (qz) { S().chat.push({ d: TL.today(), r: 'u', t: text, v: byVoice ? 1 : 0 }); S().chat.push({ d: TL.today(), r: 'b', t: qz }); TL.save(); draw(); if (byVoice || talkMode || S().settings.chatVoice) sayReply(qz); if (/^(Đúng rồi|Chính xác|Tuyệt vời)/.test(qz)) TL.owlReact && TL.owlReact('dance'); return; }
   if (!(await TL.AI.ready)) { TL.toast('Cú Uyên Bác chưa trò chuyện được. ' + TL.AI.reason); return; }
   if (todayCount() >= MAXDAY()) { S().chat.push({ d: TL.today(), r: 'b', t: 'Hôm nay con đã hỏi nhiều rồi. Con thử tự nghĩ, hoặc hỏi bố mẹ nhé. Mai mình nói chuyện tiếp.' }); TL.save(); draw(); return; }
+  // tra cẩm nang trước: có câu giống thì trả lời ngay, không cần AI
+  if (TL.faqFind) { const fa = await TL.faqFind(text); if (fa) { S().chat.push({ d: TL.today(), r: 'u', t: text, v: byVoice ? 1 : 0 }); S().chat.push({ d: TL.today(), r: 'b', t: fa, faq: 1 }); TL.save(); draw(); if (byVoice || talkMode || S().settings.chatVoice) sayReply(fa); return; } }
   busy = true; const ctx = context();
   S().chat.push({ d: TL.today(), r: 'u', t: text, ctx: ctx.slice(0, 160), v: byVoice ? 1 : 0 }); TL.save(); draw('');
   const hist = recent();
@@ -4379,7 +4488,9 @@ async function send(text, byVoice) {
   const merged = []; turns.forEach(t => { const p = merged[merged.length - 1]; if (p && p.role === t.role) p.content += '\n' + t.content; else merged.push(Object.assign({}, t)); });
   ctl = new AbortController();
   try {
-    const r = await TL.AI.chat(merged, t => draw(t), ctl.signal, 'default'); // khung Hỏi Cú dùng mẫu mạnh hơn để giảng bài kỹ
+    const deep = /\b(giang|giai thich|chua hieu|khong hieu|vi sao|tai sao|lam the nao|cach lam|vi du)\b/.test(TL.plainVi ? TL.plainVi(text) : '');
+    const r = await TL.AI.chat(merged, t => draw(t), ctl.signal, deep ? 'default' : 'quick'); // giảng bài thì dùng mẫu mạnh, câu thường dùng mẫu nhanh
+    if (TL.faqLearn) TL.faqLearn(text, r.trim());
     S().chat.push({ d: TL.today(), r: 'b', t: r.trim() });
     if (byVoice || talkMode || S().settings.chatVoice) sayReply(r.trim());
   } catch (e) { if (e && e.code !== 'cancelled') S().chat.push({ d: TL.today(), r: 'b', t: e.message || 'Cú Uyên Bác chưa trả lời được. Con thử lại sau nhé.' }); }
@@ -4412,7 +4523,7 @@ function push() {
 /* nhiều thẻ của ứng dụng cùng mở trên một trình duyệt: thẻ này lưu thì thẻ kia lấy bản mới, tránh thẻ cũ ghi đè */
 addEventListener('storage', ev => {
   if (ev.key !== TL.KEY || !ev.newValue) return;
-  try { const n = JSON.parse(ev.newValue); if ((n.updatedAt || 0) <= (TL.S.updatedAt || 0)) return; TL.S = n; TL.normalize && TL.normalize(); const sc = TL.screen(); if (['home', 'kingdom', 'checkin'].includes(sc.name)) TL.go(sc.name, sc.arg ? { arg: sc.arg } : undefined); else TL.refreshTop && TL.refreshTop(); } catch (e) { }
+  try { const n = JSON.parse(ev.newValue); if ((n.updatedAt || 0) <= (TL.S.updatedAt || 0)) return; const prev = TL.S; TL.S = n; TL.normalize && TL.normalize(); keepLive(TL.S, prev); const sc = TL.screen(); if (['home', 'kingdom'].includes(sc.name)) TL.go(sc.name, sc.arg ? { arg: sc.arg } : undefined); else TL.refreshTop && TL.refreshTop(); } catch (e) { }
 });
 TL.onSave = function () { clearTimeout(timer); timer = setTimeout(push, 4000); };
 TL.syncNow = function () { clearTimeout(timer); push(); };
@@ -4420,15 +4531,29 @@ TL.syncInfo = function () { return lastOk ? 'Lần đồng bộ gần nhất: ' 
 addEventListener('pagehide', () => TL.syncNow());
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') TL.syncNow(); });
 function markSynced(upd) { TL.S.syncedAt = upd || TL.S.updatedAt || Date.now(); try { localStorage.setItem(TL.KEY, JSON.stringify(TL.S)); } catch (e) { } }
+/* Giữ phần đang dùng dở trên màn hình (buổi trò chuyện hôm nay, bài đang học) khi nhận bản mới từ máy chủ hoặc thẻ khác,
+   để Cú không bị cắt lời và bài đang làm không bị mất. */
+function keepLive(next, prev) {
+  if (!prev || !next) return;
+  const d = TL.today(), sc = TL.screen();
+  const pe = (prev.diary || []).find(x => x.d === d), ne = (next.diary || []).find(x => x.d === d);
+  if (pe && (!ne || (pe.turns || []).length >= (ne.turns || []).length || sc.name === 'checkin')) { next.diary = (next.diary || []).filter(x => x.d !== d); next.diary.push(pe); }
+  if (sc.name === 'lesson' && sc.arg && prev.lessons && prev.lessons[sc.arg]) { next.lessons = next.lessons || {}; next.lessons[sc.arg] = prev.lessons[sc.arg]; }
+  if (prev.plan && next.plan && prev.plan.d === next.plan.d && (prev.plan.used || 0) >= (next.plan.used || 0)) next.plan = prev.plan;
+}
+TL.keepLive = keepLive;
+const QUIET = ['checkin', 'lesson', 'review', 'play', 'placement', 'parent', 'plan'];
 function adopt(remote) {
-  TL.S = remote; TL.normalize && TL.normalize();
+  const prev = TL.S;
+  TL.S = remote; TL.normalize && TL.normalize(); keepLive(TL.S, prev);
   if (!TL.S.settings.kidName && window.TL_KID) TL.S.settings.kidName = window.TL_KID;
   TL.S.syncedAt = TL.S.updatedAt;
   try { localStorage.setItem(TL.KEY, JSON.stringify(TL.S)); } catch (e) { }
   (TL.S.packs || []).forEach(pk => { try { TL.loadPack(pk); } catch (e) { } });
   TL.ensureDaily(); TL.ensureWeekly(); TL.ensurePlan();
-  const sc = TL.screen(); if (sc.name === 'home' || sc.name === 'kingdom' || sc.name === 'checkin' || sc.name === 'boot') TL.go(sc.name === 'boot' ? 'home' : sc.name, sc.arg ? { arg: sc.arg } : undefined);
-  TL.toast('Đã tải tiến độ học mới nhất.');
+  const sc = TL.screen();
+  if (QUIET.includes(sc.name)) { TL.refreshTop && TL.refreshTop(); if (sc.name === 'checkin' && TL.needCheckin && !TL.needCheckin()) { } return; } // đang trò chuyện, đang học: cập nhật lặng lẽ, không vẽ lại màn hình
+  TL.go(sc.name === 'boot' ? 'home' : sc.name, sc.arg ? { arg: sc.arg } : undefined);
 }
 /* Quy tắc gộp:
    - Máy chưa từng đồng bộ (mới mở lần đầu, hoặc trình duyệt bị xoá dữ liệu): luôn lấy bản trên máy chủ.

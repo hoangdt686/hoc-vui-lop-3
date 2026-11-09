@@ -3720,7 +3720,10 @@ TL.SCREENS.checkin = function (m) {
     }
     const care = scan(text).map(f => CARE[f.name]).find(Boolean);
     if (!reply) reply = danger ? SAFE : care ? care : nU >= 4 ? CLOSE[e.mood] : NEXT[(nU - 2 + NEXT.length) % NEXT.length];
+    if (reply && !/[.?!…]["”)]?\s*$/.test(reply)) { const cut = reply.search(/[.?!…][^.?!…]*$/); reply = cut > 0 ? reply.slice(0, cut + 1) : ''; } // câu bị cắt dở thì bỏ phần dở
+    if (!reply) reply = danger ? SAFE : care ? care : nU >= 4 ? CLOSE[e.mood] : NEXT[(nU - 2 + NEXT.length) % NEXT.length];
     if (danger && !/bố mẹ|cô giáo/.test(reply)) reply += ' ' + SAFE;
+    else if (care && !/bố mẹ|cô giáo/.test(reply)) reply += ' Con kể với bố mẹ nữa nhé, bố mẹ luôn thương con.';
     busy = false; botSay(reply);
     if (nU >= 4) $('#ck-done', m).classList.add('pulse');
   };

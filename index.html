@@ -522,6 +522,8 @@ html[data-theme="dark"] .howto { color: #93C5FD; } html[data-theme="dark"] .howt
 /* lời của Cú nằm bên trái Cú khi bên trái còn chỗ trống (owl3d.js gắn lớp say-left), không che nút và ô môn học */
 .owlstage.say-left .owlsay { left: auto; right: calc(100% + 10px); top: 8%; width: 170px; max-width: 170px; font-size: .88rem; }
 .owlstage.say-left .owlsay::after { left: auto; right: -14px; top: 22px; bottom: auto; border-color: transparent; border-left-color: #A78BFA; }
+.step.can { cursor: pointer; font-family: inherit; }
+.step.can:hover { background: #EDE9FE; color: #6D28D9; border-color: #C4B5FD; }
 </style>
 <header class="top" id="top"></header>
 <main class="wrap" id="main" aria-live="polite"></main>
@@ -3128,14 +3130,16 @@ SCREENS.lesson = function (m, p) {
   const run = { firstOk: 0, n: 0, testOk: 0, testN: 0, startXP: S().xp, startStars: S().stars };
   S().lastLesson = l.id; TL.save();
   const render = () => {
-    const k = Math.min(st.step, steps.length - 1);
-    m.innerHTML = '<div class="row"><button class="btn small ghost" data-go="kingdom" data-arg="' + l.subject + '">Về bản đồ</button><span class="pill" style="background:var(--' + TL.SUBJ[l.subject].css + '-soft)">' + TL.SUBJ[l.subject].name + (l.subject === 'ta' ? '' : ' · Bài ' + l.no) + '</span>' + (l.level === 'practice' ? '<span class="pill">' + (l.verified ? 'Bài luyện tập' : 'Luyện tập, chưa đối chiếu sách') + '</span>' : '') + '</div>' +
+    const k = Math.min(st.step, steps.length - 1); st.max = Math.max(st.max || 0, k, st.status === 'done' ? steps.length - 1 : 0);
+    m.innerHTML = '<div class="row"><button class="btn small ghost" data-go="kingdom" data-arg="' + l.subject + '">Về bản đồ</button><span class="pill" style="background:var(--' + TL.SUBJ[l.subject].css + '-soft)">' + TL.SUBJ[l.subject].name + (l.subject === 'ta' ? '' : ' · Bài ' + l.no) + '</span>' + (l.level === 'practice' ? '<span class="pill">' + (l.verified ? 'Bài luyện tập' : 'Luyện tập, chưa đối chiếu sách') + '</span>' : '') + '<div class="spacer"></div>' + (k > 0 || st.status === 'done' ? '<button class="btn small" data-redo>Làm lại bài này từ đầu</button>' : '') + '</div>' +
       '<h1 style="margin-top:10px">' + esc(l.title) + '</h1><p class="src">' + esc(sourceText(l)) + '</p>' +
-      '<div class="steps">' + steps.map((s, i) => '<span class="step' + (i === k ? ' on' : i < k ? ' past' : '') + '">' + (i + 1) + '. ' + s + '</span>').join('') + '</div>' +
+      '<div class="steps">' + steps.map((s, i) => i !== k && i <= st.max ? '<button class="step can' + (i < k ? ' past' : '') + '" data-jump="' + i + '" title="Làm lại bước này">' + (i + 1) + '. ' + s + '</button>' : '<span class="step' + (i === k ? ' on' : i < k ? ' past' : '') + '">' + (i + 1) + '. ' + s + '</span>').join('') + '</div>' +
       '<div class="lesson-body"><div id="stage"></div><aside class="tutor-side card flat"><div class="row">' + TL.owl(64) + '<b>Cú Uyên Bác</b></div><p class="small tutor-msg" style="margin-top:8px"></p></aside></div>';
     const stage = $('#stage', m), msg = $('.tutor-msg', m);
     const tutor = t => { msg.textContent = t; };
     const next = () => { st.step = k + 1; TL.save(); if (st.step >= steps.length) return; render(); };
+    $$('[data-jump]', m).forEach(b => b.onclick = () => { st.step = +b.dataset.jump; TL.save(); render(); });
+    const rd = $('[data-redo]', m); if (rd) rd.onclick = () => { if (!confirm('Làm lại bài "' + l.title + '" từ bước 1? Sao và XP con đã có vẫn giữ nguyên.')) return; st.step = 0; TL.save(); render(); TL.toast('Mình làm lại từ đầu nhé!'); };
     STEP[steps[k]](stage, l, next, tutor, run, st);
   };
   render();
@@ -3693,7 +3697,7 @@ P.data = function (b) {
     '<div class="field">Tốc độ đọc<input type="range" id="st-rate" min="0.6" max="1.2" step="0.05" value="' + s.settings.rate + '"></div><p class="small muted">' + (TL.viVoice ? 'Giọng tiếng Việt: ' + esc(TL.viVoice.name) : 'Máy chưa có giọng tiếng Việt. Xem mục Hướng dẫn.') + '</p>' +
     '<div class="field">Tên gọi của con<input id="st-kid" maxlength="30" value="' + esc(s.settings.kidName || window.TL_KID || '') + '" style="padding:10px;border-radius:12px;border:2px solid var(--line);background:var(--surface)"></div>' +
     '<div class="field">Giao diện<select id="st-theme"><option value="light"' + (theme !== 'dark' ? ' selected' : '') + '>Sáng, tươi vui (khuyên dùng)</option><option value="dark"' + (theme === 'dark' ? ' selected' : '') + '>Tối (dùng buổi tối, khi cần dịu mắt)</select></div>' +
-    '<div class="row"><button class="btn small ghost" data-pinch>Đổi mã PIN</button><button class="btn small ghost" data-place>Cho con làm lại bài khởi hành</button></div>' +
+    '<div class="row"><button class="btn small ghost" data-pinch>Đổi mã PIN</button><button class="btn small ghost" data-place>Cho con làm lại bài khởi hành</button><button class="btn small ghost" data-relearn>Cho con học lại tất cả bài từ đầu</button></div>' +
     '<p class="small">Gia sư AI: ' + (TL.AI.state === 'on' ? 'đã kết nối qua ' + esc(TL.AI.via) + (TL.gas ? ' (khoá API nằm trong Script Properties của Apps Script, không nằm trong trang)' : ' (qua tài khoản Claude, không có khoá API trong ứng dụng)') : 'chưa kết nối. ' + esc(TL.AI.reason)) + '</p></div></div></div>' +
     '<div class="card" style="margin-top:12px"><h2>Trò chuyện Hỏi Cú Uyên Bác</h2><div class="row" style="margin-top:6px"><label class="row"><input type="checkbox" id="ch-on"' + (s.settings.chatOn ? ' checked' : '') + '> Cho con dùng Hỏi Cú Uyên Bác</label><label class="row">Tối đa <input type="number" id="ch-lim" min="5" max="100" value="' + (s.settings.chatLimit || 40) + '" style="width:80px;padding:8px;border-radius:10px;border:2px solid var(--line);background:var(--surface)"> câu hỏi mỗi ngày</label></div>' +
     '<p class="small muted" style="margin-top:6px">Cú Uyên Bác chỉ gợi ý, không nói đáp án khi con chưa thử. Mỗi câu hỏi dùng lượt Claude của tài khoản đang mở trang. Dưới đây là 30 tin nhắn gần nhất để bố mẹ xem con hỏi gì.</p>' +
@@ -3718,6 +3722,7 @@ P.data = function (b) {
   const tr = $('[data-trial]', b); if (tr) tr.onclick = () => TL.startTrial();
   const te = $('[data-trial-end]', b); if (te) te.onclick = () => TL.endTrial();
   $$('[data-back]', b).forEach(x => x.onclick = () => { const p = TL.points().find(q => String(q.t) === x.dataset.back); if (!p) return; let d = {}; try { d = JSON.parse(p.data) || {}; } catch (e) { } if (!confirm('Đưa tiến độ học về thời điểm: ' + p.label + ' (' + (d.xp || 0) + ' XP, ' + (d.stars || 0) + ' sao)?\nHiện tại: ' + (s.xp || 0) + ' XP, ' + (s.stars || 0) + ' sao. Mọi bài con làm sau thời điểm đó sẽ bị bỏ, trên mọi máy.')) return; TL.restoreTo(p.t); TL.toast('Đã quay lại: ' + p.label + '.'); P.data(b); });
+  $('[data-relearn]', b).onclick = () => { if (!confirm('Đưa tất cả bài học về trạng thái chưa học để con học lại từ đầu? Sao, XP, huy hiệu, nhật ký giữ nguyên. Ứng dụng lưu một điểm quay lại trước khi làm.')) return; TL.restorePoint('Trước khi cho con học lại tất cả bài'); s.lessons = {}; S().plan = null; TL.ensurePlan(); TL.save(); TL.toast('Đã đưa tất cả bài về đầu.'); };
   $('[data-place]', b).onclick = () => { s.placementDone = false; TL.save(); TL.toast('Bài khởi hành sẽ hiện ở trang chủ của con.'); };
   $('[data-del]', b).onclick = () => { if ($('#del-c', b).value.trim().toUpperCase() !== 'XOA') { TL.toast('Gõ XOA để xác nhận.'); return; } try { localStorage.removeItem(TL.KEY); } catch (e) { } TL.S = TL.defaultState(); TL.save(); TL.toast('Đã xoá dữ liệu.'); setTimeout(() => location.reload(), 600); };
   $$('[data-shift]', b).forEach(x => x.onclick = () => { TL.dayShift = x.dataset.shift === '0' ? 0 : (TL.dayShift || 0) + 1; TL.toast('Ngày trong ứng dụng: ' + TL.viDate(TL.today())); P.data(b); });

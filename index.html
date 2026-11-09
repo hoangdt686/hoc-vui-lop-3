@@ -597,11 +597,11 @@ const KEY = 'tulinh.slw.v1';
 TL.storageOK = true;
 /* Lịch mẫu 45 phút, học khoảng 21:30 sau giờ học ở trường */
 const DEFAULT_PLAN = [
-  { id: 'talk', name: 'Trò chuyện với Cú Uyên Bác', min: 4, kind: 'talk' },
+  { id: 'talk', name: 'Trò chuyện với Cú Uyên Bác', min: 5, kind: 'talk' },
   { id: 'tv', name: 'Tiếng Việt', min: 15, kind: 'tv' },
   { id: 'b1', name: 'Nghỉ giải lao', min: 2, kind: 'break' },
   { id: 'toan', name: 'Toán', min: 15, kind: 'toan' },
-  { id: 'game', name: 'Trò chơi củng cố', min: 6, kind: 'game' },
+  { id: 'game', name: 'Trò chơi củng cố', min: 5, kind: 'game' },
   { id: 'sum', name: 'Tổng kết', min: 3, kind: 'sum' }];
 const OLD_PLAN_IDS = 'warm,tv,b1,toan,b2,game,sum';
 function defaultState() {
@@ -613,7 +613,7 @@ function defaultState() {
     daily: null, weekly: null, plan: null, reviews: [], goals: [], redeemed: [], readings: {}, packs: [], unlocked: {}, owl: { wear: [] }, writings: [], chat: [], diary: [],
     settings: {
       pin: null, sound: true, voice: true, rate: 0.85, unlockAll: false,
-      planSegs: DEFAULT_PLAN, planVer: 2, studyTime: '21:30', calm: false, diaryAI: true, studyDays: [1, 2, 3, 4, 5, 6],
+      planSegs: DEFAULT_PLAN, planVer: 3, checkinMax: 5, studyTime: '21:30', calm: false, diaryAI: true, studyDays: [1, 2, 3, 4, 5, 6],
       remind: { on: true, day: 0, time: '19:00' }, dailyGoalReview: 5, chatOn: true, chatLimit: 40,
       rewards: [{ id: 'r1', name: 'Đọc thêm một truyện trước khi ngủ', cost: 30 }, { id: 'r2', name: 'Chọn món tráng miệng cuối tuần', cost: 60 }, { id: 'r3', name: 'Đi công viên cùng bố mẹ', cost: 150 }]
     }
@@ -630,6 +630,11 @@ function load(given) {
     const segs = s.settings.planSegs || [];
     if (segs.map(x => x.id).join() === OLD_PLAN_IDS) { s.settings.planSegs = DEFAULT_PLAN; if (s.plan && !s.plan.running) s.plan = null; }
     s.settings.planVer = 2;
+  }
+  if (s.settings.planVer < 3) { // lịch mẫu cũ: trò chuyện 4 phút, trò chơi 6 phút -> 5 và 5 (vẫn 45 phút)
+    const g = s.settings.planSegs || []; const t = g.find(x => x.kind === 'talk'), gm = g.find(x => x.kind === 'game');
+    if (t && t.min === 4 && gm && gm.min === 6) { t.min = 5; gm.min = 5; if (s.plan && !s.plan.running) s.plan = null; }
+    s.settings.planVer = 3;
   }
   const ren = x => { if (x && x.name) x.name = x.name.replace('Cú Bon', 'Cú Uyên Bác'); };
   (s.settings.planSegs || []).forEach(ren); if (s.plan && s.plan.segs) s.plan.segs.forEach(ren);
@@ -3729,7 +3734,7 @@ P.data = function (b) {
     (pts.length ? '<div class="tablewrap"><table><tr><th>Thời điểm</th><th>Điểm quay lại</th><th>Tiến độ lúc đó</th><th></th></tr>' + pts.map(p => { let d = {}; try { d = JSON.parse(p.data) || {}; } catch (e) { } return '<tr><td>' + new Date(p.t).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }) + '</td><td>' + esc(p.label) + '</td><td>' + (d.xp || 0) + ' XP, ' + (d.stars || 0) + ' sao, ' + Object.keys(d.lessons || {}).length + ' bài</td><td><button class="btn small ghost" data-back="' + p.t + '">Quay lại</button></td></tr>'; }).join('') + '</table></div>' : empty('Chưa có điểm quay lại nào trên máy này.')) + '</div>' +
     '<div class="grid2"><div class="card"><h2>Sao lưu và khôi phục</h2><p class="muted small" style="margin:6px 0">' + (TL.gas ? 'Tiến độ lưu trong trình duyệt và tự đồng bộ lên máy chủ Apps Script của bố mẹ, nên con đổi máy vẫn học tiếp được. ' + (TL.syncInfo ? TL.syncInfo() : '') + ' Vẫn nên tải tệp sao lưu mỗi tháng.' : 'Tiến độ lưu trong trình duyệt của máy này. Nên sao lưu mỗi tuần, và trước khi xoá dữ liệu trình duyệt hoặc đổi máy.') + '</p><div class="row"><button class="btn" data-exp>Tải tệp sao lưu</button><button class="btn ghost" data-show>Hiện mã sao lưu</button></div><textarea id="bk" class="write" rows="4" style="margin-top:8px;font-size:.8rem" hidden readonly></textarea>' +
     '<h3 style="margin-top:14px">Khôi phục từ tệp</h3><input type="file" id="imp" accept=".json,application/json"><p class="small muted">Khôi phục sẽ thay toàn bộ dữ liệu hiện tại.</p></div>' +
-    '<div class="card"><h2>Cài đặt</h2><div class="col"><label class="row"><input type="checkbox" id="st-sound"' + (s.settings.sound ? ' checked' : '') + '> Âm thanh hiệu ứng</label><label class="row"><input type="checkbox" id="st-voice"' + (s.settings.voice ? ' checked' : '') + '> Giọng đọc</label><label class="row"><input type="checkbox" id="st-calm"' + (s.settings.calm ? ' checked' : '') + '> Giảm hiệu ứng chuyển động (Cú Uyên Bác đứng yên)</label><label class="row"><input type="checkbox" id="st-ckreq"' + (s.settings.checkinRequired !== false ? ' checked' : '') + '> Bắt buộc con trò chuyện với Cú Uyên Bác (bằng giọng nói) trước khi học mỗi ngày</label><label class="row"><input type="checkbox" id="st-diaryai"' + (s.settings.diaryAI !== false ? ' checked' : '') + '> Cú Uyên Bác dùng AI khi con tâm sự (tắt thì Cú Uyên Bác trả lời theo câu soạn sẵn, nội dung không gửi ra ngoài)</label>' +
+    '<div class="card"><h2>Cài đặt</h2><div class="col"><label class="row"><input type="checkbox" id="st-sound"' + (s.settings.sound ? ' checked' : '') + '> Âm thanh hiệu ứng</label><label class="row"><input type="checkbox" id="st-voice"' + (s.settings.voice ? ' checked' : '') + '> Giọng đọc</label><label class="row"><input type="checkbox" id="st-calm"' + (s.settings.calm ? ' checked' : '') + '> Giảm hiệu ứng chuyển động (Cú Uyên Bác đứng yên)</label><label class="row">Thời gian trò chuyện mỗi tối tối đa <input type="number" id="st-ckmax" min="2" max="15" value="' + (s.settings.checkinMax || 5) + '" style="width:70px;padding:6px;border-radius:10px;border:2px solid var(--line)"> phút</label><label class="row"><input type="checkbox" id="st-ckreq"' + (s.settings.checkinRequired !== false ? ' checked' : '') + '> Bắt buộc con trò chuyện với Cú Uyên Bác (bằng giọng nói) trước khi học mỗi ngày</label><label class="row"><input type="checkbox" id="st-diaryai"' + (s.settings.diaryAI !== false ? ' checked' : '') + '> Cú Uyên Bác dùng AI khi con tâm sự (tắt thì Cú Uyên Bác trả lời theo câu soạn sẵn, nội dung không gửi ra ngoài)</label>' +
     '<div class="field">Tốc độ đọc<input type="range" id="st-rate" min="0.6" max="1.2" step="0.05" value="' + s.settings.rate + '"></div><p class="small muted">' + (TL.viVoice ? 'Giọng tiếng Việt: ' + esc(TL.viVoice.name) : 'Máy chưa có giọng tiếng Việt. Xem mục Hướng dẫn.') + '</p>' +
     '<div class="field">Tên gọi của con<input id="st-kid" maxlength="30" value="' + esc(s.settings.kidName || window.TL_KID || '') + '" style="padding:10px;border-radius:12px;border:2px solid var(--line);background:var(--surface)"></div>' +
     '<div class="field">Giao diện<select id="st-theme"><option value="light"' + (theme !== 'dark' ? ' selected' : '') + '>Sáng, tươi vui (khuyên dùng)</option><option value="dark"' + (theme === 'dark' ? ' selected' : '') + '>Tối (dùng buổi tối, khi cần dịu mắt)</select></div>' +
@@ -3749,6 +3754,7 @@ P.data = function (b) {
   $('#st-sound', b).onchange = e => { s.settings.sound = e.target.checked; TL.save(); };
   $('#st-voice', b).onchange = e => { s.settings.voice = e.target.checked; TL.save(); };
   $('#st-calm', b).onchange = e => { s.settings.calm = e.target.checked; document.documentElement.classList.toggle('calm', s.settings.calm); TL.save(); };
+  $('#st-ckmax', b).onchange = e => { s.settings.checkinMax = Math.max(2, Math.min(15, +e.target.value || 5)); e.target.value = s.settings.checkinMax; TL.save(); TL.toast('Đã lưu thời gian trò chuyện.'); };
   $('#st-ckreq', b).onchange = e => { s.settings.checkinRequired = e.target.checked; TL.save(); };
   $('#st-diaryai', b).onchange = e => { s.settings.diaryAI = e.target.checked; TL.save(); };
   $('#st-kid', b).onchange = e => { s.settings.kidName = e.target.value.trim(); TL.save(); TL.toast('Đã lưu tên gọi của con.'); };
@@ -3909,7 +3915,7 @@ TL.SCREENS.checkin = function (m) {
     (e.done ? '<button class="btn big ok" id="ck-go">Vào học thôi</button>' :
       '<button class="btn big ok" id="ck-start">' + (e.turns.length ? 'Nói chuyện tiếp với Cú Uyên Bác' : 'Bắt đầu nói chuyện') + '</button>' +
       '<button class="ck-mic" id="ck-mic" hidden aria-label="Bấm để nói"><svg width="42" height="42" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg></button>' +
-      '<div class="col" style="gap:4px"><b id="ck-st" class="ck-st"></b><button class="linkbtn small" id="ck-rep" hidden>Cú Uyên Bác nói lại</button></div>') + '</div>' +
+      '<div class="col" style="gap:4px"><b id="ck-st" class="ck-st"></b><span id="ck-left" class="small muted"></span><button class="linkbtn small" id="ck-rep" hidden>Cú Uyên Bác nói lại</button></div>') + '</div>' +
     '<div class="ck-moods small-moods" title="Con cũng có thể chạm vào khuôn mặt">' + MOODS.map(md => '<button class="ck-mood' + (e.mood === md.id ? ' on' : '') + '" data-mood="' + md.id + '">' + face(md, 40) + '<span>' + md.name + '</span></button>').join('') + '</div>' +
     '</div></section>' +
     '<section class="card ck-chat"><div class="row"><span class="eyebrow">Cuộc trò chuyện hôm nay</span><div class="spacer"></div>' + (e.done ? '' : '<button class="btn ghost small" id="ck-done" disabled>Con kể xong rồi</button>') + '</div>' +
@@ -3958,7 +3964,20 @@ TL.SCREENS.checkin = function (m) {
     };
     try { rec.start(); listening = true; micBtn.classList.add('on'); status('Cú Uyên Bác đang nghe... con nói đi.'); } catch (x) { listening = false; }
   };
+  /* giới hạn thời gian trò chuyện (mặc định 5 phút, bố mẹ đổi trong Khu phụ huynh) */
+  const MAXS = () => Math.max(2, Math.min(15, +S().settings.checkinMax || 5)) * 60;
+  const left = () => e.startT ? MAXS() - (Date.now() - e.startT) / 1000 : MAXS();
+  const tick = setInterval(() => {
+    if (!m.isConnected || e.done) return clearInterval(tick);
+    const l = Math.max(0, Math.round(left())); const c = $('#ck-left', m); if (c && e.startT) c.textContent = 'Còn ' + Math.floor(l / 60) + ':' + String(l % 60).padStart(2, '0');
+    if (e.startT && l <= 0 && !busy && !(stage._o && stage._o.talk)) { // hết giờ mà con chưa nói xong: Cú tự chào
+      clearInterval(tick); auto = false; try { rec && rec.abort(); } catch (x) { }
+      const t = 'Hết giờ trò chuyện rồi. Cảm ơn ' + TL.kid() + ' đã kể cho Cú Uyên Bác nghe. Mai mình kể tiếp nhé, giờ mình vào học thôi!';
+      botSay(t, () => finish(m, e, stage));
+    }
+  }, 1000);
   const begin = () => {
+    if (!e.startT) { e.startT = Date.now(); TL.save(); }
     started = true; auto = true; $('#ck-start', m).hidden = true; micBtn.hidden = !voiceOK; $('#ck-rep', m).hidden = false;
     if (!e.turns.length) botSay('Chào ' + TL.kid() + '! Hôm nay con thấy thế nào? Con kể Cú Uyên Bác nghe nhé.');
     else { const lastB = [...e.turns].reverse().find(t => t.r === 'b'); say(lastB ? lastB.t : 'Mình nói chuyện tiếp nhé. Con kể tiếp cho Cú Uyên Bác nghe đi.'); }
@@ -3979,7 +3998,8 @@ TL.SCREENS.checkin = function (m) {
     if (!e.mood) { const md = moodOf(text); if (md) { e.mood = md; $$('[data-mood]', m).forEach(x => x.classList.toggle('on', x.dataset.mood === md)); } }
     scan(text).forEach(f => { if (!e.flags.some(x => x.name === f.name)) e.flags.push(f); });
     e.level = levelOf(e); TL.save(); draw(''); status('Cú Uyên Bác đang nghĩ...'); TL.owlStageAct(stage, 'hop');
-    const wantsEnd = /\b(ke xong|noi xong|het roi|khong con gi|khong co gi nua|vao hoc|di hoc bai|hoc thoi|hoc bai thoi|tam biet)\b/.test(plainVi(text).replace(/[^a-z0-9]+/g, ' '));
+    const timeUp = left() <= 45; // còn dưới 45 giây: Cú chào kết thúc
+    const wantsEnd = timeUp || /\b(ke xong|noi xong|het roi|khong con gi|khong co gi nua|vao hoc|di hoc bai|hoc thoi|hoc bai thoi|tam biet)\b/.test(plainVi(text).replace(/[^a-z0-9]+/g, ' '));
     const flags = scan(text); const danger = flags.some(f => f.k === 'cao'); const care = flags.map(f => CARE[f.name]).find(Boolean); const nU = e.turns.filter(t => t.r === 'u').length;
     let reply = '';
     if (await useAI()) {
@@ -3987,7 +4007,7 @@ TL.SCREENS.checkin = function (m) {
       while (hist.length && hist[0].role !== 'user') hist.shift();
       const md = MOODS.find(x => x.id === e.mood);
       const mem = TL.diaryMemory ? TL.diaryMemory(5) : '', learn = TL.learnContext ? TL.learnContext() : '';
-      if (hist.length) hist[0] = { role: 'user', content: rules() + (mem ? '\n\n[Trí nhớ của Cú Uyên Bác về những buổi trò chuyện trước (chỉ để Cú quan tâm đúng chỗ; có thể hỏi thăm tiếp chuyện cũ một cách tự nhiên, nhất là chuyện buồn hay lo; không đọc lại nguyên văn, không nhắc chuyện riêng tư trước mặt người khác):\n' + mem + ']' : '') + (learn ? '\n\n[Việc học của bé (dùng khi khen và khi mời bé vào học: khen một tiến bộ cụ thể, nói tối nay mình học bài gì; không giảng bài trong lúc trò chuyện): ' + learn + ']' : '') + '\n\n[Cảm xúc bé chọn: ' + (md ? md.name : 'chưa rõ') + '. Bé đã kể ' + nU + ' lượt' + (wantsEnd ? '; bé muốn dừng: hãy cảm ơn, động viên và mời bé vào học, không hỏi thêm' : '') + '. Bé đang nói bằng giọng nói nên câu có thể thiếu dấu hoặc sai chính tả.]\n' + hist[0].content };
+      if (hist.length) hist[0] = { role: 'user', content: rules() + (mem ? '\n\n[Trí nhớ của Cú Uyên Bác về những buổi trò chuyện trước (chỉ để Cú quan tâm đúng chỗ; có thể hỏi thăm tiếp chuyện cũ một cách tự nhiên, nhất là chuyện buồn hay lo; không đọc lại nguyên văn, không nhắc chuyện riêng tư trước mặt người khác):\n' + mem + ']' : '') + (learn ? '\n\n[Việc học của bé (dùng khi khen và khi mời bé vào học: khen một tiến bộ cụ thể, nói tối nay mình học bài gì; không giảng bài trong lúc trò chuyện): ' + learn + ']' : '') + '\n\n[Cảm xúc bé chọn: ' + (md ? md.name : 'chưa rõ') + '. Bé đã kể ' + nU + ' lượt' + (timeUp ? '; đã hết giờ trò chuyện hôm nay: hãy cảm ơn bé, động viên một câu, hẹn mai kể tiếp và mời bé vào học, không hỏi thêm' : wantsEnd ? '; bé muốn dừng: hãy cảm ơn, động viên và mời bé vào học, không hỏi thêm' : '') + '. Bé đang nói bằng giọng nói nên câu có thể thiếu dấu hoặc sai chính tả.]\n' + hist[0].content };
       const merged = []; hist.forEach(t => { const p = merged[merged.length - 1]; if (p && p.role === t.role) p.content += '\n' + t.content; else merged.push(Object.assign({}, t)); });
       try { reply = (await TL.AI.chat(merged, t => draw(t))).trim(); } catch (err) { reply = ''; }
     }
@@ -3996,7 +4016,7 @@ TL.SCREENS.checkin = function (m) {
     if (danger && !/bố mẹ|cô giáo/.test(reply)) reply += ' ' + SAFE;
     else if (care && !/bố mẹ|cô giáo/.test(reply)) reply += ' Con kể với bố mẹ nữa nhé, bố mẹ luôn thương con.';
     busy = false; status('');
-    if (wantsEnd && nU >= 2) botSay(reply, () => finish(m, e, stage)); else botSay(reply);
+    if (wantsEnd && (nU >= 2 || timeUp)) botSay(reply, () => finish(m, e, stage)); else botSay(reply);
   };
   $('#ck-send', m).onclick = () => { const i = $('#ck-in', m); send(i.value, false); i.value = ''; };
   $('#ck-in', m).onkeydown = ev => { if (ev.key === 'Enter') { ev.preventDefault(); $('#ck-send', m).click(); } };

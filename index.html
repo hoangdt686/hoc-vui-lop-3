@@ -4231,7 +4231,8 @@ TL.quizTurn = function (text) {
    Khi con hỏi ở khung "Hỏi Cú Uyên Bác", Cú tra cẩm nang trước. Có câu giống thì trả lời ngay, không gọi AI (nhanh, không tốn lượt).
    Không có thì hỏi AI, rồi ghi câu hỏi và câu trả lời mới vào cẩm nang để lần sau dùng lại.
    Không tra cẩm nang khi con hỏi về câu đang làm trên màn hình (mỗi câu một khác) hay khi đang đố vui.
-   Cẩm nang lưu trên máy này (IndexedDB); bố mẹ xem, sửa, xoá ở Khu phụ huynh, mục Cẩm nang của Cú. */
+   Bản có máy chủ: cẩm nang lưu trên máy chủ Apps Script, dùng chung mọi máy. Bản khác: lưu trên máy này (IndexedDB).
+   Bố mẹ xem, sửa, xoá ở Khu phụ huynh, mục Cẩm nang của Cú. */
 (function () {
 'use strict';
 const S = () => TL.S;
@@ -4239,7 +4240,7 @@ const pv = t => (TL.plainVi ? TL.plainVi(t) : String(t || '').toLowerCase());
 // từ đệm không mang nghĩa câu hỏi
 const FILL = new Set('cu uyen bac oi a a nhe nha nhi the vay ha day do cho con minh to ban va thi ma voi duoc khong co phai nao lai roi kia ay'.split(' '));
 // gom các cách hỏi giống nhau: vì sao, tại sao -> hỏi_vì_sao; làm sao, làm thế nào, cách nào -> hỏi_cách
-const SYN = [[/\b(tai vi sao|tai sao|vi sao|sao lai)\b/g, ' qwhy '], [/\b(lam the nao|lam sao|cach nao|bang cach nao)\b/g, ' qhow '], [/\b(la gi|nghia la gi|co nghia la)\b/g, ' qwhat '], [/\b(bao nhieu)\b/g, ' qhowmany ']];
+const SYN = [[/\b(tai vi sao|tai sao|vi sao|sao lai)\b/g, ' qwhy '], [/\b(lam the nao|lam sao|cach nao|bang cach nao)\b/g, ' qhow '], [/\b(la gi|nghia la gi|co nghia la)\b/g, ' qwhat '], [/\b(bao nhieu|may)\b/g, ' qhowmany ']];
 const toks = q => { let t = ' ' + pv(q) + ' '; SYN.forEach(([r, w]) => { t = t.replace(r, w); }); return t.split(' ').filter(w => w && !FILL.has(w)); };
 function sim(a, b) { const A = new Set(a), B = new Set(b); if (!A.size || !B.size) return 0; let n = 0; A.forEach(x => { if (B.has(x)) n++; }); return n / (A.size + B.size - n); }
 
@@ -4268,7 +4269,30 @@ function db() { if (dbp) return dbp; dbp = new Promise(res => { try { const r = 
 async function all() { const d = await db(); if (!d) return []; return new Promise(res => { try { const q = d.transaction('f').objectStore('f').getAll(); q.onsuccess = () => res(q.result || []); q.onerror = () => res([]); } catch (e) { res([]); } }); }
 async function put(o) { const d = await db(); if (!d) return; return new Promise(res => { try { const q = d.transaction('f', 'readwrite').objectStore('f').put(o); q.onsuccess = () => res(q.result); q.onerror = () => res(null); } catch (e) { res(null); } }); }
 async function del(id) { const d = await db(); if (!d) return; try { d.transaction('f', 'readwrite').objectStore('f').delete(id); } catch (e) { } }
-TL.faqAll = async () => { const list = await all(); return SEED.filter(s => !list.some(x => x.seedQ === s.q)).map(s => Object.assign({ id: 's:' + s.q }, s)).concat(list); };
+/* Kho cẩm nang: bản có máy chủ lưu trên máy chủ Apps Script (dùng chung mọi máy của con), bản khác lưu trên máy này */
+const SRV = () => !!TL.gas;
+let cache = null, cacheAt = 0, hits = [], hitT = null, migrating = null;
+async function srvSave(arg) { const r = await TL.gasCall('faqSave', arg); if (r && r.list) { cache = r.list; cacheAt = Date.now(); } return r; }
+async function migrate() { // đưa các câu đã lưu trên máy này lên máy chủ (làm một lần)
+  try { if (localStorage.getItem('tulinh.faqUp')) return; } catch (e) { return; }
+  const local = await all(); for (const f of local) { try { await srvSave({ add: { q: f.q, a: f.a, ctx: f.ctx || '', seedQ: f.seedQ, off: f.off } }); } catch (e) { return; } }
+  try { localStorage.setItem('tulinh.faqUp', '1'); } catch (e) { }
+}
+async function list() {
+  if (!SRV()) return all();
+  if (!cache || Date.now() - cacheAt > 300000) {
+    try { cache = (await TL.gasCall('faqList')) || []; cacheAt = Date.now(); if (!migrating) migrating = migrate(); await migrating; } catch (e) { cache = cache || []; }
+  }
+  return cache;
+}
+const store = {
+  add: o => SRV() ? srvSave({ add: o }) : put(Object.assign({ n: 0, at: Date.now() }, o)),
+  upd: (f, a, off) => SRV() ? srvSave({ upd: { id: f.id, a, off } }) : put(Object.assign(f, a != null ? { a } : {}, off != null ? { off } : {})),
+  del: f => SRV() ? srvSave({ del: f.id }) : del(f.id),
+  hit: f => { if (!SRV()) { f.n = (f.n || 0) + 1; f.last = Date.now(); return put(f); } f.n = (f.n || 0) + 1; hits.push(f.id); clearTimeout(hitT); hitT = setTimeout(() => { const h = hits; hits = []; srvSave({ hit: h }).catch(() => { }); }, 5000); }
+};
+TL.faqAll = async () => { const l = await list(); return SEED.filter(s => !l.some(x => x.seedQ === s.q)).map(s => Object.assign({ id: 's:' + s.q }, s)).concat(l); };
+const isSeed = f => typeof f.id === 'string' && f.id.indexOf('s:') === 0;
 
 function ctxKey() { const sc = TL.screen(); return sc.name === 'lesson' && sc.arg ? sc.arg : ''; }
 function onItem() { return !!(TL._cur && document.querySelector('#main .ans')); }
@@ -4283,31 +4307,31 @@ TL.faqFind = async function (text) {
   (await TL.faqAll()).forEach(f => { if (f.off || (f.ctx && f.ctx !== ctx)) return; const sc = sim(t, toks(f.q)) + (f.ctx && f.ctx === ctx ? .05 : 0); if (sc > bs) { bs = sc; best = f; } });
   const need = t.length <= 2 ? .99 : .7; // câu ngắn phải khớp hẳn
   if (!best || bs < need) return null;
-  if (typeof best.id === 'number') { best.n = (best.n || 0) + 1; best.last = Date.now(); put(best); }
+  if (!isSeed(best)) store.hit(best);
   return best.a;
 };
 /* ghi câu trả lời mới của AI vào cẩm nang */
 TL.faqLearn = async function (text, answer) {
   if (!TL.faqUsable(text) || PERSONAL.test(pv(text)) || !answer || answer.length > 700 || /chưa trả lời được|đang bận|đã hỏi nhiều/i.test(answer)) return;
   const ctx = ctxKey(), t = toks(text); if (t.length < 2) return;
-  const list = await all(); if (list.some(f => (f.ctx || '') === ctx && sim(t, toks(f.q)) >= .9)) return;
-  await put({ q: text.slice(0, 200), a: answer, ctx, n: 0, at: Date.now() });
-  if (list.length > 400) { list.sort((a, b) => (a.n || 0) - (b.n || 0) || a.at - b.at).slice(0, list.length - 400).forEach(f => del(f.id)); }
+  const l = await list(); if (l.some(f => (f.ctx || '') === ctx && sim(t, toks(f.q)) >= .9)) return;
+  try { await store.add({ q: text.slice(0, 200), a: answer, ctx }); } catch (e) { }
+  if (!SRV() && l.length > 400) { l.sort((a, b) => (a.n || 0) - (b.n || 0) || a.at - b.at).slice(0, l.length - 400).forEach(f => del(f.id)); }
 };
 
 /* ---------- Khu phụ huynh: Cẩm nang của Cú ---------- */
 TL.faqParent = async function (b) {
   const esc = TL.esc; const list = (await TL.faqAll()).filter(f => !f.off).sort((a, c) => (c.n || 0) - (a.n || 0) || (c.at || 0) - (a.at || 0));
   const name = c => { const l = c && TL.lessons.find(x => x.id === c); return l ? TL.SUBJ[l.subject].name + ' ' + (l.subject === 'ta' ? '' : 'Bài ' + l.no) : 'Chung'; };
-  b.innerHTML = '<div class="card"><h2>Cẩm nang của Cú Uyên Bác</h2><p class="howto">Khi con hỏi, Cú tra cẩm nang trước, có câu giống thì trả lời ngay, không cần AI. Câu mới do AI trả lời được ghi thêm vào đây. Bố mẹ sửa câu trả lời chưa hay, hoặc xoá câu sai. Cẩm nang lưu trên máy này.</p>' +
+  b.innerHTML = '<div class="card"><h2>Cẩm nang của Cú Uyên Bác</h2><p class="howto">Khi con hỏi, Cú tra cẩm nang trước, có câu giống thì trả lời ngay, không cần AI. Câu mới do AI trả lời được ghi thêm vào đây. Bố mẹ sửa câu trả lời chưa hay, hoặc xoá câu sai. ' + (SRV() ? 'Cẩm nang lưu trên máy chủ, dùng chung cho máy tính và điện thoại của con.' : 'Cẩm nang lưu trên máy này.') + '</p>' +
     '<div class="row" style="margin:8px 0"><input id="fq-q" placeholder="Câu hỏi con hay hỏi" style="flex:1;min-width:200px;padding:10px;border-radius:12px;border:2px solid var(--line)"><button class="btn small" data-fqadd>Thêm câu mới</button></div>' +
     '<div class="tablewrap"><table><tr><th>Câu hỏi</th><th>Bài</th><th>Câu trả lời của Cú</th><th>Đã dùng</th><th></th></tr>' +
     list.map((f, i) => '<tr><td>' + esc(f.q) + '</td><td class="small">' + esc(name(f.ctx)) + '</td><td><textarea data-fqa="' + i + '" rows="3" style="width:100%;min-width:220px;border-radius:10px;border:2px solid var(--line);padding:6px">' + esc(f.a) + '</textarea></td><td>' + (f.n || 0) + (f.seed ? ' (có sẵn)' : '') + '</td><td><button class="btn small ghost" data-fqs="' + i + '">Lưu</button> <button class="btn small ghost" data-fqd="' + i + '">Xoá</button></td></tr>').join('') +
     '</table></div><p class="small muted" style="margin-top:8px">Có ' + list.length + ' câu.</p></div>';
   const $$ = (q) => [...b.querySelectorAll(q)];
-  $$('[data-fqs]').forEach(x => x.onclick = async () => { const f = list[+x.dataset.fqs]; const a = b.querySelector('[data-fqa="' + x.dataset.fqs + '"]').value.trim(); if (!a) return; if (f.seed && typeof f.id !== 'number') await put({ q: f.q, a, ctx: '', n: 0, at: Date.now(), seedQ: f.q }); else { f.a = a; await put(f); } TL.toast('Đã lưu câu trả lời.'); TL.faqParent(b); });
-  $$('[data-fqd]').forEach(x => x.onclick = async () => { const f = list[+x.dataset.fqd]; if (!confirm('Xoá câu này khỏi cẩm nang?')) return; if (typeof f.id === 'number') { if (f.seedQ) await put(Object.assign(f, { off: 1 })); else await del(f.id); } else await put({ q: f.q, a: f.a, ctx: '', n: 0, at: Date.now(), seedQ: f.q, off: 1 }); TL.faqParent(b); });
-  const add = b.querySelector('[data-fqadd]'); add.onclick = async () => { const q = b.querySelector('#fq-q').value.trim(); if (!q) return; await put({ q, a: 'Bố mẹ viết câu trả lời ở đây.', ctx: '', n: 0, at: Date.now() }); TL.faqParent(b); };
+  $$('[data-fqs]').forEach(x => x.onclick = async () => { const f = list[+x.dataset.fqs]; const a = b.querySelector('[data-fqa="' + x.dataset.fqs + '"]').value.trim(); if (!a) return; try { if (isSeed(f)) await store.add({ q: f.q, a, ctx: '', seedQ: f.q }); else await store.upd(f, a); } catch (e) { TL.toast('Chưa lưu được, thử lại sau.'); return; } TL.toast('Đã lưu câu trả lời.'); TL.faqParent(b); });
+  $$('[data-fqd]').forEach(x => x.onclick = async () => { const f = list[+x.dataset.fqd]; if (!confirm('Xoá câu này khỏi cẩm nang?')) return; try { if (!isSeed(f)) { if (f.seedQ) await store.upd(f, null, 1); else await store.del(f); } else await store.add({ q: f.q, a: f.a, ctx: '', seedQ: f.q, off: 1 }); } catch (e) { TL.toast('Chưa xoá được, thử lại sau.'); return; } TL.faqParent(b); });
+  const add = b.querySelector('[data-fqadd]'); add.onclick = async () => { const q = b.querySelector('#fq-q').value.trim(); if (!q) return; try { await store.add({ q, a: 'Bố mẹ viết câu trả lời ở đây.', ctx: '' }); } catch (e) { TL.toast('Chưa thêm được, thử lại sau.'); return; } TL.faqParent(b); };
 };
 })();
 

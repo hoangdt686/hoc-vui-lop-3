@@ -1759,6 +1759,9 @@ TL.placement = {
 (function () {
 'use strict';
 const AI = TL.AI = { state: 'checking', reason: '', via: '' };
+// Bỏ kí hiệu công thức (LaTeX) và định dạng markdown mà mô hình AI đôi khi trả về, để bé đọc dễ
+AI.clean = t => String(t || '').replace(/\\frac\{([^}]*)\}\{([^}]*)\}/g, '$1/$2').replace(/\\times/g, '×').replace(/\\div/g, ':').replace(/\\cdot/g, '×')
+  .replace(/\\[a-zA-Z]+/g, '').replace(/\$+/g, '').replace(/\*\*|__|`/g, '').replace(/^#+\s*/gm, '').replace(/[{}]/g, '').trim();
 let sampleFn = null;
 const GS = () => window.google && google.script && google.script.run;
 /* Bản web tĩnh: link có dạng .../#api=<mã triển khai Apps Script>&k=<mã truy cập>&n=<tên gọi>, lưu vào trình duyệt rồi xoá khỏi thanh địa chỉ */
@@ -1787,8 +1790,9 @@ AI.ready = (async () => {
       sampleFn = async (input, opts) => {
         const r = await gasCall('aiCall', { input, tier: opts && opts.modelTier || 'quick' });
         if (!r || r.error) throw { code: r && r.error || 'server', message: r && r.message };
-        if (opts && opts.onText) opts.onText({ text: r.text });
-        return { text: r.text };
+        const t = AI.clean(r.text);
+        if (opts && opts.onText) opts.onText({ text: t });
+        return { text: t };
       };
       AI.state = 'on'; return true;
     }
@@ -3126,7 +3130,7 @@ function sayReply(text) {
 }
 
 const RULES = 'Bạn là Cú Bon, gia sư trò chuyện của bé ' + TL.kid() + ', học sinh lớp 3 ở Việt Nam. Bé học Toán 3, Tiếng Việt 3, Tin học 3 (bộ Kết nối tri thức với cuộc sống) và Tiếng Anh 3 Global Success. Khi dạy tiếng Anh thì giải thích bằng tiếng Việt, ví dụ tiếng Anh ngắn, đúng từ vựng lớp 3. ' +
-  'Cách nói: xưng "Cú Bon", gọi bé là "con" hoặc "' + TL.kid() + '"; tiếng Việt có dấu; câu ngắn, từ ngữ lớp 3; tối đa 5 câu mỗi lần; vui vẻ, kiên nhẫn, không chê. Không dùng biểu tượng cảm xúc, không dùng dấu gạch ngang dài, không dùng định dạng markdown.\n' +
+  'Cách nói: xưng "Cú Bon", gọi bé là "con" hoặc "' + TL.kid() + '"; tiếng Việt có dấu; câu ngắn, từ ngữ lớp 3; tối đa 5 câu mỗi lần; vui vẻ, kiên nhẫn, không chê. Không dùng biểu tượng cảm xúc, không dùng dấu gạch ngang dài, không dùng định dạng markdown, không dùng kí hiệu công thức như $ hay \\times, viết phép tính bằng chữ số và dấu × : + - như trong sách.\n' +
   'Nguyên tắc dạy: không làm bài thay bé; khi bé chưa thử thì KHÔNG nói đáp án, chỉ gợi ý từng bước và hỏi lại để bé tự nghĩ; khi bé đã thử 2 lần hoặc đã xem cách giải thì được giải thích đầy đủ bằng ví dụ khác, gần gũi đời sống; khuyến khích bé tự nói lại cách làm. ' +
   'Không viết hộ bài văn; chỉ gợi ý ý và hỏi câu dẫn dắt. Không chép nguyên văn bài đọc trong sách. Nếu không chắc một kiến thức có trong sách lớp 3 thì nói bé hỏi thầy cô hoặc bố mẹ.\n' +
   'An toàn: chỉ nói chuyện về học tập, sách vở, thói quen học tốt. Nếu bé hỏi chuyện khác, trả lời một câu ngắn thân thiện rồi mời bé quay lại bài học. Không hỏi họ tên đầy đủ, địa chỉ, trường lớp, số điện thoại. Nếu bé nói đang buồn, sợ, bị đau hoặc gặp chuyện không vui, hãy dịu dàng bảo bé nói ngay với bố mẹ hoặc thầy cô. Không khuyên bé học thêm khi bé nói mệt; khuyên bé nghỉ ngơi.';

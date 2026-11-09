@@ -346,11 +346,37 @@ body::after { display: none; }
 .bubble { box-shadow: var(--clay-hi), 0 5px 0 var(--line); }
 @media (max-width: 760px) { .door { padding-right: 112px; } .door .icon3d { width: 100px; height: 86px; } }
 @media (prefers-reduced-motion: reduce) { .sky3d .cloud, .door .icon3d, .hello svg { animation: none; } .door, .node { transform: none !important; } }
+
+/* ===== Giao diện sáng tươi vui (mặc định cho trẻ): trời xanh, mặt trời, cầu vồng, đồi cỏ ===== */
+:root[data-theme="light"] { --bg: #FFF9EC; --sky1: #9FDCFF; --sky2: #FFE9A8; --hill1: #8EDB9F; --hill2: #63C97F; --cloud: #FFFFFF;
+  --xp: #7B5CFF; --xp-soft: #EEE8FF; --star: #FFB800; --star-soft: #FFF1C2; --line: #DCE6F2; --ink: #1F2A44; }
+:root[data-theme="light"] body { background: linear-gradient(180deg, #8ED6FF 0%, #C9EEFF 30%, #FFF6D8 70%, #FFE7A0 100%) fixed; }
+.sky3d .sun { position: absolute; top: 76px; right: 2%; width: 90px; height: 90px; border-radius: 50%; background: radial-gradient(circle at 40% 40%, #FFF6B0, #FFD23F 55%, #FFB300); box-shadow: 0 0 0 18px rgba(255, 214, 64, .25), 0 0 0 40px rgba(255, 214, 64, .12); animation: sunspin 6s ease-in-out infinite; }
+@keyframes sunspin { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+.sky3d .rainbow { position: absolute; left: -120px; bottom: 120px; width: 520px; height: 260px; border-radius: 260px 260px 0 0; opacity: .35;
+  background: radial-gradient(circle at 50% 100%, transparent 54%, #8B5CF6 54% 58%, #3B82F6 58% 62%, #22C55E 62% 66%, #FACC15 66% 70%, #F97316 70% 74%, #EF4444 74% 78%, transparent 78%); }
+:root[data-theme="dark"] .sky3d .sun, :root[data-theme="dark"] .sky3d .rainbow { display: none; }
+:root[data-theme="light"] .top { background: rgba(255, 255, 255, .85); box-shadow: 0 3px 0 0 transparent; border-bottom: 0; }
+:root[data-theme="light"] .top::after { content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 4px; background: linear-gradient(90deg, #EF4444, #F97316, #FACC15, #22C55E, #3B82F6, #8B5CF6); }
+:root[data-theme="light"] .hello h1 { color: #1F2A44; text-shadow: 0 2px 0 #fff; }
+:root[data-theme="light"] .bubble { background: #fff; border: 3px solid #FFD54F; }
+:root[data-theme="light"] .card { background: #fff; }
+:root[data-theme="light"] .chip.star { background: linear-gradient(180deg, #FFF3B0, #FFD54F); }
+:root[data-theme="light"] .chip.xp { background: linear-gradient(180deg, #F0E9FF, #D9CCFF); }
+:root[data-theme="light"] .chip.clock { background: linear-gradient(180deg, #DDFBEA, #A7F0C6); }
+.door.tv { background: linear-gradient(160deg, #2DD4A0, #0EA371); } .door.math { background: linear-gradient(160deg, #FF9F5A, #F2622A); }
+.door.ta { background: linear-gradient(160deg, #5AA8FF, #2F6BF0); } .door.th { background: linear-gradient(160deg, #3DD6F0, #0AA2C4); }
+:root[data-theme="light"] .region-head h2 { text-shadow: 0 2px 0 #fff; }
+:root[data-theme="light"] .node { background: #fff; }
+:root[data-theme="light"] .node.done { background: linear-gradient(180deg, #E9FFF1, #C8F5D8); }
+:root[data-theme="light"] .step.past { background: #E9E2FF; }
+@media (prefers-reduced-motion: reduce) { .sky3d .sun { animation: none; } }
 </style>
 <header class="top" id="top"></header>
 <main class="wrap" id="main" aria-live="polite"></main>
 <noscript><p style="padding:20px">Ứng dụng cần bật JavaScript.</p></noscript>
 <script>
+window.TL_K='';
 /* ---- src/engine/core.js ---- */
 /* ===== Smart Learning World - core: tiện ích, lưu trữ, ôn tập, học thích ứng, phần thưởng ===== */
 'use strict';
@@ -1775,7 +1801,7 @@ if (CFG && CFG.n && !window.TL_KID) window.TL_KID = CFG.n;
 TL.gas = !!GS() || !!CFG;
 TL.hosted = !GS() && !!CFG;
 function gasCall(fn, arg) {
-  if (GS()) return new Promise((res, rej) => { GS().withSuccessHandler(res).withFailureHandler(e => rej({ code: 'server', message: String(e && e.message || e) }))[fn](arg); });
+  if (GS()) return new Promise((res, rej) => { GS().withSuccessHandler(j => { if (j && j.err) rej({ code: j.err === 'forbidden' ? 'forbidden' : 'server', message: j.err }); else res(j && j.res); }).withFailureHandler(e => rej({ code: 'server', message: String(e && e.message || e) })).api({ fn, arg, k: window.TL_K || '' }); });
   return fetch('https://script.google.com/macros/s/' + encodeURIComponent(CFG.api) + '/exec', { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ fn, arg, k: CFG.k }) })
     .then(r => r.json()).then(j => { if (j && j.err) throw { code: j.err === 'forbidden' ? 'forbidden' : 'server', message: j.err }; return j.res; })
     .catch(e => { throw e && e.code ? e : { code: 'server', message: 'Không kết nối được máy chủ.' }; });
@@ -2225,7 +2251,7 @@ TL.ICON3D = {
 };
 // cảnh trời: mây và đồi, nằm sau nội dung
 const sky = document.createElement('div'); sky.className = 'sky3d'; sky.setAttribute('aria-hidden', 'true');
-sky.innerHTML = '<i class="cloud c1"></i><i class="cloud c2"></i><i class="cloud c3"></i><i class="hill h1"></i><i class="hill h2"></i>';
+sky.innerHTML = '<i class="sun"></i><i class="rainbow"></i><i class="cloud c1"></i><i class="cloud c2"></i><i class="cloud c3"></i><i class="hill h1"></i><i class="hill h2"></i>';
 document.body.prepend(sky);
 // nghiêng thẻ theo con trỏ
 const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -2997,7 +3023,7 @@ P.data = function (b) {
     '<div class="card"><h2>Cài đặt</h2><div class="col"><label class="row"><input type="checkbox" id="st-sound"' + (s.settings.sound ? ' checked' : '') + '> Âm thanh hiệu ứng</label><label class="row"><input type="checkbox" id="st-voice"' + (s.settings.voice ? ' checked' : '') + '> Giọng đọc</label>' +
     '<div class="field">Tốc độ đọc<input type="range" id="st-rate" min="0.6" max="1.2" step="0.05" value="' + s.settings.rate + '"></div><p class="small muted">' + (TL.viVoice ? 'Giọng tiếng Việt: ' + esc(TL.viVoice.name) : 'Máy chưa có giọng tiếng Việt. Xem mục Hướng dẫn.') + '</p>' +
     '<div class="field">Tên gọi của con<input id="st-kid" maxlength="30" value="' + esc(s.settings.kidName || window.TL_KID || '') + '" style="padding:10px;border-radius:12px;border:2px solid var(--line);background:var(--surface)"></div>' +
-    '<div class="field">Giao diện<select id="st-theme"><option value="auto"' + (theme === 'auto' ? ' selected' : '') + '>Theo máy</option><option value="light"' + (theme === 'light' ? ' selected' : '') + '>Sáng</option><option value="dark"' + (theme === 'dark' ? ' selected' : '') + '>Tối</option></select></div>' +
+    '<div class="field">Giao diện<select id="st-theme"><option value="light"' + (theme !== 'dark' ? ' selected' : '') + '>Sáng, tươi vui (khuyên dùng)</option><option value="dark"' + (theme === 'dark' ? ' selected' : '') + '>Tối (dùng buổi tối, khi cần dịu mắt)</select></div>' +
     '<div class="row"><button class="btn small ghost" data-pinch>Đổi mã PIN</button><button class="btn small ghost" data-place>Cho con làm lại bài khởi hành</button></div>' +
     '<p class="small">Gia sư AI: ' + (TL.AI.state === 'on' ? 'đã kết nối qua ' + esc(TL.AI.via) + (TL.gas ? ' (khoá API nằm trong Script Properties của Apps Script, không nằm trong trang)' : ' (qua tài khoản Claude, không có khoá API trong ứng dụng)') : 'chưa kết nối. ' + esc(TL.AI.reason)) + '</p></div></div></div>' +
     '<div class="card" style="margin-top:12px"><h2>Trò chuyện Hỏi Cú Bon</h2><div class="row" style="margin-top:6px"><label class="row"><input type="checkbox" id="ch-on"' + (s.settings.chatOn ? ' checked' : '') + '> Cho con dùng Hỏi Cú Bon</label><label class="row">Tối đa <input type="number" id="ch-lim" min="5" max="100" value="' + (s.settings.chatLimit || 40) + '" style="width:80px;padding:8px;border-radius:10px;border:2px solid var(--line);background:var(--surface)"> câu hỏi mỗi ngày</label></div>' +
@@ -3015,7 +3041,7 @@ P.data = function (b) {
   $('#st-voice', b).onchange = e => { s.settings.voice = e.target.checked; TL.save(); };
   $('#st-kid', b).onchange = e => { s.settings.kidName = e.target.value.trim(); TL.save(); TL.toast('Đã lưu tên gọi của con.'); };
   $('#st-rate', b).onchange = e => { s.settings.rate = +e.target.value; TL.save(); TL.speak('Xin chào ' + TL.kid() + ''); };
-  $('#st-theme', b).onchange = e => { const v = e.target.value; if (v === 'auto') delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = v; try { localStorage.setItem('tulinh.theme', v); } catch (x) { } };
+  $('#st-theme', b).onchange = e => { const v = e.target.value; document.documentElement.dataset.theme = v; try { localStorage.setItem('tulinh.theme', v); } catch (x) { } };
   $('[data-pinch]', b).onclick = () => { s.settings.pin = null; TL.save(); TL.askPin(() => TL.toast('Đã đổi mã PIN.')); };
   const tr = $('[data-trial]', b); if (tr) tr.onclick = () => TL.startTrial();
   const te = $('[data-trial-end]', b); if (te) te.onclick = () => TL.endTrial();
@@ -3255,7 +3281,9 @@ TL.syncReady = TL.gasCall('loadState').then(raw => {
 /* ===== Khởi động ứng dụng ===== */
 (function () {
 'use strict';
-try { const th = localStorage.getItem('tulinh.theme'); if (th && th !== 'auto') document.documentElement.dataset.theme = th; } catch (e) { }
+// Mặc định luôn dùng giao diện sáng, tươi vui cho trẻ; chỉ dùng nền tối khi bố mẹ chọn trong Khu phụ huynh
+document.documentElement.dataset.theme = 'light';
+try { if (localStorage.getItem('tulinh.theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch (e) { }
 (TL.S.packs || []).forEach(pk => { try { TL.loadPack(pk); } catch (e) { console.warn('Gói lỗi', e); } });
 TL.ensureDaily(); TL.ensureWeekly(); TL.ensurePlan();
 TL.go('home');

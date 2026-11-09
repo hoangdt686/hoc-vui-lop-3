@@ -3291,7 +3291,7 @@ P.data = function (b) {
   const pts = TL.points().slice().reverse();
   b.innerHTML = '<div class="card" style="margin-bottom:12px"><h2>Bố mẹ lỡ tay làm bài thay con?</h2><p class="muted small" style="margin:6px 0">Trước bài khởi hành, trước mỗi bài học mới và đầu mỗi ngày, ứng dụng tự lưu một điểm quay lại trên máy này (12 điểm gần nhất). Chọn một điểm để đưa tiến độ học về đúng lúc đó. Cài đặt, mã PIN và tin nhắn với Cú Bon giữ nguyên.</p>' +
     '<div class="row" style="margin:8px 0">' + (TL.trialOn() ? '<button class="btn" data-trial-end>Kết thúc học thử, bỏ kết quả</button>' : '<button class="btn" data-trial>Bố mẹ học thử (không lưu kết quả)</button>') + '</div>' +
-    (pts.length ? '<div class="tablewrap"><table><tr><th>Thời điểm</th><th>Điểm quay lại</th><th></th></tr>' + pts.map(p => '<tr><td>' + new Date(p.t).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }) + '</td><td>' + esc(p.label) + '</td><td><button class="btn small ghost" data-back="' + p.t + '">Quay lại</button></td></tr>').join('') + '</table></div>' : empty('Chưa có điểm quay lại nào trên máy này.')) + '</div>' +
+    (pts.length ? '<div class="tablewrap"><table><tr><th>Thời điểm</th><th>Điểm quay lại</th><th>Tiến độ lúc đó</th><th></th></tr>' + pts.map(p => { let d = {}; try { d = JSON.parse(p.data) || {}; } catch (e) { } return '<tr><td>' + new Date(p.t).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }) + '</td><td>' + esc(p.label) + '</td><td>' + (d.xp || 0) + ' XP, ' + (d.stars || 0) + ' sao, ' + Object.keys(d.lessons || {}).length + ' bài</td><td><button class="btn small ghost" data-back="' + p.t + '">Quay lại</button></td></tr>'; }).join('') + '</table></div>' : empty('Chưa có điểm quay lại nào trên máy này.')) + '</div>' +
     '<div class="grid2"><div class="card"><h2>Sao lưu và khôi phục</h2><p class="muted small" style="margin:6px 0">' + (TL.gas ? 'Tiến độ lưu trong trình duyệt và tự đồng bộ lên máy chủ Apps Script của bố mẹ, nên con đổi máy vẫn học tiếp được. ' + (TL.syncInfo ? TL.syncInfo() : '') + ' Vẫn nên tải tệp sao lưu mỗi tháng.' : 'Tiến độ lưu trong trình duyệt của máy này. Nên sao lưu mỗi tuần, và trước khi xoá dữ liệu trình duyệt hoặc đổi máy.') + '</p><div class="row"><button class="btn" data-exp>Tải tệp sao lưu</button><button class="btn ghost" data-show>Hiện mã sao lưu</button></div><textarea id="bk" class="write" rows="4" style="margin-top:8px;font-size:.8rem" hidden readonly></textarea>' +
     '<h3 style="margin-top:14px">Khôi phục từ tệp</h3><input type="file" id="imp" accept=".json,application/json"><p class="small muted">Khôi phục sẽ thay toàn bộ dữ liệu hiện tại.</p></div>' +
     '<div class="card"><h2>Cài đặt</h2><div class="col"><label class="row"><input type="checkbox" id="st-sound"' + (s.settings.sound ? ' checked' : '') + '> Âm thanh hiệu ứng</label><label class="row"><input type="checkbox" id="st-voice"' + (s.settings.voice ? ' checked' : '') + '> Giọng đọc</label>' +
@@ -3319,7 +3319,7 @@ P.data = function (b) {
   $('[data-pinch]', b).onclick = () => { s.settings.pin = null; TL.save(); TL.askPin(() => TL.toast('Đã đổi mã PIN.')); };
   const tr = $('[data-trial]', b); if (tr) tr.onclick = () => TL.startTrial();
   const te = $('[data-trial-end]', b); if (te) te.onclick = () => TL.endTrial();
-  $$('[data-back]', b).forEach(x => x.onclick = () => { const p = TL.points().find(q => String(q.t) === x.dataset.back); if (!p) return; if (!confirm('Đưa tiến độ học về thời điểm: ' + p.label + '?\nMọi bài con làm sau thời điểm đó sẽ bị bỏ.')) return; TL.restoreTo(p.t); TL.toast('Đã quay lại: ' + p.label + '.'); P.data(b); });
+  $$('[data-back]', b).forEach(x => x.onclick = () => { const p = TL.points().find(q => String(q.t) === x.dataset.back); if (!p) return; let d = {}; try { d = JSON.parse(p.data) || {}; } catch (e) { } if (!confirm('Đưa tiến độ học về thời điểm: ' + p.label + ' (' + (d.xp || 0) + ' XP, ' + (d.stars || 0) + ' sao)?\nHiện tại: ' + (s.xp || 0) + ' XP, ' + (s.stars || 0) + ' sao. Mọi bài con làm sau thời điểm đó sẽ bị bỏ, trên mọi máy.')) return; TL.restoreTo(p.t); TL.toast('Đã quay lại: ' + p.label + '.'); P.data(b); });
   $('[data-place]', b).onclick = () => { s.placementDone = false; TL.save(); TL.toast('Bài khởi hành sẽ hiện ở trang chủ của con.'); };
   $('[data-del]', b).onclick = () => { if ($('#del-c', b).value.trim().toUpperCase() !== 'XOA') { TL.toast('Gõ XOA để xác nhận.'); return; } try { localStorage.removeItem(TL.KEY); } catch (e) { } TL.S = TL.defaultState(); TL.save(); TL.toast('Đã xoá dữ liệu.'); setTimeout(() => location.reload(), 600); };
   $$('[data-shift]', b).forEach(x => x.onclick = () => { TL.dayShift = x.dataset.shift === '0' ? 0 : (TL.dayShift || 0) + 1; TL.toast('Ngày trong ứng dụng: ' + TL.viDate(TL.today())); P.data(b); });
@@ -3380,7 +3380,8 @@ function bar() {
 }
 TL.trialBar = bar;
 bar();
-TL.restorePoint('Đầu ngày ' + TL.viDate(TL.today()));
+/* Bản có máy chủ: chờ tải xong tiến độ trên máy chủ rồi mới chụp điểm đầu ngày, tránh chụp bản trống của máy mới mở */
+setTimeout(() => { const day = () => TL.restorePoint('Đầu ngày ' + TL.viDate(TL.today())); if (TL.syncReady) TL.syncReady.then(day, day); else day(); }, 0);
 })();
 
 /* ---- src/engine/chat.js ---- */

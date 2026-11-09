@@ -518,6 +518,7 @@ html[data-theme="dark"] .howto { color: #93C5FD; } html[data-theme="dark"] .howt
 .small-moods .ck-mood span { font-size: .75rem; }
 .ck-chat .msgs { max-height: 260px; }
 .in-ck #cubon-btn, .in-ck #cubon-panel { display: none !important; }
+.hello { position: relative; z-index: 30; } .hello .owlstage .owlsay { z-index: 40; }
 </style>
 <header class="top" id="top"></header>
 <main class="wrap" id="main" aria-live="polite"></main>
@@ -2619,6 +2620,56 @@ TL.autoVis = function (it) {
 };
 })();
 
+/* ---- src/engine/voice.js ---- */
+/* ===== Giọng nói của Cú Bon qua máy chủ =====
+   Nhiều máy (ví dụ Chrome trên Windows) không có giọng đọc tiếng Việt. Khi đó ứng dụng nhờ máy chủ Apps Script gọi Gemini đọc thành tiếng
+   (âm thanh PCM 24 kHz), rồi phát bằng loa máy. Câu đã đọc được giữ lại trong phiên để đọc lại ngay, không gọi máy chủ lần nữa. */
+(function () {
+'use strict';
+let actx = null, cur = null, seq = 0; const cache = new Map();
+function ctx() {
+  if (!actx) { const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null; try { actx = new AC(); } catch (e) { return null; } }
+  if (actx.state === 'suspended') actx.resume().catch(() => { });
+  return actx;
+}
+// trình duyệt chỉ cho phát âm thanh sau khi người dùng chạm hoặc bấm phím: mở khoá ngay lần chạm đầu tiên
+['pointerdown', 'keydown', 'touchstart'].forEach(ev => document.addEventListener(ev, () => ctx(), { capture: true, passive: true }));
+function decode(b64, mime) {
+  const rate = +((/rate=(\d+)/.exec(mime || '') || [])[1] || 24000);
+  const bin = atob(b64); const n = bin.length >> 1; const a = ctx(); if (!a) return null;
+  const buf = a.createBuffer(1, n, rate); const ch = buf.getChannelData(0);
+  for (let i = 0; i < n; i++) { let v = bin.charCodeAt(2 * i) | (bin.charCodeAt(2 * i + 1) << 8); if (v >= 32768) v -= 65536; ch[i] = v / 32768; }
+  return buf;
+}
+TL.cloudStop = function () { seq++; if (cur) { try { cur.onended = null; cur.stop(); } catch (e) { } cur = null; } };
+TL.cloudVoiceOK = () => !!TL.gas && TL.cloudVoiceOff !== true;
+TL.cloudSpeak = async function (text, opt) {
+  opt = opt || {}; TL.cloudStop(); const my = seq;
+  let buf = cache.get(text);
+  if (!buf) {
+    const r = await TL.gasCall('tts', { text });
+    if (!r || r.error || !r.b64) { if (r && r.error === 'rate_limited') TL.cloudBusyUntil = Date.now() + 60000; throw r || { error: 'tts_failed' }; }
+    buf = decode(r.b64, r.mime); if (!buf) throw { error: 'no_audio' };
+    cache.set(text, buf); if (cache.size > 60) cache.delete(cache.keys().next().value);
+  }
+  if (my !== seq) return;
+  const a = ctx(); const src = a.createBufferSource(); src.buffer = buf; src.connect(a.destination);
+  src.onended = () => { if (cur === src) cur = null; if (my === seq && opt.onend) opt.onend(); };
+  cur = src; src.start(); if (opt.onstart) opt.onstart(buf.duration);
+};
+const orig = TL.speak;
+TL.speak = function (text, lang, opt) {
+  opt = opt || {};
+  if (lang !== 'en' && !TL.viVoice && TL.S.settings.voice && TL.cloudVoiceOK() && !(TL.cloudBusyUntil > Date.now())) {
+    try { speechSynthesis.cancel(); } catch (e) { }
+    TL.cloudSpeak(TL.speechVi ? TL.speechVi(text) : String(text), opt).catch(() => { if (opt.onend) opt.onend(); });
+    return true;
+  }
+  return orig(text, lang, opt);
+};
+TL.speechStop = function () { TL.cloudStop(); };
+})();
+
 /* ---- src/engine/owl3d.js ---- */
 /* ===== Cú Bon 3D tương tác =====
    Cú Bon được vẽ lại liên tục theo góc quay (cách dựng hình 2,5D): thân là khối bầu dục, mắt, mỏ, bụng nằm trên bề mặt thân,
@@ -3754,7 +3805,7 @@ function rules() {
     'Không hứa giữ bí mật. Nếu bé xin giữ bí mật hoặc dặn đừng nói với bố mẹ, nói nhẹ nhàng: chuyện làm con buồn hay sợ thì nên kể cho bố mẹ, bố mẹ luôn thương con.\n' +
     'Nếu bé kể bị đánh, bị bắt nạt, bị người lớn hoặc người lạ đụng chạm làm bé khó chịu, bị dọa, sợ hãi ở nhà hay ở trường, hoặc nói muốn biến mất, muốn chết, muốn làm đau mình: giữ bình tĩnh, nói đó không phải lỗi của con, con đã rất dũng cảm khi kể, và khuyên con kể ngay cho bố mẹ hoặc cô giáo. Không hỏi dồn chi tiết.\n' +
     'Không hỏi họ tên đầy đủ, địa chỉ, tên trường. Không nhắc đến bài vở khi bé đang buồn. Nếu bé không muốn kể thì tôn trọng, nói Cú Bon luôn sẵn sàng nghe khi con muốn.\n' +
-    'Khi bé đã kể từ 3 lượt trở lên hoặc nói đã kể xong: cảm ơn bé đã chia sẻ, động viên một câu cụ thể, mời bé vào học, không hỏi thêm.';
+    'Không vội kết thúc: bé còn muốn kể thì tiếp tục lắng nghe và hỏi tiếp nhẹ nhàng, dù đã nhiều lượt. Sau khoảng 5 lượt có thể hỏi "Con còn muốn kể gì cho Cú Bon nữa không?". Chỉ khi bé nói đã kể xong, muốn đi học hoặc tạm biệt thì mới cảm ơn, động viên một câu cụ thể và mời bé vào học.';
 }
 const today = () => TL.today();
 function entry(create) {
@@ -3802,7 +3853,7 @@ TL.SCREENS.checkin = function (m) {
     '</div></section>' +
     '<section class="card ck-chat"><div class="row"><span class="eyebrow">Cuộc trò chuyện hôm nay</span><div class="spacer"></div>' + (e.done ? '' : '<button class="btn ghost small" id="ck-done" disabled>Con kể xong rồi</button>') + '</div>' +
     '<div class="msgs" id="ck-msgs" aria-live="polite"></div>' +
-    '<p class="howto" id="ck-tip">' + (voiceOK ? '<b>Hướng dẫn làm bài:</b> Cú Bon hỏi xong thì micro tự bật, con nói to, rõ. Nói xong con chờ một chút, Cú Bon sẽ trả lời.' : '<b>Hướng dẫn làm bài:</b> Máy này chưa nghe được giọng nói trực tiếp. Con bấm vào ô bên dưới rồi nói bằng micro trên bàn phím (máy tính bảng, điện thoại), hoặc bấm phím Windows + H trên máy tính.') + '</p>' +
+    '<p class="howto" id="ck-tip">' + (voiceOK ? '<b>Hướng dẫn làm bài:</b> Cú Bon hỏi xong thì micro tự bật, con nói to, rõ. Con kể bao lâu cũng được; nói xong con chờ một chút, Cú Bon sẽ trả lời. Muốn dừng, con nói "Con kể xong rồi" hoặc bấm nút cùng tên.' : '<b>Hướng dẫn làm bài:</b> Máy này chưa nghe được giọng nói trực tiếp. Con bấm vào ô bên dưới rồi nói bằng micro trên bàn phím (máy tính bảng, điện thoại), hoặc bấm phím Windows + H trên máy tính.') + '</p>' +
     '<div class="row ck-input" id="ck-typ"' + (voiceOK ? ' hidden' : '') + '><input id="ck-in" placeholder="Con nói hoặc gõ vào đây..." autocomplete="off"><button class="btn" id="ck-send">Gửi</button></div>' +
     (voiceOK && !e.done ? '<button class="linkbtn small" id="ck-type">Micro không nghe được? Bấm vào đây để gõ chữ</button>' : '') + '</section></div>';
   const msgs = $('#ck-msgs', m), stage = $('.owlstage', m), cap = $('#ck-cap', m), st = $('#ck-st', m);
@@ -3810,7 +3861,7 @@ TL.SCREENS.checkin = function (m) {
   const draw = (stream) => {
     msgs.innerHTML = e.turns.map(t => '<div class="msg ' + (t.r === 'u' ? 'me' : 'bot') + '">' + esc(t.t) + '</div>').join('') + (stream != null ? '<div class="msg bot">' + esc(stream || 'Cú Bon đang nghĩ...') + '</div>' : '');
     msgs.scrollTop = msgs.scrollHeight;
-    const nU = e.turns.filter(t => t.r === 'u').length; const d = $('#ck-done', m); if (d) { d.disabled = nU < 3; d.classList.toggle('ok', nU >= 3); d.classList.toggle('ghost', nU < 3); }
+    const nU = e.turns.filter(t => t.r === 'u').length; const d = $('#ck-done', m); if (d) { d.disabled = nU < 2; d.classList.toggle('ok', nU >= 2); d.classList.toggle('ghost', nU < 2); }
   };
   draw();
   if (e.done) { $('#ck-go', m).onclick = () => goLearn(); TL.owlStageAct(stage, 'dance'); return; }
@@ -3819,21 +3870,25 @@ TL.SCREENS.checkin = function (m) {
     cap.textContent = t; TL.owlStageAct(stage, 'wave'); status('Cú Bon đang nói...'); if (stage._o) stage._o.talk = true;
     let fired = false; const sid = ++sayId;
     const done = () => { if (fired || sid !== sayId) return; fired = true; status(''); if (stage._o) stage._o.talk = false; if (then) then(); else if (auto && voiceOK) setTimeout(hear, 250); };
-    const ok = TL.speak(t, 'vi', { quiet: true, onend: done });
-    setTimeout(done, ok ? 2500 + t.length * 95 : Math.min(6000, 600 + t.length * 45)); // máy không có giọng đọc hoặc không báo đọc xong
+    const cloud = !TL.viVoice && TL.gas; let safety = null;
+    const ok = TL.speak(t, 'vi', { quiet: true, onend: done, onstart: d => { clearTimeout(safety); safety = setTimeout(done, d * 1000 + 2500); } });
+    safety = setTimeout(done, !ok ? Math.min(6000, 600 + t.length * 45) : cloud ? 25000 : 2500 + t.length * 95); // phòng khi máy không báo đọc xong
   };
   const botSay = (t, then) => { e.turns.push({ r: 'b', t }); TL.save(); draw(); say(t, then); };
   const micBtn = $('#ck-mic', m);
   const hear = () => {
     if (!voiceOK || busy || listening || !m.isConnected) return;
     try { speechSynthesis.cancel(); } catch (x) { }
-    rec = new SR(); rec.lang = 'vi-VN'; rec.interimResults = true; rec.continuous = false; let fin = '', tmp = '';
-    rec.onresult = ev => { tmp = ''; for (let i = ev.resultIndex; i < ev.results.length; i++) { if (ev.results[i].isFinal) fin += ev.results[i][0].transcript; else tmp += ev.results[i][0].transcript; } status('Con nói: ' + (fin + tmp)); };
+    rec = new SR(); rec.lang = 'vi-VN'; rec.interimResults = true; rec.continuous = true; let fin = '', tmp = '', quiet = null;
+    // nghe liên tục; con ngừng nói khoảng 3 giây thì mới coi là nói xong, để con nghỉ lấy hơi giữa câu không bị ngắt
+    const waitEnd = ms => { clearTimeout(quiet); quiet = setTimeout(() => { try { rec.stop(); } catch (x) { } }, ms); };
+    waitEnd(9000); // chưa nói gì thì chờ 9 giây
+    rec.onresult = ev => { tmp = ''; for (let i = ev.resultIndex; i < ev.results.length; i++) { if (ev.results[i].isFinal) fin += ev.results[i][0].transcript + ' '; else tmp += ev.results[i][0].transcript; } status('Con nói: ' + (fin + tmp)); waitEnd(tmp ? 4000 : 3000); };
     rec.onerror = ev => {
       if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') { auto = false; status(''); cap.textContent = 'Máy chưa cho Cú Bon nghe. Bố mẹ bấm biểu tượng ổ khoá trên thanh địa chỉ, chọn Cho phép micro, rồi con bấm nút micro nhé.'; $('#ck-typ', m).hidden = false; }
     };
     rec.onend = () => {
-      listening = false; micBtn.classList.remove('on'); const v = fin.trim();
+      clearTimeout(quiet); listening = false; micBtn.classList.remove('on'); const v = fin.trim();
       if (v) { silent = 0; send(v, true); return; }
       silent++; status('');
       if (!m.isConnected) return;
@@ -3864,22 +3919,23 @@ TL.SCREENS.checkin = function (m) {
     if (!e.mood) { const md = moodOf(text); if (md) { e.mood = md; $$('[data-mood]', m).forEach(x => x.classList.toggle('on', x.dataset.mood === md)); } }
     scan(text).forEach(f => { if (!e.flags.some(x => x.name === f.name)) e.flags.push(f); });
     e.level = levelOf(e); TL.save(); draw(''); status('Cú Bon đang nghĩ...'); TL.owlStageAct(stage, 'hop');
+    const wantsEnd = /\b(ke xong|noi xong|het roi|khong con gi|khong co gi nua|vao hoc|di hoc bai|hoc thoi|hoc bai thoi|tam biet)\b/.test(plainVi(text).replace(/[^a-z0-9]+/g, ' '));
     const flags = scan(text); const danger = flags.some(f => f.k === 'cao'); const care = flags.map(f => CARE[f.name]).find(Boolean); const nU = e.turns.filter(t => t.r === 'u').length;
     let reply = '';
     if (await useAI()) {
       const hist = e.turns.slice(-14).map(t => ({ role: t.r === 'u' ? 'user' : 'assistant', content: t.t }));
       while (hist.length && hist[0].role !== 'user') hist.shift();
       const md = MOODS.find(x => x.id === e.mood);
-      if (hist.length) hist[0] = { role: 'user', content: rules() + '\n\n[Cảm xúc bé chọn: ' + (md ? md.name : 'chưa rõ') + '. Bé đã kể ' + nU + ' lượt' + (nU >= 4 ? '; đây là lượt cuối: hãy cảm ơn, động viên và mời bé vào học, không hỏi thêm' : '') + '. Bé đang nói bằng giọng nói nên câu có thể thiếu dấu hoặc sai chính tả.]\n' + hist[0].content };
+      if (hist.length) hist[0] = { role: 'user', content: rules() + '\n\n[Cảm xúc bé chọn: ' + (md ? md.name : 'chưa rõ') + '. Bé đã kể ' + nU + ' lượt' + (wantsEnd ? '; bé muốn dừng: hãy cảm ơn, động viên và mời bé vào học, không hỏi thêm' : '') + '. Bé đang nói bằng giọng nói nên câu có thể thiếu dấu hoặc sai chính tả.]\n' + hist[0].content };
       const merged = []; hist.forEach(t => { const p = merged[merged.length - 1]; if (p && p.role === t.role) p.content += '\n' + t.content; else merged.push(Object.assign({}, t)); });
       try { reply = (await TL.AI.chat(merged, t => draw(t))).trim(); } catch (err) { reply = ''; }
     }
     if (reply && !/[.?!…]["”)]?\s*$/.test(reply)) { const cut = reply.search(/[.?!…][^.?!…]*$/); reply = cut > 0 ? reply.slice(0, cut + 1) : ''; } // câu bị cắt dở thì bỏ phần dở
-    if (!reply) reply = danger ? SAFE : care ? care : nU >= 4 ? CLOSE[e.mood || 'binhthuong'] : (nU === 1 && e.mood ? FIRST[e.mood] : NEXT[(nU - 2 + NEXT.length) % NEXT.length]);
+    if (!reply) reply = danger ? SAFE : care ? care : wantsEnd ? CLOSE[e.mood || 'binhthuong'] : (nU === 1 && e.mood ? FIRST[e.mood] : NEXT[(nU - 2 + NEXT.length) % NEXT.length]);
     if (danger && !/bố mẹ|cô giáo/.test(reply)) reply += ' ' + SAFE;
     else if (care && !/bố mẹ|cô giáo/.test(reply)) reply += ' Con kể với bố mẹ nữa nhé, bố mẹ luôn thương con.';
     busy = false; status('');
-    if (nU >= 4) botSay(reply, () => finish(m, e, stage)); else botSay(reply);
+    if (wantsEnd && nU >= 2) botSay(reply, () => finish(m, e, stage)); else botSay(reply);
   };
   $('#ck-send', m).onclick = () => { const i = $('#ck-in', m); send(i.value, false); i.value = ''; };
   $('#ck-in', m).onkeydown = ev => { if (ev.key === 'Enter') { ev.preventDefault(); $('#ck-send', m).click(); } };
